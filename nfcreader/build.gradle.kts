@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.gradle.dsl.abi.ExperimentalAbiValidation
+
 plugins {
   alias(libs.plugins.kotlinMultiplatform)
   alias(libs.plugins.androidKotlinMultiplatformLibrary)
@@ -28,6 +30,15 @@ kotlin {
     withDeviceTestBuilder { sourceSetTreeName = "test" }
         .configure { instrumentationRunner = "androidx.test.runner.AndroidJUnitRunner" }
   }
+
+    @OptIn(ExperimentalAbiValidation::class)
+    abiValidation {
+        enabled.set(true)
+        klib {
+            enabled = true
+            keepUnsupportedTargets = true
+        }
+    }
 
   listOf(iosX64(), iosArm64(), iosSimulatorArm64()).forEach {
     it.binaries.framework {
