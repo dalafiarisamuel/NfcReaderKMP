@@ -32,7 +32,7 @@ internal actual class NfcReadManager actual constructor(private val config: NfcC
 
     @Composable
     actual fun RegisterManager() {
-        // No-op
+        // NO-OP
     }
 
     actual fun startScanning() {
@@ -52,12 +52,11 @@ internal actual class NfcReadManager actual constructor(private val config: NfcC
     }
 
     override fun readerSession(session: NFCNDEFReaderSession, didInvalidateWithError: NSError) {
-        println("reader session error ${didInvalidateWithError.description}")
         _tagData.value = NfcReadResult.Error(didInvalidateWithError.localizedDescription)
     }
 
     override fun readerSessionDidBecomeActive(session: NFCNDEFReaderSession) {
-        println("reader session active")
+        // NO-OP
     }
 
     override fun readerSession(session: NFCNDEFReaderSession, didDetectNDEFs: List<*>) {

@@ -8,7 +8,6 @@ import android.nfc.NfcAdapter
 import android.nfc.Tag
 import android.nfc.tech.Ndef
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.compose.LocalActivity
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -70,11 +69,9 @@ internal actual class NfcReadManager actual constructor(private val config: NfcC
         val context = LocalContext.current
 
         DisposableEffect(currentActivity) {
-            Log.d("NfcManager", "RegisterManager: Activity attached")
             activity = currentActivity
             nfcAdapter = NfcAdapter.getDefaultAdapter(context)
             onDispose {
-                Log.d("NfcManager", "RegisterManager: Activity detached")
                 stopScanning()
                 activity = null
                 nfcAdapter = null
@@ -146,24 +143,20 @@ internal actual class NfcReadManager actual constructor(private val config: NfcC
         val adapter = nfcAdapter
 
         if (adapter == null) {
-            Log.e("NfcManager", "startScanning: NFC adapter is null")
             _tagData.value = NfcReadResult.Error("NFC adapter is null")
             return
         }
 
         if (currentActivity == null) {
-            Log.e("NfcManager", "startScanning: Activity is null")
             _tagData.value = NfcReadResult.Error("Activity is null")
             return
         }
 
         if (!adapter.isEnabled) {
-            Log.w("NfcManager", "startScanning: NFC is disabled")
             _tagData.value = NfcReadResult.Error("NFC is disabled")
             return
         }
 
-        Log.d("NfcManager", "startScanning: Enabling reader mode")
         isScanning.value = true
         _tagData.value = NfcReadResult.Initial
 
@@ -172,7 +165,6 @@ internal actual class NfcReadManager actual constructor(private val config: NfcC
             scope.launch {
                 delay(60.seconds)
                 if (isScanning.value) {
-                    Log.d("NfcManager", "Scanning timeout reached")
                     _tagData.value = NfcReadResult.Error("Scanning timeout reached")
                     stopScanning()
                 }
@@ -193,7 +185,6 @@ internal actual class NfcReadManager actual constructor(private val config: NfcC
     }
 
     actual fun stopScanning() {
-        Log.d("NfcManager", "stopScanning: Disabling reader mode")
         timeoutJob?.cancel()
         timeoutJob = null
         activity?.let { nfcAdapter?.disableReaderMode(it) }
@@ -201,7 +192,6 @@ internal actual class NfcReadManager actual constructor(private val config: NfcC
     }
 
     override fun onTagDiscovered(tag: Tag?) {
-        Log.d("NfcManager", "onTagDiscovered: Tag detected")
 
         // Stop scanning hardware and cancel timeout UI immediately
         scope.launch { stopScanning() }
@@ -216,7 +206,6 @@ internal actual class NfcReadManager actual constructor(private val config: NfcC
         val ndef = Ndef.get(tag)
 
         if (ndef == null) {
-            Log.d("NfcManager", "onTagDiscovered: Non-NDEF tag detected: $tagId")
             val data =
                 NfcTagData(
                     serialNumber = tagId,
@@ -230,7 +219,6 @@ internal actual class NfcReadManager actual constructor(private val config: NfcC
 
         val ndefMessage: NdefMessage? = ndef.cachedNdefMessage
         if (ndefMessage == null) {
-            Log.d("NfcManager", "onTagDiscovered: NDEF tag detected but no cached message")
             val data =
                 NfcTagData(
                     serialNumber = tagId,
@@ -259,7 +247,6 @@ internal actual class NfcReadManager actual constructor(private val config: NfcC
             records.joinToString(separator = "\n") { record ->
                 String(record.payload, Charsets.UTF_8)
             }
-        Log.d("NfcManager", "onTagDiscovered: Emitting combined payload")
         val data =
             NfcTagData(
                 serialNumber = tagId,
