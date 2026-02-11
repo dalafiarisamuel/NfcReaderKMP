@@ -1,16 +1,61 @@
-This is a Kotlin Multiplatform project targeting Android, iOS.
+## NfcReaderKMP
 
-* [/composeApp](./composeApp/src) is for code that will be shared across your Compose Multiplatform applications.
-  It contains several subfolders:
-  - [commonMain](./composeApp/src/commonMain/kotlin) is for code that’s common for all targets.
-  - Other folders are for Kotlin code that will be compiled for only the platform indicated in the folder name.
-    For example, if you want to use Apple’s CoreCrypto for the iOS part of your Kotlin app,
-    the [iosMain](./composeApp/src/iosMain/kotlin) folder would be the right place for such calls.
-    Similarly, if you want to edit the Desktop (JVM) specific part, the [jvmMain](./composeApp/src/jvmMain/kotlin)
-    folder is the appropriate location.
+This project demonstrates a simple NFC reader implementation for both Android and iOS using Kotlin Multiplatform. The reader is implemented as a reusable Composable component.
 
-* [/iosApp](./iosApp/iosApp) contains iOS applications. Even if you’re sharing your UI with Compose Multiplatform,
-  you need this entry point for your iOS app. This is also where you should add SwiftUI code for your project.
+### Features
+
+- **Cross-Platform NFC Reading**: Read NFC tags on both Android and iOS with a single codebase.
+- **Customizable UI**: Configure the text displayed on the scanning screen using `NfcConfig`.
+- **State-Driven**: Uses a `StateFlow` to represent the scanning state (`Initial`, `Success`, `Error`).
+- **Tag Information**: Extracts the tag's serial number, payload, and a list of supported technologies.
+
+### How to Use
+
+1.  **Add the `nfcreader` module** to your project.
+2.  **In your Composable function**, create an instance of the `NfcReadManagerState`:
+
+    ```kotlin
+    val nfcManager = rememberNfcReadManagerState(
+        config = NfcConfig(
+            readyToScanMessage = "Please tap your card",
+            cancelMessage = "Close",
+            bringTagCloserMessage = "Move your card closer to the back of the phone"
+        )
+    )
+    ```
+
+3.  **Collect the state** from the `nfcManager`:
+
+    ```kotlin
+    val result by nfcManager.nfcResult.collectAsState()
+    ```
+
+4.  **Handle the different states** in your UI:
+
+    ```kotlin
+    when (val state = result) {
+        is NfcReadResult.Success -> {
+            // Display the tag data
+            Text("Serial Number: ${state.data.serialNumber}")
+        }
+        is NfcReadResult.Error -> {
+            // Show an error message
+            Text("Error: ${state.message}")
+        }
+        NfcReadResult.Initial -> {
+            // Show a prompt to start scanning
+            Text("Ready to scan tags")
+        }
+    }
+    ```
+
+5.  **Start scanning** when needed:
+
+    ```kotlin
+    Button(onClick = { nfcManager.startScanning() }) {
+        Text("Start Scanning")
+    }
+    ```
 
 ### Build and Run Android Application
 

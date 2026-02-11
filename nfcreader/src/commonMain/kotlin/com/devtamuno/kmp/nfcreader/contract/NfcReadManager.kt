@@ -7,7 +7,7 @@ import kotlinx.coroutines.flow.StateFlow
 
 internal expect class NfcReadManager(config: NfcConfig) {
 
-    val value: StateFlow<NfcReadResult>
+    val nfcResult: StateFlow<NfcReadResult>
 
     @Composable fun RegisterManager()
 

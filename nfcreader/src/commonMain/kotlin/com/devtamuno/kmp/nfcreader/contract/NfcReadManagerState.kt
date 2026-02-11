@@ -6,7 +6,7 @@ import kotlinx.coroutines.flow.StateFlow
 
 interface NfcReadManagerState {
 
-    val value: StateFlow<NfcReadResult>
+    val nfcReadResult: StateFlow<NfcReadResult>
 
     @Composable fun InitNfcManager()
 

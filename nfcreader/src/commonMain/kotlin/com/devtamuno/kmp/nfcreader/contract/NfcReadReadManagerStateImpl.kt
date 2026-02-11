@@ -9,8 +9,8 @@ internal class NfcReadReadManagerStateImpl(config: NfcConfig) : NfcReadManagerSt
 
     private val nfcReadManager = NfcReadManager(config)
 
-    override val value: StateFlow<NfcReadResult>
-        get() = nfcReadManager.value
+    override val nfcReadResult: StateFlow<NfcReadResult>
+        get() = nfcReadManager.nfcResult
 
     @Composable
     override fun InitNfcManager() {

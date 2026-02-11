@@ -18,6 +18,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.devtamuno.kmp.nfcreader.data.NfcConfig
 import com.devtamuno.kmp.nfcreader.data.NfcReadResult
 import com.devtamuno.kmp.nfcreader.rememberNfcReadManagerState
 
@@ -25,9 +26,17 @@ import com.devtamuno.kmp.nfcreader.rememberNfcReadManagerState
 @Preview
 fun App() {
     MaterialTheme {
-        val nfcManager = rememberNfcReadManagerState()
+        val nfcManager =
+            rememberNfcReadManagerState(
+                config =
+                    NfcConfig(
+                        titleMessage = "Ready to Scan",
+                        subtitleMessage = "Bring a tag closer to your phone to read it.",
+                        buttonText = "Cancel",
+                    )
+            )
 
-        val value by nfcManager.value.collectAsStateWithLifecycle(NfcReadResult.Initial)
+        val value by nfcManager.nfcReadResult.collectAsStateWithLifecycle(NfcReadResult.Initial)
 
         Column(
             modifier =

@@ -10,11 +10,9 @@ import com.devtamuno.kmp.nfcreader.data.NfcTagType
 import kotlinx.cinterop.ExperimentalForeignApi
 import kotlinx.cinterop.memScoped
 import kotlinx.cinterop.refTo
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.asStateFlow
 import platform.CoreNFC.NFCNDEFMessage
 import platform.CoreNFC.NFCNDEFPayload
 import platform.CoreNFC.NFCNDEFReaderSession
@@ -26,13 +24,11 @@ import platform.posix.memcpy
 
 internal actual class NfcReadManager actual constructor(private val config: NfcConfig) :
     NSObject(), NFCNDEFReaderSessionDelegateProtocol {
-
-    private val scope = CoroutineScope(SupervisorJob())
-    private val _tagData: MutableStateFlow<NfcReadResult> = MutableStateFlow(NfcReadResult.Initial)
+    private val _tagData = MutableStateFlow<NfcReadResult>(NfcReadResult.Initial)
     private var session: NFCNDEFReaderSession? = null
 
-    actual val value: StateFlow<NfcReadResult>
-        get() = _tagData
+    actual val nfcResult: StateFlow<NfcReadResult>
+        get() = _tagData.asStateFlow()
 
     @Composable
     actual fun RegisterManager() {
@@ -42,10 +38,11 @@ internal actual class NfcReadManager actual constructor(private val config: NfcC
     actual fun startScanning() {
         if (NFCNDEFReaderSession.readingAvailable()) {
             session = NFCNDEFReaderSession(this, null, false)
-            session?.alertMessage = config.bringTagCloserMessage
+            session?.alertMessage = config.subtitleMessage
+            _tagData.value = NfcReadResult.Initial
             session?.beginSession()
         } else {
-            scope.launch { _tagData.emit(NfcReadResult.Error("NFC reading is not available")) }
+            _tagData.value = NfcReadResult.Error("NFC reading is not available")
         }
     }
 
@@ -56,9 +53,7 @@ internal actual class NfcReadManager actual constructor(private val config: NfcC
 
     override fun readerSession(session: NFCNDEFReaderSession, didInvalidateWithError: NSError) {
         println("reader session error ${didInvalidateWithError.description}")
-        scope.launch {
-            _tagData.emit(NfcReadResult.Error(didInvalidateWithError.localizedDescription))
-        }
+        _tagData.value = NfcReadResult.Error(didInvalidateWithError.localizedDescription)
     }
 
     override fun readerSessionDidBecomeActive(session: NFCNDEFReaderSession) {
@@ -74,16 +69,14 @@ internal actual class NfcReadManager actual constructor(private val config: NfcC
                 record.payload.toByteArray().decodeToString()
             }
 
-        scope.launch {
-            val data =
-                NfcTagData(
-                    serialNumber = "",
-                    type = NfcTagType.NDEF,
-                    payload = combinedPayload,
-                    techList = listOf("NDEF"),
-                )
-            _tagData.emit(NfcReadResult.Success(data))
-        }
+        val data =
+            NfcTagData(
+                serialNumber = "",
+                type = NfcTagType.NDEF,
+                payload = combinedPayload,
+                techList = listOf("NDEF"),
+            )
+        _tagData.value = NfcReadResult.Success(data)
 
         session.invalidateSession()
     }

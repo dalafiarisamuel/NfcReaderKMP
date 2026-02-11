@@ -28,13 +28,13 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.devtamuno.kmp.nfcreader.data.NfcConfig
 import com.devtamuno.kmp.nfcreader.data.NfcReadResult
 import com.devtamuno.kmp.nfcreader.data.NfcTagData
@@ -47,6 +47,7 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
 internal actual class NfcReadManager actual constructor(private val config: NfcConfig) :
@@ -60,15 +61,13 @@ internal actual class NfcReadManager actual constructor(private val config: NfcC
     private val isScanning = MutableStateFlow(false)
     private var timeoutJob: Job? = null
 
-    actual val value: StateFlow<NfcReadResult>
-        get() = _tagData
+    actual val nfcResult: StateFlow<NfcReadResult>
+        get() = _tagData.asStateFlow()
 
     @Composable
     actual fun RegisterManager() {
         val currentActivity = LocalActivity.current
         val context = LocalContext.current
-        val scanning by isScanning.collectAsState()
-        val sheetState = rememberModalBottomSheetState()
 
         DisposableEffect(currentActivity) {
             Log.d("NfcManager", "RegisterManager: Activity attached")
@@ -81,6 +80,14 @@ internal actual class NfcReadManager actual constructor(private val config: NfcC
                 nfcAdapter = null
             }
         }
+
+        ScanBottomSheet()
+    }
+
+    @Composable
+    private fun ScanBottomSheet() {
+        val scanning by isScanning.collectAsStateWithLifecycle()
+        val sheetState = rememberModalBottomSheetState()
 
         if (scanning) {
             ModalBottomSheet(
@@ -116,18 +123,18 @@ internal actual class NfcReadManager actual constructor(private val config: NfcC
                     Spacer(modifier = Modifier.height(30.dp))
 
                     Text(
-                        text = config.readyToScanMessage,
+                        text = config.titleMessage,
                         style = MaterialTheme.typography.headlineSmall,
                         textAlign = TextAlign.Center,
                     )
                     Text(
                         modifier = Modifier.padding(top = 16.dp),
-                        text = config.bringTagCloserMessage,
+                        text = config.subtitleMessage,
                         style = MaterialTheme.typography.bodyMedium,
                         textAlign = TextAlign.Center,
                     )
                     Button(modifier = Modifier.padding(top = 32.dp), onClick = { stopScanning() }) {
-                        Text(config.cancelMessage)
+                        Text(config.buttonText)
                     }
                 }
             }
@@ -140,24 +147,25 @@ internal actual class NfcReadManager actual constructor(private val config: NfcC
 
         if (adapter == null) {
             Log.e("NfcManager", "startScanning: NFC adapter is null")
-            scope.launch { _tagData.emit(NfcReadResult.Error("NFC adapter is null")) }
+            _tagData.value = NfcReadResult.Error("NFC adapter is null")
             return
         }
 
         if (currentActivity == null) {
             Log.e("NfcManager", "startScanning: Activity is null")
-            scope.launch { _tagData.emit(NfcReadResult.Error("Activity is null")) }
+            _tagData.value = NfcReadResult.Error("Activity is null")
             return
         }
 
         if (!adapter.isEnabled) {
             Log.w("NfcManager", "startScanning: NFC is disabled")
-            scope.launch { _tagData.emit(NfcReadResult.Error("NFC is disabled")) }
+            _tagData.value = NfcReadResult.Error("NFC is disabled")
             return
         }
 
         Log.d("NfcManager", "startScanning: Enabling reader mode")
         isScanning.value = true
+        _tagData.value = NfcReadResult.Initial
 
         timeoutJob?.cancel()
         timeoutJob =
@@ -165,7 +173,7 @@ internal actual class NfcReadManager actual constructor(private val config: NfcC
                 delay(60.seconds)
                 if (isScanning.value) {
                     Log.d("NfcManager", "Scanning timeout reached")
-                    _tagData.emit(NfcReadResult.Error("Scanning timeout reached"))
+                    _tagData.value = NfcReadResult.Error("Scanning timeout reached")
                     stopScanning()
                 }
             }
@@ -199,57 +207,51 @@ internal actual class NfcReadManager actual constructor(private val config: NfcC
         scope.launch { stopScanning() }
 
         if (tag == null) {
-            scope.launch { _tagData.emit(NfcReadResult.Error("Tag is null")) }
+            _tagData.value = NfcReadResult.Error("Tag is null")
             return
         }
 
         val tagId = tag.id.joinToString(":") { "%02X".format(it) }
         val techList = tag.techList.map { getFriendlyName(it) }
-        val mNdef = Ndef.get(tag)
+        val ndef = Ndef.get(tag)
 
-        if (mNdef == null) {
+        if (ndef == null) {
             Log.d("NfcManager", "onTagDiscovered: Non-NDEF tag detected: $tagId")
-            scope.launch {
-                val data =
-                    NfcTagData(
-                        serialNumber = tagId,
-                        type = NfcTagType.NON_NDEF,
-                        payload = null,
-                        techList = techList,
-                    )
-                _tagData.emit(NfcReadResult.Success(data))
-            }
+            val data =
+                NfcTagData(
+                    serialNumber = tagId,
+                    type = NfcTagType.NON_NDEF,
+                    payload = null,
+                    techList = techList,
+                )
+            _tagData.value = NfcReadResult.Success(data)
             return
         }
 
-        val mNdefMessage: NdefMessage? = mNdef.cachedNdefMessage
-        if (mNdefMessage == null) {
+        val ndefMessage: NdefMessage? = ndef.cachedNdefMessage
+        if (ndefMessage == null) {
             Log.d("NfcManager", "onTagDiscovered: NDEF tag detected but no cached message")
-            scope.launch {
-                val data =
-                    NfcTagData(
-                        serialNumber = tagId,
-                        type = NfcTagType.NDEF,
-                        payload = null,
-                        techList = techList,
-                    )
-                _tagData.emit(NfcReadResult.Success(data))
-            }
+            val data =
+                NfcTagData(
+                    serialNumber = tagId,
+                    type = NfcTagType.NDEF,
+                    payload = null,
+                    techList = techList,
+                )
+            _tagData.value = NfcReadResult.Success(data)
             return
         }
 
-        val records = mNdefMessage.records
+        val records = ndefMessage.records
         if (records.isNullOrEmpty()) {
-            scope.launch {
-                val data =
-                    NfcTagData(
-                        serialNumber = tagId,
-                        type = NfcTagType.NDEF,
-                        payload = null,
-                        techList = techList,
-                    )
-                _tagData.emit(NfcReadResult.Success(data))
-            }
+            val data =
+                NfcTagData(
+                    serialNumber = tagId,
+                    type = NfcTagType.NDEF,
+                    payload = null,
+                    techList = techList,
+                )
+            _tagData.value = NfcReadResult.Success(data)
             return
         }
 
@@ -258,16 +260,14 @@ internal actual class NfcReadManager actual constructor(private val config: NfcC
                 String(record.payload, Charsets.UTF_8)
             }
         Log.d("NfcManager", "onTagDiscovered: Emitting combined payload")
-        scope.launch {
-            val data =
-                NfcTagData(
-                    serialNumber = tagId,
-                    type = NfcTagType.NDEF,
-                    payload = combinedPayload,
-                    techList = techList,
-                )
-            _tagData.emit(NfcReadResult.Success(data))
-        }
+        val data =
+            NfcTagData(
+                serialNumber = tagId,
+                type = NfcTagType.NDEF,
+                payload = combinedPayload,
+                techList = techList,
+            )
+        _tagData.value = NfcReadResult.Success(data)
     }
 
     private fun getFriendlyName(tech: String): String {

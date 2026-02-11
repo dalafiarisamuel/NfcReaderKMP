@@ -7,7 +7,7 @@ import com.devtamuno.kmp.nfcreader.contract.NfcReadReadManagerStateImpl
 import com.devtamuno.kmp.nfcreader.data.NfcConfig
 
 @Composable
-fun rememberNfcReadManagerState(config: NfcConfig = NfcConfig()): NfcReadManagerState {
+fun rememberNfcReadManagerState(config: NfcConfig): NfcReadManagerState {
     return rememberMutableNfcReadManagerState(config).also {
         it.InitNfcManager()
     }
