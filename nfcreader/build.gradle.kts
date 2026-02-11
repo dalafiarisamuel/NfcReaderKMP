@@ -1,35 +1,45 @@
 import org.jetbrains.kotlin.gradle.dsl.abi.ExperimentalAbiValidation
 
 plugins {
-  alias(libs.plugins.kotlinMultiplatform)
-  alias(libs.plugins.androidKotlinMultiplatformLibrary)
-  alias(libs.plugins.androidLint)
-  alias(libs.plugins.vanniktechMavenPublish)
-  id("signing")
+    alias(libs.plugins.kotlinMultiplatform)
+    alias(libs.plugins.androidKotlinMultiplatformLibrary)
+    alias(libs.plugins.androidLint)
+    alias(libs.plugins.vanniktechMavenPublish)
+    alias(libs.plugins.composeCompiler)
+    id("signing")
 }
 
 signing {
-  useInMemoryPgpKeys(System.getenv("SIGNING_KEY"), System.getenv("SIGNING_KEY_PASSWORD"))
-  sign(publishing.publications)
+    useInMemoryPgpKeys(System.getenv("SIGNING_KEY"), System.getenv("SIGNING_KEY_PASSWORD"))
+    sign(publishing.publications)
 
-  // Temporary workaround, see https://github.com/gradle/gradle/issues/26091#issuecomment-1722947958
-  tasks.withType<AbstractPublishToMaven>().configureEach {
-    val signingTasks = tasks.withType<Sign>()
-    mustRunAfter(signingTasks)
-  }
+    // Temporary workaround, see
+    // https://github.com/gradle/gradle/issues/26091#issuecomment-1722947958
+    tasks.withType<AbstractPublishToMaven>().configureEach {
+        val signingTasks = tasks.withType<Sign>()
+        mustRunAfter(signingTasks)
+    }
 }
 
 kotlin {
-  androidLibrary {
-    namespace = "com.devtamuno.kmp.nfcreader"
-    compileSdk = 36
-    minSdk = 24
+    androidLibrary {
+        namespace = "com.devtamuno.kmp.nfcreader"
+        compileSdk = 36
+        minSdk = 24
 
-    withHostTestBuilder {}
+        withHostTestBuilder {}
 
-    withDeviceTestBuilder { sourceSetTreeName = "test" }
-        .configure { instrumentationRunner = "androidx.test.runner.AndroidJUnitRunner" }
-  }
+        withDeviceTestBuilder { sourceSetTreeName = "test" }
+            .configure { instrumentationRunner = "androidx.test.runner.AndroidJUnitRunner" }
+    }
+
+    targets.configureEach {
+        compilations.configureEach {
+            compileTaskProvider.get().compilerOptions {
+                freeCompilerArgs.add("-Xexpect-actual-classes")
+            }
+        }
+    }
 
     @OptIn(ExperimentalAbiValidation::class)
     abiValidation {
@@ -40,35 +50,36 @@ kotlin {
         }
     }
 
-  listOf(iosX64(), iosArm64(), iosSimulatorArm64()).forEach {
-    it.binaries.framework {
-      baseName = "nfcreaderKit"
-      isStatic = true
-    }
-  }
-
-  sourceSets {
-    commonMain {
-      dependencies {
-        implementation(libs.compose.runtime)
-        implementation(libs.compose.ui)
-        implementation(libs.kotlinx.coroutines.core)
-        implementation(libs.kotlin.stdlib)
-      }
+    listOf(iosX64(), iosArm64(), iosSimulatorArm64()).forEach {
+        it.binaries.framework {
+            baseName = "nfcreaderKit"
+            isStatic = true
+        }
     }
 
-    commonTest { dependencies { implementation(libs.kotlin.test) } }
+    sourceSets {
+        commonMain {
+            dependencies {
+                implementation(libs.compose.runtime)
+                implementation(libs.compose.ui)
+                implementation(libs.compose.material3)
+                implementation(libs.kotlinx.coroutines.core)
+                implementation(libs.kotlin.stdlib)
+            }
+        }
 
-    androidMain { dependencies { implementation(libs.androidx.activity.compose) } }
+        commonTest { dependencies { implementation(libs.kotlin.test) } }
 
-    getByName("androidDeviceTest") {
-      dependencies {
-        implementation(libs.androidx.runner)
-        implementation(libs.androidx.core)
-        implementation(libs.androidx.testExt.junit)
-      }
+        androidMain { dependencies { implementation(libs.androidx.activity.compose) } }
+
+        getByName("androidDeviceTest") {
+            dependencies {
+                implementation(libs.androidx.runner)
+                implementation(libs.androidx.core)
+                implementation(libs.androidx.testExt.junit)
+            }
+        }
+
+        iosMain { dependencies {} }
     }
-
-    iosMain { dependencies {} }
-  }
 }
