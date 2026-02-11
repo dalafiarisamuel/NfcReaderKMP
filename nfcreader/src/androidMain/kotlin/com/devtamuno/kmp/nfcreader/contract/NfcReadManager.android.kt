@@ -65,6 +65,7 @@ internal actual class NfcReadManager actual constructor(private val config: NfcC
 
     @Composable
     actual fun RegisterManager() {
+        if (activity != null && nfcAdapter != null) return
         val currentActivity = LocalActivity.current
         val context = LocalContext.current
 
