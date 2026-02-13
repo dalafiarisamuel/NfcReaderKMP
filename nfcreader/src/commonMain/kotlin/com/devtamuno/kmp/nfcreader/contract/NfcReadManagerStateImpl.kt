@@ -5,7 +5,7 @@ import com.devtamuno.kmp.nfcreader.data.NfcConfig
 import com.devtamuno.kmp.nfcreader.data.NfcReadResult
 import kotlinx.coroutines.flow.StateFlow
 
-internal class NfcReadReadManagerStateImpl(config: NfcConfig) : NfcReadManagerState {
+internal class NfcReadManagerStateImpl(config: NfcConfig) : NfcReadManagerState {
 
     private val nfcReadManager = NfcReadManager(config)
 
