@@ -4,6 +4,7 @@ package com.devtamuno.kmp.nfcreader.contract
 
 import android.app.Activity
 import android.nfc.NdefMessage
+import android.nfc.NdefRecord
 import android.nfc.NfcAdapter
 import android.nfc.Tag
 import android.nfc.tech.Ndef
@@ -28,12 +29,13 @@ import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.devtamuno.kmp.nfcreader.data.NfcConfig
 import com.devtamuno.kmp.nfcreader.data.NfcReadResult
 import com.devtamuno.kmp.nfcreader.data.NfcTagData
@@ -56,8 +58,7 @@ internal actual class NfcReadManager actual constructor(private val config: NfcC
     private var activity: Activity? = null
     private val _tagData = MutableStateFlow<NfcReadResult>(NfcReadResult.Initial)
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
-
-    private val isScanning = MutableStateFlow(false)
+    private var isScanning by mutableStateOf(false)
     private var timeoutJob: Job? = null
 
     actual val nfcResult: StateFlow<NfcReadResult>
@@ -65,7 +66,6 @@ internal actual class NfcReadManager actual constructor(private val config: NfcC
 
     @Composable
     actual fun RegisterManager() {
-        if (activity != null && nfcAdapter != null) return
         val currentActivity = LocalActivity.current
         val context = LocalContext.current
 
@@ -84,19 +84,18 @@ internal actual class NfcReadManager actual constructor(private val config: NfcC
 
     @Composable
     private fun ScanBottomSheet() {
-        val scanning by isScanning.collectAsStateWithLifecycle()
         val sheetState = rememberModalBottomSheetState()
 
-        if (scanning) {
+        if (isScanning) {
             ModalBottomSheet(
                 onDismissRequest = { stopScanning() },
                 dragHandle = null,
                 sheetState = sheetState,
-                sheetGesturesEnabled = false,
+                sheetGesturesEnabled = config.sheetGesturesEnabled,
                 properties =
                     ModalBottomSheetProperties(
-                        shouldDismissOnBackPress = false,
-                        shouldDismissOnClickOutside = false,
+                        shouldDismissOnBackPress = config.shouldDismissBottomSheetOnBackPress,
+                        shouldDismissOnClickOutside = config.shouldDismissBottomSheetOnClickOutside,
                     ),
             ) {
                 Column(
@@ -158,14 +157,14 @@ internal actual class NfcReadManager actual constructor(private val config: NfcC
             return
         }
 
-        isScanning.value = true
+        isScanning = true
         _tagData.value = NfcReadResult.Initial
 
         timeoutJob?.cancel()
         timeoutJob =
             scope.launch {
                 delay(60.seconds)
-                if (isScanning.value) {
+                if (isScanning) {
                     _tagData.value = NfcReadResult.Error("Scanning timeout reached")
                     stopScanning()
                 }
@@ -189,7 +188,7 @@ internal actual class NfcReadManager actual constructor(private val config: NfcC
         timeoutJob?.cancel()
         timeoutJob = null
         activity?.let { nfcAdapter?.disableReaderMode(it) }
-        isScanning.value = false
+        isScanning = false
     }
 
     override fun onTagDiscovered(tag: Tag?) {
@@ -231,7 +230,7 @@ internal actual class NfcReadManager actual constructor(private val config: NfcC
             return
         }
 
-        val records = ndefMessage.records
+        val records: Array<NdefRecord>? = ndefMessage.records
         if (records.isNullOrEmpty()) {
             val data =
                 NfcTagData(
