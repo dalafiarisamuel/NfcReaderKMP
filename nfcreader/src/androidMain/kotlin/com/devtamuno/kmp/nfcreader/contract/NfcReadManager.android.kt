@@ -10,6 +10,7 @@ import android.nfc.Tag
 import android.nfc.tech.Ndef
 import android.os.Bundle
 import androidx.activity.compose.LocalActivity
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -17,6 +18,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
@@ -33,14 +35,15 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.devtamuno.kmp.nfcreader.contract.icon.Contactless
 import com.devtamuno.kmp.nfcreader.data.NfcConfig
 import com.devtamuno.kmp.nfcreader.data.NfcReadResult
 import com.devtamuno.kmp.nfcreader.data.NfcTagData
 import com.devtamuno.kmp.nfcreader.data.NfcTagType
-import kotlin.time.Duration.Companion.seconds
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -88,7 +91,10 @@ internal actual class NfcReadManager actual constructor(private val config: NfcC
 
         if (isScanning) {
             ModalBottomSheet(
-                onDismissRequest = { stopScanning() },
+                onDismissRequest = {
+                    stopScanning()
+                    _tagData.value = NfcReadResult.OperationCancelled
+                },
                 dragHandle = null,
                 sheetState = sheetState,
                 sheetGesturesEnabled = config.sheetGesturesEnabled,
@@ -130,7 +136,21 @@ internal actual class NfcReadManager actual constructor(private val config: NfcC
                         style = MaterialTheme.typography.bodyMedium,
                         textAlign = TextAlign.Center,
                     )
-                    Button(modifier = Modifier.padding(top = 32.dp), onClick = { stopScanning() }) {
+
+                    Image(
+                        imageVector = Contactless,
+                        colorFilter = ColorFilter.tint(color = MaterialTheme.colorScheme.primary),
+                        contentDescription = null,
+                        modifier = Modifier.size(120.dp),
+                    )
+
+                    Button(
+                        modifier = Modifier.padding(top = 32.dp),
+                        onClick = {
+                            stopScanning()
+                            _tagData.value = NfcReadResult.OperationCancelled
+                        },
+                    ) {
                         Text(config.buttonText)
                     }
                 }
@@ -163,7 +183,7 @@ internal actual class NfcReadManager actual constructor(private val config: NfcC
         timeoutJob?.cancel()
         timeoutJob =
             scope.launch {
-                delay(60.seconds)
+                delay(config.nfcReadTimeout)
                 if (isScanning) {
                     _tagData.value = NfcReadResult.Error("Scanning timeout reached")
                     stopScanning()

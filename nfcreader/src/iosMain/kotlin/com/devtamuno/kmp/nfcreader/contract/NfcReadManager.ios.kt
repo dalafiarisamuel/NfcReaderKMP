@@ -52,7 +52,12 @@ internal actual class NfcReadManager actual constructor(private val config: NfcC
     }
 
     override fun readerSession(session: NFCNDEFReaderSession, didInvalidateWithError: NSError) {
-        _tagData.value = NfcReadResult.Error(didInvalidateWithError.localizedDescription)
+        if (didInvalidateWithError.code == 200L) {
+            _tagData.value = NfcReadResult.OperationCancelled
+        } else {
+            _tagData.value = NfcReadResult.Error(didInvalidateWithError.localizedDescription)
+        }
+        this.session = null
     }
 
     override fun readerSessionDidBecomeActive(session: NFCNDEFReaderSession) {

@@ -82,6 +82,10 @@ fun App() {
                 NfcReadResult.Initial -> {
                     Text("Tap 'Click to scan!' to begin")
                 }
+
+                NfcReadResult.OperationCancelled -> {
+                    Text("Operation Cancelled")
+                }
             }
         }
     }
