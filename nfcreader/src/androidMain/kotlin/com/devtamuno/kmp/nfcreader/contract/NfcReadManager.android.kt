@@ -12,6 +12,7 @@ import android.os.Bundle
 import androidx.activity.compose.LocalActivity
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -21,17 +22,19 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.ModalBottomSheetProperties
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -39,6 +42,7 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.devtamuno.kmp.nfcreader.contract.icon.Contactless
 import com.devtamuno.kmp.nfcreader.data.NfcConfig
 import com.devtamuno.kmp.nfcreader.data.NfcReadResult
@@ -123,7 +127,7 @@ internal actual class NfcReadManager actual constructor(private val config: NfcC
                                 )
                     )
 
-                    Spacer(modifier = Modifier.height(30.dp))
+                    Spacer(modifier = Modifier.height(20.dp))
 
                     Text(
                         text = config.titleMessage,
@@ -137,21 +141,38 @@ internal actual class NfcReadManager actual constructor(private val config: NfcC
                         textAlign = TextAlign.Center,
                     )
 
+                    Spacer(modifier = Modifier.height(20.dp))
+
                     Image(
                         imageVector = Contactless,
                         colorFilter = ColorFilter.tint(color = MaterialTheme.colorScheme.primary),
                         contentDescription = null,
-                        modifier = Modifier.size(120.dp),
+                        modifier = Modifier.size(100.dp),
                     )
 
-                    Button(
-                        modifier = Modifier.padding(top = 32.dp),
+                    Spacer(modifier = Modifier.height(20.dp))
+
+                    OutlinedButton(
+                        modifier =
+                            Modifier.height(height = 45.dp)
+                                .width(200.dp)
+                                .align(Alignment.CenterHorizontally),
+                        elevation =
+                            ButtonDefaults.elevatedButtonElevation(
+                                defaultElevation = 0.dp,
+                                pressedElevation = 0.dp,
+                                disabledElevation = 0.dp,
+                                hoveredElevation = 0.dp,
+                                focusedElevation = 0.dp,
+                            ),
+                        interactionSource = remember { MutableInteractionSource() },
+                        shape = RoundedCornerShape(10.dp),
                         onClick = {
                             stopScanning()
                             _tagData.value = NfcReadResult.OperationCancelled
                         },
                     ) {
-                        Text(config.buttonText)
+                        Text(text = config.buttonText, fontSize = 11.sp)
                     }
                 }
             }
