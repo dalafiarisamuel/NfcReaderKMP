@@ -10,7 +10,6 @@ import android.nfc.Tag
 import android.nfc.tech.Ndef
 import android.os.Bundle
 import androidx.activity.compose.LocalActivity
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
@@ -19,7 +18,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ButtonDefaults
@@ -38,12 +36,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.devtamuno.kmp.nfcreader.contract.icon.Contactless
 import com.devtamuno.kmp.nfcreader.data.NfcConfig
 import com.devtamuno.kmp.nfcreader.data.NfcReadResult
 import com.devtamuno.kmp.nfcreader.data.NfcTagData
@@ -58,6 +55,15 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
+/**
+ * Manager class for handling NFC reading operations on Android.
+ *
+ * This class implements the [NfcAdapter.ReaderCallback] to receive NFC tag discovery events. It
+ * manages a [ModalBottomSheet] to provide a scanning UI and uses the [NfcAdapter] for reader mode
+ * scanning.
+ *
+ * @property config The [NfcConfig] used to configure the scanning behavior and UI.
+ */
 internal actual class NfcReadManager actual constructor(private val config: NfcConfig) :
     NfcAdapter.ReaderCallback {
 
@@ -68,9 +74,14 @@ internal actual class NfcReadManager actual constructor(private val config: NfcC
     private var isScanning by mutableStateOf(false)
     private var timeoutJob: Job? = null
 
+    /** A [StateFlow] that emits the current [NfcReadResult] of the NFC scanning process. */
     actual val nfcResult: StateFlow<NfcReadResult>
         get() = _tagData.asStateFlow()
 
+    /**
+     * Registers the [NfcReadManager] with the current [Activity] and initializes the [NfcAdapter].
+     * It also displays the [ScanBottomSheet] when scanning is active.
+     */
     @Composable
     actual fun RegisterManager() {
         val currentActivity = LocalActivity.current
@@ -109,8 +120,7 @@ internal actual class NfcReadManager actual constructor(private val config: NfcC
                     ),
             ) {
                 Column(
-                    modifier =
-                        Modifier.fillMaxWidth().padding(horizontal = 10.dp, vertical = 20.dp),
+                    modifier = Modifier.fillMaxWidth().padding(vertical = 20.dp),
                     horizontalAlignment = Alignment.CenterHorizontally,
                 ) {
                     Box(
@@ -127,11 +137,14 @@ internal actual class NfcReadManager actual constructor(private val config: NfcC
                                 )
                     )
 
-                    Spacer(modifier = Modifier.height(20.dp))
+                    Spacer(modifier = Modifier.height(10.dp))
 
                     Text(
                         text = config.titleMessage,
-                        style = MaterialTheme.typography.headlineSmall,
+                        style =
+                            MaterialTheme.typography.headlineSmall.copy(
+                                fontWeight = FontWeight.Medium
+                            ),
                         textAlign = TextAlign.Center,
                     )
                     Text(
@@ -141,16 +154,11 @@ internal actual class NfcReadManager actual constructor(private val config: NfcC
                         textAlign = TextAlign.Center,
                     )
 
-                    Spacer(modifier = Modifier.height(20.dp))
+                    Spacer(modifier = Modifier.height(10.dp))
 
-                    Image(
-                        imageVector = Contactless,
-                        colorFilter = ColorFilter.tint(color = MaterialTheme.colorScheme.primary),
-                        contentDescription = null,
-                        modifier = Modifier.size(100.dp),
-                    )
+                    config.nfcScanningAnimationSlot(this)
 
-                    Spacer(modifier = Modifier.height(20.dp))
+                    Spacer(modifier = Modifier.height(10.dp))
 
                     OutlinedButton(
                         modifier =
@@ -179,6 +187,10 @@ internal actual class NfcReadManager actual constructor(private val config: NfcC
         }
     }
 
+    /**
+     * Starts the NFC scanning process in reader mode. It sets up a timeout job and enables the
+     * [NfcAdapter]'s reader mode.
+     */
     actual fun startScanning() {
         val currentActivity = activity
         val adapter = nfcAdapter
@@ -225,6 +237,7 @@ internal actual class NfcReadManager actual constructor(private val config: NfcC
         )
     }
 
+    /** Stops the NFC scanning process and disables reader mode. */
     actual fun stopScanning() {
         timeoutJob?.cancel()
         timeoutJob = null

@@ -11,6 +11,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -33,10 +34,11 @@ fun App() {
                         titleMessage = "Ready to Scan",
                         subtitleMessage = "Bring a tag closer to your phone to read it.",
                         buttonText = "Cancel",
+                        shouldDismissBottomSheetOnBackPress = true
                     )
             )
 
-        val value by nfcManager.nfcReadResult.collectAsStateWithLifecycle(NfcReadResult.Initial)
+        val value by nfcManager.nfcReadResult.collectAsState(NfcReadResult.Initial)
 
         Column(
             modifier =
@@ -47,7 +49,6 @@ fun App() {
         ) {
             Spacer(Modifier.height(20.dp))
             Button(onClick = { nfcManager.startScanning() }) { Text("Click to scan!") }
-
             Spacer(Modifier.height(30.dp))
 
             when (val state = value) {
