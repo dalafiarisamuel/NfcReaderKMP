@@ -1,3 +1,4 @@
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.dsl.abi.ExperimentalAbiValidation
 
 plugins {
@@ -5,6 +6,7 @@ plugins {
     alias(libs.plugins.androidKotlinMultiplatformLibrary)
     alias(libs.plugins.androidLint)
     alias(libs.plugins.vanniktechMavenPublish)
+    alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
     id("signing")
 }
@@ -21,11 +23,24 @@ signing {
     }
 }
 
+compose.resources {
+    publicResClass = true
+    packageOfResClass = "com.devtamuno.kmp.nfcreader.resources"
+}
+
 kotlin {
     androidLibrary {
         namespace = "com.devtamuno.kmp.nfcreader"
         compileSdk = 36
         minSdk = 24
+
+        androidResources {
+            enable = true
+        }
+
+        compilerOptions {
+            jvmTarget.set(JvmTarget.JVM_11)
+        }
 
         withHostTestBuilder {}
 
@@ -65,6 +80,9 @@ kotlin {
                 implementation(libs.compose.material3)
                 implementation(libs.kotlinx.coroutines.core)
                 implementation(libs.kotlin.stdlib)
+                implementation(libs.compose.components.resources)
+                implementation(libs.compottie)
+                implementation(libs.compottie.resources)
             }
         }
 

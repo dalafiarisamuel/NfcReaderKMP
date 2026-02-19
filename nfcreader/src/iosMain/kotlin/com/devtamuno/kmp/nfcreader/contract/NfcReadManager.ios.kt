@@ -22,19 +22,39 @@ import platform.Foundation.NSError
 import platform.darwin.NSObject
 import platform.posix.memcpy
 
+/**
+ * Manager class for handling NFC reading operations on iOS.
+ *
+ * This class implements the [NFCNDEFReaderSessionDelegateProtocol] to handle NFC session events. It
+ * uses the native iOS `NFCNDEFReaderSession` for scanning NDEF tags.
+ *
+ * **Note:** On iOS, only the `subtitleMessage` from [NfcConfig] is used as the `alertMessage` in
+ * the native scanning dialog.
+ *
+ * @property config The [NfcConfig] used to configure the scanning behavior.
+ */
 internal actual class NfcReadManager actual constructor(private val config: NfcConfig) :
     NSObject(), NFCNDEFReaderSessionDelegateProtocol {
     private val _tagData = MutableStateFlow<NfcReadResult>(NfcReadResult.Initial)
     private var session: NFCNDEFReaderSession? = null
 
+    /** A [StateFlow] that emits the current [NfcReadResult] of the NFC scanning process. */
     actual val nfcResult: StateFlow<NfcReadResult>
         get() = _tagData.asStateFlow()
 
+    /**
+     * Registers the manager. On iOS, this is a NO-OP as the scanning UI is handled natively by the
+     * system.
+     */
     @Composable
     actual fun RegisterManager() {
         // NO-OP
     }
 
+    /**
+     * Starts the NFC scanning process using [NFCNDEFReaderSession]. Checks if NFC reading is
+     * available on the device before starting.
+     */
     actual fun startScanning() {
         if (NFCNDEFReaderSession.readingAvailable()) {
             session = NFCNDEFReaderSession(this, null, false)
@@ -46,11 +66,17 @@ internal actual class NfcReadManager actual constructor(private val config: NfcC
         }
     }
 
+    /** Stops the NFC scanning process and invalidates the session. */
     actual fun stopScanning() {
         session?.invalidateSession()
         session = null
     }
 
+    /**
+     * Called when the NFC session is invalidated, either due to an error or user cancellation.
+     * Updates [nfcResult] with either [NfcReadResult.OperationCancelled] (code 200) or
+     * [NfcReadResult.Error].
+     */
     override fun readerSession(session: NFCNDEFReaderSession, didInvalidateWithError: NSError) {
         if (didInvalidateWithError.code == 200L) {
             _tagData.value = NfcReadResult.OperationCancelled
@@ -60,10 +86,16 @@ internal actual class NfcReadManager actual constructor(private val config: NfcC
         this.session = null
     }
 
+    /** Called when the NFC reader session becomes active. */
     override fun readerSessionDidBecomeActive(session: NFCNDEFReaderSession) {
         // NO-OP
     }
 
+    /**
+     * Called when NDEF messages are detected. Extracts records from the first detected message,
+     * joins their payloads into a single string, and updates [nfcResult] with
+     * [NfcReadResult.Success]. The session is invalidated after a successful read.
+     */
     override fun readerSession(session: NFCNDEFReaderSession, didDetectNDEFs: List<*>) {
         val message = didDetectNDEFs.firstOrNull() as? NFCNDEFMessage
         val records = message?.records?.filterIsInstance<NFCNDEFPayload>()
@@ -85,6 +117,7 @@ internal actual class NfcReadManager actual constructor(private val config: NfcC
         session.invalidateSession()
     }
 
+    /** Extension function to convert [NSData] to a [ByteArray]. */
     private fun NSData.toByteArray(): ByteArray {
         val bytes = ByteArray(this.length.toInt())
         memScoped { memcpy(bytes.refTo(0), this@toByteArray.bytes, this@toByteArray.length) }
