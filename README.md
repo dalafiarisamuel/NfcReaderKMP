@@ -1,23 +1,32 @@
-# NfcReaderKMP
+# NfcReaderKMP 📱
 
-A Kotlin Multiplatform (KMP) library for reading NFC tags on Android and iOS using Compose Multiplatform.
+[![Kotlin](https://img.shields.io/badge/kotlin-2.1.0-blue.svg?logo=kotlin)](http://kotlinlang.org)
+[![Compose Multiplatform](https://img.shields.io/badge/Compose%20Multiplatform-1.7.1-blue?logo=jetbrains)](https://www.jetbrains.com/lp/compose-multiplatform/)
+[![License](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT)
 
-## Features
+A powerful, easy-to-use Kotlin Multiplatform (KMP) library for reading NFC tags on Android and iOS using Compose Multiplatform.
 
-- **Cross-Platform**: Unified API for NFC scanning on Android and iOS.
-- **Compose Integrated**: Lifecycle-aware state management with `rememberNfcReadManagerState`.
-- **Customizable UI**:
-    - **Android**: Customizable bottom sheet with titles, messages, and a slot for custom scanning animations (Lottie supported via Compottie).
-    - **iOS**: Uses the native system NFC scanning dialog.
-- **Configurable**: Control timeouts, dismissal behavior, and UI strings via `NfcConfig`.
-- **Comprehensive Data**: Extracts Serial Number (Android), Tag Type, Payload (NDEF), and supported technologies.
+[**📖 View Full API Documentation**](https://dalafiarisamuel.github.io/NfcReaderKMP/)
 
-## Installation
+---
 
-Add the dependency to your `commonMain` source set:
+## ✨ Features
+
+- **🚀 Unified API**: A single, clean API to handle NFC scanning on both platforms.
+- **🎨 Compose Native**: Lifecycle-aware state management that fits perfectly into your Compose UI.
+- **🛠️ Fully Customizable**:
+    - **Android**: Custom Bottom Sheet with support for Lottie animations (via [Compottie](https://github.com/AlexZhirkevich/compottie)).
+    - **iOS**: Seamless integration with the native system NFC scanning dialog.
+- **⚙️ Flexible Configuration**: Control timeouts, dismissal behaviors, and UI strings with a type-safe DSL.
+- **📊 Detailed Tag Info**: Extract Serial Numbers, NDEF payloads, and supported technology lists.
+
+---
+
+## 📦 Installation
+
+Add the dependency to your `commonMain` source set in `build.gradle.kts`:
 
 ```kotlin
-// build.gradle.kts
 sourceSets {
     commonMain.dependencies {
         implementation("com.devtamuno.kmp:nfcreader:<version>")
@@ -25,73 +34,103 @@ sourceSets {
 }
 ```
 
-### Platform Setup
+---
 
-#### Android
-Ensure your `AndroidManifest.xml` includes the NFC permission:
+## 🛠️ Platform Setup
+
+### Android 🤖
+
+1. Add NFC permissions to your `AndroidManifest.xml`:
 ```xml
 <uses-permission android:name="android.permission.NFC" />
 <uses-feature android:name="android.hardware.nfc" android:required="false" />
 ```
 
-#### iOS
+### iOS 
+
 1. Add `NFCReaderUsageDescription` to your `Info.plist`.
-2. Enable the **Near Field Communication Tag Reading** capability in Xcode.
-3. Add `com.apple.developer.nfc.readersession.formats` to your entitlements with `NDEF` support.
+2. Enable the **Near Field Communication Tag Reading** capability in your Xcode project.
+3. Add `NDEF` support to the `com.apple.developer.nfc.readersession.formats` entitlement.
 
-## Usage
+---
 
-### 1. Define Configuration
+## 🚀 Usage
+
+### 1. Initialize the State Manager
+
+You can use the declarative DSL to configure the reader:
+
 ```kotlin
-val config = NfcConfig(
-    titleMessage = "Ready to Scan",
-    subtitleMessage = "Hold your tag near the device.",
-    buttonText = "Cancel",
-    nfcReadTimeout = 30.seconds,
-    // Optional: Custom animation slot for Android
+val nfcManager = rememberNfcReadManagerState {
+    titleMessage = "Ready to Scan"
+    subtitleMessage = "Hold your tag near the device."
+    buttonText = "Cancel"
+    nfcReadTimeout = 30.seconds
+    
+    // Custom Lottie animation for Android (optional)
     nfcScanningAnimationSlot = {
       ScanningAnimationDefault.NfcScanningAnimation()
     }
-)
+}
 ```
-*Note: On iOS, only `subtitleMessage` is displayed in the native UI.*
 
-### 2. Remember State in Composable
+### 2. Observe Results
+
+Collect the `nfcReadResult` and react to different scanning states:
+
 ```kotlin
-val nfcManager = rememberNfcReadManagerState(config)
 val result by nfcManager.nfcReadResult.collectAsState()
-```
 
-### 3. Handle Results
-```kotlin
 when (val state = result) {
     is NfcReadResult.Success -> {
-        val data = state.data
-        println("Scanned: ${data.serialNumber}, Payload: ${data.payload}")
+        Text("Tag ID: ${state.data.serialNumber}")
+        Text("Payload: ${state.data.payload}")
     }
     is NfcReadResult.Error -> {
-        println("Error: ${state.message}")
+        Text("Error: ${state.message}", color = Color.Red)
     }
     NfcReadResult.OperationCancelled -> {
-        println("User cancelled")
+        Text("Scanning cancelled by user")
     }
     NfcReadResult.Initial -> {
-        // Idle state
+        Button(onClick = { nfcManager.startScanning() }) {
+            Text("Start Scanning")
+        }
     }
 }
 ```
 
-### 4. Trigger Scanning
-```kotlin
-Button(onClick = { nfcManager.startScanning() }) {
-    Text("Scan NFC Tag")
-}
-```
+---
 
-## Data Models
+## ⚙️ Configuration Options (`NfcConfig`)
 
-### NfcTagData
-- `serialNumber`: Hex-encoded UID (Available on Android; empty string on iOS NDEF sessions).
-- `type`: `NDEF` or `NON_NDEF`.
-- `payload`: String content of the tag (UTF-8).
-- `techList`: List of supported technologies (e.g., "ISO 14443-3A").
+| Property | Type | Default | Platform |
+| :--- | :--- | :--- | :--- |
+| `titleMessage` | `String` | `"Ready to Scan"` | Android |
+| `subtitleMessage` | `String` | `"Hold your tag near the device."` | Android & iOS |
+| `buttonText` | `String` | `"Cancel"` | Android |
+| `nfcReadTimeout` | `Duration` | `60.seconds` | Android |
+| `sheetGesturesEnabled` | `Boolean` | `true` | Android |
+| `shouldDismissBottomSheetOnBackPress` | `Boolean` | `false` | Android |
+| `shouldDismissBottomSheetOnClickOutside` | `Boolean` | `false` | Android |
+| `nfcScanningAnimationSlot` | `Composable` | Default Animation | Android |
+
+---
+
+## 📄 Data Models
+
+### `NfcTagData`
+- `serialNumber`: The tag's unique ID (Hex string). *Note: Android only.*
+- `type`: Either `NDEF` or `NON_NDEF`.
+- `payload`: The decoded string content of the tag.
+- `techList`: A list of hardware technologies detected (e.g., `Mifare Classic`, `ISO 14443-3A`).
+
+---
+
+## 🤝 Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
+
+## 📜 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
