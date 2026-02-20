@@ -23,7 +23,7 @@ dokka {
     moduleVersion.set("${project.version}")
 
     dokkaPublications.configureEach {
-        outputDirectory.set(rootDir.resolve("docs/api/${project.version}"))
+        outputDirectory.set(rootDir.resolve("docs"))
     }
 
     dokkaSourceSets {
