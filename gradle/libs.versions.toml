@@ -19,6 +19,8 @@ core = "1.5.0"
 vanniktechMavenPublish = "0.30.0"
 kotlinxCoroutinesCore = "1.10.2"
 compottie="2.0.2"
+dokka-version="2.1.0"
+nfcreader-version="0.0.1"
 
 
 [libraries]
@@ -56,3 +58,4 @@ kotlinMultiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref =
 androidKotlinMultiplatformLibrary = { id = "com.android.kotlin.multiplatform.library", version.ref = "agp" }
 androidLint = { id = "com.android.lint", version.ref = "agp" }
 vanniktechMavenPublish = { id = "com.vanniktech.maven.publish", version.ref = "vanniktechMavenPublish" }
+dokka = { id = "org.jetbrains.dokka", version.ref = "dokka-version" }

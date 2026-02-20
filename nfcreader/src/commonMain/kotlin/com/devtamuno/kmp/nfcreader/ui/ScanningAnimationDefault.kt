@@ -12,8 +12,18 @@ import io.github.alexzhirkevich.compottie.LottieCompositionSpec
 import io.github.alexzhirkevich.compottie.rememberLottieComposition
 import io.github.alexzhirkevich.compottie.rememberLottiePainter
 
+/**
+ * Default implementation for the NFC scanning animation.
+ */
 object ScanningAnimationDefault {
 
+    /**
+     * A Composable that displays a Lottie animation for NFC scanning.
+     *
+     * This animation uses the `nfc_reading.json` file located in the `composeResources/files` directory.
+     *
+     * @param modifier The [Modifier] to be applied to the animation [Image].
+     */
     @Composable
     fun NfcScanningAnimation(modifier: Modifier = Modifier) {
 

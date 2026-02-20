@@ -1,3 +1,7 @@
+@file:OptIn(ExperimentalAbiValidation::class)
+
+import org.jetbrains.dokka.gradle.engine.parameters.KotlinPlatform
+import org.jetbrains.dokka.gradle.engine.parameters.VisibilityModifier
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.dsl.abi.ExperimentalAbiValidation
 
@@ -8,7 +12,60 @@ plugins {
     alias(libs.plugins.vanniktechMavenPublish)
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
+    alias(libs.plugins.dokka)
     id("signing")
+}
+
+allprojects { version = libs.versions.nfcreader.version.get() }
+
+dokka {
+    moduleName.set("NfcReaderKMP")
+    moduleVersion.set("${project.version}")
+
+    dokkaPublications.configureEach {
+        outputDirectory.set(rootDir.resolve("docs/api/${project.version}"))
+    }
+
+    dokkaSourceSets {
+        configureEach {
+            reportUndocumented.set(true)
+
+            documentedVisibilities(VisibilityModifier.Public, VisibilityModifier.Internal)
+
+            sourceLink {
+                localDirectory.set(projectDir.resolve("src"))
+                remoteUrl.set(
+                    uri("https://github.com/dalafiarisamuel/NfcReaderKMP/tree/main/nfcreader/src")
+                )
+                remoteLineSuffix.set("#L")
+            }
+
+            skipEmptyPackages.set(true)
+
+            if (name == "commonMain") {
+                displayName.set("Common")
+                analysisPlatform.set(KotlinPlatform.Common)
+            }
+
+            if (name == "androidMain") {
+                displayName.set("Android")
+                analysisPlatform.set(KotlinPlatform.AndroidJVM)
+                suppress.set(false)
+            }
+
+            if (name == "iosMain") {
+                displayName.set("iOS")
+                // analysisPlatform.set(KotlinPlatform.Native)
+                suppress.set(false)
+            }
+        }
+    }
+
+    dokkaPublications.configureEach {
+        pluginsConfiguration.html {
+            footerMessage.set("Built with ❤️ for the KMP community by Samuel Dalafiari")
+        }
+    }
 }
 
 signing {
@@ -34,13 +91,9 @@ kotlin {
         compileSdk = 36
         minSdk = 24
 
-        androidResources {
-            enable = true
-        }
+        androidResources { enable = true }
 
-        compilerOptions {
-            jvmTarget.set(JvmTarget.JVM_11)
-        }
+        compilerOptions { jvmTarget.set(JvmTarget.JVM_11) }
 
         withHostTestBuilder {}
 
@@ -56,7 +109,6 @@ kotlin {
         }
     }
 
-    @OptIn(ExperimentalAbiValidation::class)
     abiValidation {
         enabled.set(true)
         klib {

@@ -1,0 +1,732 @@
+<!DOCTYPE html>
+<html class="no-js" lang="en">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
+    <title>NfcReadManager</title>
+    <link href="../../../images/logo-icon.svg" rel="icon" type="image/svg">
+        <script>var pathToRoot = "../../../";</script>
+    <script>document.documentElement.classList.replace("no-js", "js");</script>
+    <script>const storage = localStorage.getItem("dokka-dark-mode")
+      if (storage == null) {
+        const osDarkSchemePreferred = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
+        if (osDarkSchemePreferred === true) {
+          document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+      } else {
+        const savedDarkMode = JSON.parse(storage)
+        if (savedDarkMode === true) {
+          document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+      }
+    </script>
+<script type="text/javascript" src="https://unpkg.com/kotlin-playground@1/dist/playground.min.js" async="async"></script>
+<script type="text/javascript" src="../../../scripts/sourceset_dependencies.js" async="async"></script>
+<link href="../../../styles/style.css" rel="Stylesheet">
+<link href="../../../styles/main.css" rel="Stylesheet">
+<link href="../../../styles/prism.css" rel="Stylesheet">
+<link href="../../../styles/logo-styles.css" rel="Stylesheet">
+<link href="../../../ui-kit/ui-kit.min.css" rel="Stylesheet">
+<script type="text/javascript" src="../../../scripts/safe-local-storage_blocking.js"></script>
+<script type="text/javascript" src="../../../scripts/navigation-loader.js" async="async"></script>
+<script type="text/javascript" src="../../../scripts/platform-content-handler.js" async="async"></script>
+<script type="text/javascript" src="../../../scripts/main.js" defer="defer"></script>
+<script type="text/javascript" src="../../../scripts/prism.js" async="async"></script>
+<script type="text/javascript" src="../../../ui-kit/ui-kit.min.js" defer="defer"></script>
+</head>
+<body>
+<div class="root">
+    <header class="navigation theme-dark" id="navigation-wrapper" role="banner">
+            <a class="library-name--link" href="../../../index.html" tabindex="1">
+                    NfcReaderKMP
+            </a>
+        <button class="navigation-controls--btn navigation-controls--btn_toc ui-kit_mobile-only" id="toc-toggle"
+                type="button">Toggle table of contents
+        </button>
+        <div class="navigation-controls--break ui-kit_mobile-only"></div>
+        <div class="library-version" id="library-version">
+0.0.1        </div>
+        <div class="navigation-controls">
+        <ul class="filter-section filter-section_loading" id="filter-section" aria-label="Target filter">
+                <button class="platform-tag platform-selector jvm-like" data-active="" aria-pressed="true"
+                        data-filter=":nfcreader/androidMain">Android</button>
+                <button class="platform-tag platform-selector common-like" data-active="" aria-pressed="true"
+                        data-filter=":nfcreader/commonMain">Common</button>
+                <button class="platform-tag platform-selector common-like" data-active="" aria-pressed="true"
+                        data-filter=":nfcreader/iosMain">iOS</button>
+            <div class="dropdown filter-section--dropdown" data-role="dropdown" id="filter-section-dropdown">
+                <button class="button button_dropdown filter-section--dropdown-toggle" role="combobox"
+                        data-role="dropdown-toggle"
+                        aria-controls="platform-tags-listbox"
+                        aria-haspopup="listbox"
+                        aria-expanded="false"
+                        aria-label="Toggle source sets"
+                ></button>
+                <ul role="listbox" id="platform-tags-listbox" class="dropdown--list" data-role="dropdown-listbox" aria-label="Target filter">
+                    <div class="dropdown--header"><span>Target filter</span>
+                        <button class="button" data-role="dropdown-toggle" aria-label="Close target filter">
+                            <i class="ui-kit-icon ui-kit-icon_cross"></i>
+                        </button>
+                    </div>
+                        <li role="option" class="dropdown--option platform-selector-option jvm-like" tabindex="0">
+                            <label class="checkbox">
+                                <input type="checkbox" class="checkbox--input" id=":nfcreader/androidMain"
+                                       data-filter=":nfcreader/androidMain"/>
+                                <span class="checkbox--icon"></span>
+                                Android
+                            </label>
+                        </li>
+                        <li role="option" class="dropdown--option platform-selector-option common-like" tabindex="0">
+                            <label class="checkbox">
+                                <input type="checkbox" class="checkbox--input" id=":nfcreader/commonMain"
+                                       data-filter=":nfcreader/commonMain"/>
+                                <span class="checkbox--icon"></span>
+                                Common
+                            </label>
+                        </li>
+                        <li role="option" class="dropdown--option platform-selector-option common-like" tabindex="0">
+                            <label class="checkbox">
+                                <input type="checkbox" class="checkbox--input" id=":nfcreader/iosMain"
+                                       data-filter=":nfcreader/iosMain"/>
+                                <span class="checkbox--icon"></span>
+                                iOS
+                            </label>
+                        </li>
+                </ul>
+                <div class="dropdown--overlay"></div>
+            </div>
+        </ul>
+            <button class="navigation-controls--btn navigation-controls--btn_theme" id="theme-toggle-button"
+                    type="button">Switch theme
+            </button>
+            <div class="navigation-controls--btn navigation-controls--btn_search" id="searchBar" role="button">Search in
+                API
+            </div>
+        </div>
+    </header>
+    <div id="container">
+        <nav id="leftColumn" class="sidebar" data-item-type="SECTION" data-item-config='{"defaultSize": 280, "minSize": 200, "maxSize": 400}'>
+            <a class="toc--skip-link" href="#main">Skip to content</a>
+            <div class="dropdown theme-dark_mobile" data-role="dropdown" id="toc-dropdown">
+                <ul role="listbox" id="toc-listbox" class="dropdown--list dropdown--list_toc-list"
+                    data-role="dropdown-listbox" aria-label="Table of contents">
+                    <div class="dropdown--header">
+                            <span>
+                                    NfcReaderKMP
+                            </span>
+                        <button class="button" data-role="dropdown-toggle" aria-label="Close table of contents">
+                            <i class="ui-kit-icon ui-kit-icon_cross"></i>
+                        </button>
+                    </div>
+                    <div class="sidebar--inner" id="sideMenu"></div>
+                </ul>
+                <div class="dropdown--overlay"></div>
+            </div>
+        </nav>
+        <div id="resizer" class="resizer" data-item-type="BAR"></div>
+        <div id="main" data-item-type="SECTION" role="main">
+<div class="main-content" data-page-type="classlike" id="content" pageIds="NfcReaderKMP::com.devtamuno.kmp.nfcreader.contract/NfcReadManager///PointingToDeclaration//1219539547">
+  <div class="breadcrumbs"><a href="../../../index.html">NfcReaderKMP</a><span class="delimiter">/</span><a href="../index.html">com.devtamuno.kmp.nfcreader.contract</a><span class="delimiter">/</span><span class="current">NfcReadManager</span></div>
+  <div class="cover ">
+    <h1 class="cover"><span>Nfc</span><wbr></wbr><span>Read</span><wbr></wbr><span><span>Manager</span></span></h1>
+    <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+      <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":nfcreader/androidMain" data-filterable-set=":nfcreader/androidMain" data-active="" data-toggle=":nfcreader/androidMain">Android</button><button class="platform-bookmark" data-filterable-current=":nfcreader/commonMain" data-filterable-set=":nfcreader/commonMain" data-toggle=":nfcreader/commonMain">Common</button><button class="platform-bookmark" data-filterable-current=":nfcreader/iosMain" data-filterable-set=":nfcreader/iosMain" data-toggle=":nfcreader/iosMain">iOS</button></div>
+<div class="content sourceset-dependent-content" data-togglable=":nfcreader/androidMain"><div class="symbol monospace"><span class="token keyword">internal </span><span class="token keyword">actual </span><span class="token keyword">class </span><a href="index.html">NfcReadManager</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">config<span class="token operator">: </span><a href="../../com.devtamuno.kmp.nfcreader.data/-nfc-config/index.html">NfcConfig</a></span></span><span class="token punctuation">)</span> : <a href="https://developer.android.com/reference/kotlin/android/nfc/NfcAdapter.ReaderCallback.html">NfcAdapter.ReaderCallback</a><span class="source-link-wrapper"><span class="source-link" data-element-type="source-link">(<a href="https://github.com/dalafiarisamuel/NfcReaderKMP/tree/main/nfcreader/src/androidMain/kotlin/com/devtamuno/kmp/nfcreader/contract/NfcReadManager.android.kt#L67">source</a>)</span></span></div><p class="paragraph">Manager class for handling NFC reading operations on Android.</p><p class="paragraph">This class implements the <a href="https://developer.android.com/reference/kotlin/android/nfc/NfcAdapter.ReaderCallback.html">NfcAdapter.ReaderCallback</a> to receive NFC tag discovery events. It manages a <a href="https://developer.android.com/reference/kotlin/androidx/compose/material3/package-summary.html">ModalBottomSheet</a> to provide a scanning UI and uses the <a href="https://developer.android.com/reference/kotlin/android/nfc/NfcAdapter.html">NfcAdapter</a> for reader mode scanning.</p></div><div class="content sourceset-dependent-content" data-active="" data-togglable=":nfcreader/commonMain"><div class="symbol monospace"><span class="token keyword">internal </span><span class="token keyword">expect </span><span class="token keyword">class </span><a href="index.html">NfcReadManager</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">config<span class="token operator">: </span><a href="../../com.devtamuno.kmp.nfcreader.data/-nfc-config/index.html">NfcConfig</a></span></span><span class="token punctuation">)</span><span class="source-link-wrapper"><span class="source-link" data-element-type="source-link">(<a href="https://github.com/dalafiarisamuel/NfcReaderKMP/tree/main/nfcreader/src/commonMain/kotlin/com/devtamuno/kmp/nfcreader/contract/NfcReadManager.kt#L17">source</a>)</span></span></div><p class="paragraph">Manager class for handling NFC reading operations.</p><p class="paragraph">This is an expected class with platform-specific implementations for Android and iOS. It manages the NFC scanning process, provides results via a <span data-unresolved-link="kotlinx.coroutines.flow/StateFlow///PointingToDeclaration/">StateFlow</span>, and handles the UI (like bottom sheets on Android or native dialogs on iOS).</p></div><div class="content sourceset-dependent-content" data-togglable=":nfcreader/iosMain"><div class="symbol monospace"><span class="token keyword">internal </span><span class="token keyword">actual </span><span class="token keyword">class </span><a href="index.html">NfcReadManager</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">config<span class="token operator">: </span><span data-unresolved-link="com.devtamuno.kmp.nfcreader.data/NfcConfig///PointingToDeclaration/">NfcConfig</span></span></span><span class="token punctuation">)</span> : <span data-unresolved-link="platform.darwin/NSObject///PointingToDeclaration/">NSObject</span>, <span data-unresolved-link="platform.CoreNFC/NFCNDEFReaderSessionDelegateProtocol///PointingToDeclaration/">NFCNDEFReaderSessionDelegateProtocol</span><span class="source-link-wrapper"><span class="source-link" data-element-type="source-link">(<a href="https://github.com/dalafiarisamuel/NfcReaderKMP/tree/main/nfcreader/src/iosMain/kotlin/com/devtamuno/kmp/nfcreader/contract/NfcReadManager.ios.kt#L36">source</a>)</span></span></div><p class="paragraph">Manager class for handling NFC reading operations on iOS.</p><p class="paragraph">This class implements the <span data-unresolved-link="platform.CoreNFC/NFCNDEFReaderSessionDelegateProtocol///PointingToDeclaration/">NFCNDEFReaderSessionDelegateProtocol</span> to handle NFC session events. It uses the native iOS <code class="lang-kotlin">NFCNDEFReaderSession</code> for scanning NDEF tags.</p><p class="paragraph"><strong>Note:</strong> On iOS, only the <code class="lang-kotlin">subtitleMessage</code> from <span data-unresolved-link="com.devtamuno.kmp.nfcreader.data/NfcConfig///PointingToDeclaration/">NfcConfig</span> is used as the <code class="lang-kotlin">alertMessage</code> in the native scanning dialog.</p></div>    </div>
+  </div>
+  <div class="tabbedcontent">
+    <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="CONSTRUCTOR,TYPE,PROPERTY,FUNCTION">Members</button></div>
+    <div class="tabs-section-body">
+      <div data-togglable="CONSTRUCTOR">
+        <h2 class="tableheader">Constructors</h2>
+        <div class="table"><a data-name="-1403104222%2FConstructors%2F1219539547" anchor-label="NfcReadManager" id="-1403104222%2FConstructors%2F1219539547" data-filterable-set=":nfcreader/commonMain,:nfcreader/androidMain,:nfcreader/iosMain"></a>
+          <div class="table-row table-row_content" data-togglable="CONSTRUCTOR" data-filterable-current=":nfcreader/commonMain,:nfcreader/androidMain,:nfcreader/iosMain" data-filterable-set=":nfcreader/commonMain,:nfcreader/androidMain,:nfcreader/iosMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-nfc-read-manager.html"><span>Nfc</span><wbr></wbr><span>Read</span><wbr></wbr><span><span>Manager</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1403104222%2FConstructors%2F1219539547"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":nfcreader/androidMain" data-filterable-set=":nfcreader/androidMain" data-active="" data-toggle=":nfcreader/androidMain">Android</button><button class="platform-bookmark" data-filterable-current=":nfcreader/commonMain" data-filterable-set=":nfcreader/commonMain" data-toggle=":nfcreader/commonMain">Common</button><button class="platform-bookmark" data-filterable-current=":nfcreader/iosMain" data-filterable-set=":nfcreader/iosMain" data-toggle=":nfcreader/iosMain">iOS</button></div>
+<div class="content sourceset-dependent-content" data-togglable=":nfcreader/androidMain"><div class="symbol monospace"><span class="token keyword">actual </span><span class="token keyword">constructor</span><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">config<span class="token operator">: </span><a href="../../com.devtamuno.kmp.nfcreader.data/-nfc-config/index.html">NfcConfig</a></span></span><span class="token punctuation">)</span></div></div><div class="content sourceset-dependent-content" data-active="" data-togglable=":nfcreader/commonMain"><div class="symbol monospace"><span class="token keyword">expect </span><span class="token keyword">constructor</span><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">config<span class="token operator">: </span><a href="../../com.devtamuno.kmp.nfcreader.data/-nfc-config/index.html">NfcConfig</a></span></span><span class="token punctuation">)</span></div></div><div class="content sourceset-dependent-content" data-togglable=":nfcreader/iosMain"><div class="symbol monospace"><span class="token keyword">actual </span><span class="token keyword">constructor</span><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">config<span class="token operator">: </span><span data-unresolved-link="com.devtamuno.kmp.nfcreader.data/NfcConfig///PointingToDeclaration/">NfcConfig</span></span></span><span class="token punctuation">)</span></div></div>                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div data-togglable="PROPERTY">
+        <h2 class="tableheader">Properties</h2>
+        <div class="table"><a data-name="228684334%2FProperties%2F-659909361" anchor-label="debugDescription" id="228684334%2FProperties%2F-659909361" data-filterable-set=":nfcreader/iosMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":nfcreader/iosMain" data-filterable-set=":nfcreader/iosMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="index.html#228684334%2FFunctions%2F-659909361"><span>debug</span><wbr></wbr><span><span>Description</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="228684334%2FProperties%2F-659909361"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":nfcreader/iosMain" data-filterable-set=":nfcreader/iosMain" data-active="" data-toggle=":nfcreader/iosMain">iOS</button></div>
+<div class="content sourceset-dependent-content" data-active="" data-togglable=":nfcreader/iosMain"><div class="symbol monospace"><span class="token keyword">expect </span><span class="token keyword">val </span><a href="index.html#228684334%2FFunctions%2F-659909361">debugDescription</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token operator">?</span></div></div>                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1692238585%2FProperties%2F-659909361" anchor-label="description" id="-1692238585%2FProperties%2F-659909361" data-filterable-set=":nfcreader/iosMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":nfcreader/iosMain" data-filterable-set=":nfcreader/iosMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="index.html#-1692238585%2FProperties%2F-659909361"><span><span>description</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1692238585%2FProperties%2F-659909361"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":nfcreader/iosMain" data-filterable-set=":nfcreader/iosMain" data-active="" data-toggle=":nfcreader/iosMain">iOS</button></div>
+<div class="content sourceset-dependent-content" data-active="" data-togglable=":nfcreader/iosMain"><div class="symbol monospace"><span class="token keyword">expect </span><span class="token keyword">val </span><a href="index.html#-1692238585%2FProperties%2F-659909361">description</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token operator">?</span></div></div>                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-331073687%2FProperties%2F-659909361" anchor-label="hash" id="-331073687%2FProperties%2F-659909361" data-filterable-set=":nfcreader/iosMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":nfcreader/iosMain" data-filterable-set=":nfcreader/iosMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="index.html#-331073687%2FProperties%2F-659909361"><span><span>hash</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-331073687%2FProperties%2F-659909361"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":nfcreader/iosMain" data-filterable-set=":nfcreader/iosMain" data-active="" data-toggle=":nfcreader/iosMain">iOS</button></div>
+<div class="content sourceset-dependent-content" data-active="" data-togglable=":nfcreader/iosMain"><div class="symbol monospace"><span class="token keyword">expect </span><span class="token keyword">val </span><a href="index.html#-331073687%2FProperties%2F-659909361">hash</a><span class="token operator">: </span><span data-unresolved-link="platform.darwin/NSUInteger///PointingToDeclaration/">NSUInteger</span></div></div>                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="712168043%2FProperties%2F1219539547" anchor-label="nfcResult" id="712168043%2FProperties%2F1219539547" data-filterable-set=":nfcreader/commonMain,:nfcreader/androidMain,:nfcreader/iosMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":nfcreader/commonMain,:nfcreader/androidMain,:nfcreader/iosMain" data-filterable-set=":nfcreader/commonMain,:nfcreader/androidMain,:nfcreader/iosMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="nfc-result.html"><span>nfc</span><wbr></wbr><span><span>Result</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="712168043%2FProperties%2F1219539547"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":nfcreader/androidMain" data-filterable-set=":nfcreader/androidMain" data-active="" data-toggle=":nfcreader/androidMain">Android</button><button class="platform-bookmark" data-filterable-current=":nfcreader/commonMain" data-filterable-set=":nfcreader/commonMain" data-toggle=":nfcreader/commonMain">Common</button><button class="platform-bookmark" data-filterable-current=":nfcreader/iosMain" data-filterable-set=":nfcreader/iosMain" data-toggle=":nfcreader/iosMain">iOS</button></div>
+<div class="content sourceset-dependent-content" data-togglable=":nfcreader/androidMain"><div class="symbol monospace"><span class="token keyword">actual </span><span class="token keyword">val </span><a href="nfc-result.html">nfcResult</a><span class="token operator">: </span><span data-unresolved-link="kotlinx.coroutines.flow/StateFlow///PointingToDeclaration/">StateFlow</span><span class="token operator">&lt;</span><a href="../../com.devtamuno.kmp.nfcreader.data/-nfc-read-result/index.html">NfcReadResult</a><span class="token operator">&gt;</span></div><div class="brief "><p class="paragraph">A <span data-unresolved-link="kotlinx.coroutines.flow/StateFlow///PointingToDeclaration/">StateFlow</span> that emits the current <a href="../../com.devtamuno.kmp.nfcreader.data/-nfc-read-result/index.html">NfcReadResult</a> of the NFC scanning process.</p></div></div><div class="content sourceset-dependent-content" data-active="" data-togglable=":nfcreader/commonMain"><div class="symbol monospace"><span class="token keyword">expect </span><span class="token keyword">val </span><a href="nfc-result.html">nfcResult</a><span class="token operator">: </span><span data-unresolved-link="kotlinx.coroutines.flow/StateFlow///PointingToDeclaration/">StateFlow</span><span class="token operator">&lt;</span><a href="../../com.devtamuno.kmp.nfcreader.data/-nfc-read-result/index.html">NfcReadResult</a><span class="token operator">&gt;</span></div><div class="brief "><p class="paragraph">A <span data-unresolved-link="kotlinx.coroutines.flow/StateFlow///PointingToDeclaration/">StateFlow</span> that emits the current <a href="../../com.devtamuno.kmp.nfcreader.data/-nfc-read-result/index.html">NfcReadResult</a> of the NFC scanning process.</p></div></div><div class="content sourceset-dependent-content" data-togglable=":nfcreader/iosMain"><div class="symbol monospace"><span class="token keyword">actual </span><span class="token keyword">val </span><a href="nfc-result.html">nfcResult</a><span class="token operator">: </span><span data-unresolved-link="kotlinx.coroutines.flow/StateFlow///PointingToDeclaration/">StateFlow</span><span class="token operator">&lt;</span><span data-unresolved-link="com.devtamuno.kmp.nfcreader.data/NfcReadResult///PointingToDeclaration/">NfcReadResult</span><span class="token operator">&gt;</span></div><div class="brief "><p class="paragraph">A <span data-unresolved-link="kotlinx.coroutines.flow/StateFlow///PointingToDeclaration/">StateFlow</span> that emits the current <span data-unresolved-link="com.devtamuno.kmp.nfcreader.data/NfcReadResult///PointingToDeclaration/">NfcReadResult</span> of the NFC scanning process.</p></div></div>                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="487587066%2FProperties%2F-659909361" anchor-label="superclass" id="487587066%2FProperties%2F-659909361" data-filterable-set=":nfcreader/iosMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":nfcreader/iosMain" data-filterable-set=":nfcreader/iosMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="index.html#487587066%2FProperties%2F-659909361"><span><span>superclass</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="487587066%2FProperties%2F-659909361"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":nfcreader/iosMain" data-filterable-set=":nfcreader/iosMain" data-active="" data-toggle=":nfcreader/iosMain">iOS</button></div>
+<div class="content sourceset-dependent-content" data-active="" data-togglable=":nfcreader/iosMain"><div class="symbol monospace"><span class="token keyword">expect </span><span class="token keyword">val </span><a href="index.html#487587066%2FProperties%2F-659909361">superclass</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlinx.cinterop/-obj-c-class/index.html">ObjCClass</a><span class="token operator">?</span></div></div>                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div data-togglable="FUNCTION">
+        <h2 class="tableheader">Functions</h2>
+        <div class="table"><a data-name="-1619767229%2FFunctions%2F-659909361" anchor-label="class" id="-1619767229%2FFunctions%2F-659909361" data-filterable-set=":nfcreader/iosMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":nfcreader/iosMain" data-filterable-set=":nfcreader/iosMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="index.html#-1619767229%2FFunctions%2F-659909361"><span><span>class</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1619767229%2FFunctions%2F-659909361"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":nfcreader/iosMain" data-filterable-set=":nfcreader/iosMain" data-active="" data-toggle=":nfcreader/iosMain">iOS</button></div>
+<div class="content sourceset-dependent-content" data-active="" data-togglable=":nfcreader/iosMain"><div class="symbol monospace"><span class="token keyword">expect </span><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="index.html#-1619767229%2FFunctions%2F-659909361"><span class="token function">class</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlinx.cinterop/-obj-c-class/index.html">ObjCClass</a><span class="token operator">?</span></div></div>                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="729460005%2FFunctions%2F-659909361" anchor-label="conformsToProtocol" id="729460005%2FFunctions%2F-659909361" data-filterable-set=":nfcreader/iosMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":nfcreader/iosMain" data-filterable-set=":nfcreader/iosMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="index.html#729460005%2FFunctions%2F-659909361"><span>conforms</span><wbr></wbr><span>To</span><wbr></wbr><span><span>Protocol</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="729460005%2FFunctions%2F-659909361"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":nfcreader/iosMain" data-filterable-set=":nfcreader/iosMain" data-active="" data-toggle=":nfcreader/iosMain">iOS</button></div>
+<div class="content sourceset-dependent-content" data-active="" data-togglable=":nfcreader/iosMain"><div class="symbol monospace"><span class="token keyword">expect </span><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="index.html#729460005%2FFunctions%2F-659909361"><span class="token function">conformsToProtocol</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">aProtocol<span class="token operator">: </span>objcnames/classes/Protocol?<span class="token operator">?</span></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-boolean/index.html">Boolean</a></div></div>                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="719895338%2FFunctions%2F-659909361" anchor-label="copy" id="719895338%2FFunctions%2F-659909361" data-filterable-set=":nfcreader/iosMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":nfcreader/iosMain" data-filterable-set=":nfcreader/iosMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="index.html#719895338%2FFunctions%2F-659909361"><span><span>copy</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="719895338%2FFunctions%2F-659909361"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":nfcreader/iosMain" data-filterable-set=":nfcreader/iosMain" data-active="" data-toggle=":nfcreader/iosMain">iOS</button></div>
+<div class="content sourceset-dependent-content" data-active="" data-togglable=":nfcreader/iosMain"><div class="symbol monospace"><span class="token keyword">expect </span><span class="token keyword">open </span><span class="token keyword">fun </span><a href="index.html#719895338%2FFunctions%2F-659909361"><span class="token function">copy</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-any/index.html">Any</a><span class="token operator">?</span></div></div>                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="228684334%2FFunctions%2F-659909361" anchor-label="debugDescription" id="228684334%2FFunctions%2F-659909361" data-filterable-set=":nfcreader/iosMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":nfcreader/iosMain" data-filterable-set=":nfcreader/iosMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="index.html#228684334%2FFunctions%2F-659909361"><span>debug</span><wbr></wbr><span><span>Description</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="228684334%2FFunctions%2F-659909361"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":nfcreader/iosMain" data-filterable-set=":nfcreader/iosMain" data-active="" data-toggle=":nfcreader/iosMain">iOS</button></div>
+<div class="content sourceset-dependent-content" data-active="" data-togglable=":nfcreader/iosMain"><div class="symbol monospace"><span class="token keyword">expect </span><span class="token keyword">open </span><span class="token keyword">fun </span><a href="index.html#228684334%2FFunctions%2F-659909361"><span class="token function">debugDescription</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token operator">?</span></div></div>                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-400237633%2FFunctions%2F-659909361" anchor-label="description" id="-400237633%2FFunctions%2F-659909361" data-filterable-set=":nfcreader/iosMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":nfcreader/iosMain" data-filterable-set=":nfcreader/iosMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="index.html#-400237633%2FFunctions%2F-659909361"><span><span>description</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-400237633%2FFunctions%2F-659909361"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":nfcreader/iosMain" data-filterable-set=":nfcreader/iosMain" data-active="" data-toggle=":nfcreader/iosMain">iOS</button></div>
+<div class="content sourceset-dependent-content" data-active="" data-togglable=":nfcreader/iosMain"><div class="symbol monospace"><span class="token keyword">expect </span><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="index.html#-400237633%2FFunctions%2F-659909361"><span class="token function">description</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token operator">?</span></div></div>                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-622522961%2FFunctions%2F-659909361" anchor-label="doesNotRecognizeSelector" id="-622522961%2FFunctions%2F-659909361" data-filterable-set=":nfcreader/iosMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":nfcreader/iosMain" data-filterable-set=":nfcreader/iosMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="index.html#-622522961%2FFunctions%2F-659909361"><span>does</span><wbr></wbr><span>Not</span><wbr></wbr><span>Recognize</span><wbr></wbr><span><span>Selector</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-622522961%2FFunctions%2F-659909361"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":nfcreader/iosMain" data-filterable-set=":nfcreader/iosMain" data-active="" data-toggle=":nfcreader/iosMain">iOS</button></div>
+<div class="content sourceset-dependent-content" data-active="" data-togglable=":nfcreader/iosMain"><div class="symbol monospace"><span class="token keyword">expect </span><span class="token keyword">open </span><span class="token keyword">fun </span><a href="index.html#-622522961%2FFunctions%2F-659909361"><span class="token function">doesNotRecognizeSelector</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">aSelector<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlinx.cinterop/-c-opaque-pointer/index.html">COpaquePointer</a><span class="token operator">?</span></span></span><span class="token punctuation">)</span></div></div>                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-776372831%2FFunctions%2F-659909361" anchor-label="finalize" id="-776372831%2FFunctions%2F-659909361" data-filterable-set=":nfcreader/iosMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":nfcreader/iosMain" data-filterable-set=":nfcreader/iosMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="index.html#-776372831%2FFunctions%2F-659909361"><span><span>finalize</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-776372831%2FFunctions%2F-659909361"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":nfcreader/iosMain" data-filterable-set=":nfcreader/iosMain" data-active="" data-toggle=":nfcreader/iosMain">iOS</button></div>
+<div class="content sourceset-dependent-content" data-active="" data-togglable=":nfcreader/iosMain"><div class="symbol monospace"><span class="token keyword">expect </span><span class="token keyword">open </span><span class="token keyword">fun </span><a href="index.html#-776372831%2FFunctions%2F-659909361"><span class="token function">finalize</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span></div></div>                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="870119066%2FFunctions%2F-659909361" anchor-label="forwardingTargetForSelector" id="870119066%2FFunctions%2F-659909361" data-filterable-set=":nfcreader/iosMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":nfcreader/iosMain" data-filterable-set=":nfcreader/iosMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="index.html#870119066%2FFunctions%2F-659909361"><span>forwarding</span><wbr></wbr><span>Target</span><wbr></wbr><span>For</span><wbr></wbr><span><span>Selector</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="870119066%2FFunctions%2F-659909361"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":nfcreader/iosMain" data-filterable-set=":nfcreader/iosMain" data-active="" data-toggle=":nfcreader/iosMain">iOS</button></div>
+<div class="content sourceset-dependent-content" data-active="" data-togglable=":nfcreader/iosMain"><div class="symbol monospace"><span class="token keyword">expect </span><span class="token keyword">open </span><span class="token keyword">fun </span><a href="index.html#870119066%2FFunctions%2F-659909361"><span class="token function">forwardingTargetForSelector</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">aSelector<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlinx.cinterop/-c-opaque-pointer/index.html">COpaquePointer</a><span class="token operator">?</span></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-any/index.html">Any</a><span class="token operator">?</span></div></div>                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1855211183%2FFunctions%2F-659909361" anchor-label="forwardInvocation" id="1855211183%2FFunctions%2F-659909361" data-filterable-set=":nfcreader/iosMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":nfcreader/iosMain" data-filterable-set=":nfcreader/iosMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="index.html#1855211183%2FFunctions%2F-659909361"><span>forward</span><wbr></wbr><span><span>Invocation</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1855211183%2FFunctions%2F-659909361"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":nfcreader/iosMain" data-filterable-set=":nfcreader/iosMain" data-active="" data-toggle=":nfcreader/iosMain">iOS</button></div>
+<div class="content sourceset-dependent-content" data-active="" data-togglable=":nfcreader/iosMain"><div class="symbol monospace"><span class="token keyword">expect </span><span class="token keyword">open </span><span class="token keyword">fun </span><a href="index.html#1855211183%2FFunctions%2F-659909361"><span class="token function">forwardInvocation</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">anInvocation<span class="token operator">: </span>objcnames/classes/NSInvocation?<span class="token operator">?</span></span></span><span class="token punctuation">)</span></div></div>                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1519286193%2FFunctions%2F-659909361" anchor-label="hash" id="1519286193%2FFunctions%2F-659909361" data-filterable-set=":nfcreader/iosMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":nfcreader/iosMain" data-filterable-set=":nfcreader/iosMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="index.html#1519286193%2FFunctions%2F-659909361"><span><span>hash</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1519286193%2FFunctions%2F-659909361"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":nfcreader/iosMain" data-filterable-set=":nfcreader/iosMain" data-active="" data-toggle=":nfcreader/iosMain">iOS</button></div>
+<div class="content sourceset-dependent-content" data-active="" data-togglable=":nfcreader/iosMain"><div class="symbol monospace"><span class="token keyword">expect </span><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="index.html#1519286193%2FFunctions%2F-659909361"><span class="token function">hash</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><span data-unresolved-link="platform.darwin/NSUInteger///PointingToDeclaration/">NSUInteger</span></div></div>                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1753155089%2FFunctions%2F-659909361" anchor-label="init" id="-1753155089%2FFunctions%2F-659909361" data-filterable-set=":nfcreader/iosMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":nfcreader/iosMain" data-filterable-set=":nfcreader/iosMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="index.html#-1753155089%2FFunctions%2F-659909361"><span><span>init</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1753155089%2FFunctions%2F-659909361"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":nfcreader/iosMain" data-filterable-set=":nfcreader/iosMain" data-active="" data-toggle=":nfcreader/iosMain">iOS</button></div>
+<div class="content sourceset-dependent-content" data-active="" data-togglable=":nfcreader/iosMain"><div class="symbol monospace"><span class="token keyword">expect </span><span class="token keyword">open </span><span class="token keyword">fun </span><a href="index.html#-1753155089%2FFunctions%2F-659909361"><span class="token function"><strike>init</strike></span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><span data-unresolved-link="platform.darwin/NSObject///PointingToDeclaration/">NSObject</span><span class="token operator">?</span></div></div>                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="400700689%2FFunctions%2F-659909361" anchor-label="isEqual" id="400700689%2FFunctions%2F-659909361" data-filterable-set=":nfcreader/iosMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":nfcreader/iosMain" data-filterable-set=":nfcreader/iosMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="index.html#400700689%2FFunctions%2F-659909361"><span>is</span><wbr></wbr><span><span>Equal</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="400700689%2FFunctions%2F-659909361"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":nfcreader/iosMain" data-filterable-set=":nfcreader/iosMain" data-active="" data-toggle=":nfcreader/iosMain">iOS</button></div>
+<div class="content sourceset-dependent-content" data-active="" data-togglable=":nfcreader/iosMain"><div class="symbol monospace"><span class="token keyword">expect </span><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="index.html#400700689%2FFunctions%2F-659909361"><span class="token function">isEqual</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">object<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-any/index.html">Any</a><span class="token operator">?</span></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-boolean/index.html">Boolean</a></div></div>                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1107006214%2FFunctions%2F-659909361" anchor-label="isKindOfClass" id="-1107006214%2FFunctions%2F-659909361" data-filterable-set=":nfcreader/iosMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":nfcreader/iosMain" data-filterable-set=":nfcreader/iosMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="index.html#-1107006214%2FFunctions%2F-659909361"><span>is</span><wbr></wbr><span>Kind</span><wbr></wbr><span>Of</span><wbr></wbr><span><span>Class</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1107006214%2FFunctions%2F-659909361"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":nfcreader/iosMain" data-filterable-set=":nfcreader/iosMain" data-active="" data-toggle=":nfcreader/iosMain">iOS</button></div>
+<div class="content sourceset-dependent-content" data-active="" data-togglable=":nfcreader/iosMain"><div class="symbol monospace"><span class="token keyword">expect </span><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="index.html#-1107006214%2FFunctions%2F-659909361"><span class="token function">isKindOfClass</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">aClass<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlinx.cinterop/-obj-c-class/index.html">ObjCClass</a><span class="token operator">?</span></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-boolean/index.html">Boolean</a></div></div>                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1261237300%2FFunctions%2F-659909361" anchor-label="isMemberOfClass" id="1261237300%2FFunctions%2F-659909361" data-filterable-set=":nfcreader/iosMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":nfcreader/iosMain" data-filterable-set=":nfcreader/iosMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="index.html#1261237300%2FFunctions%2F-659909361"><span>is</span><wbr></wbr><span>Member</span><wbr></wbr><span>Of</span><wbr></wbr><span><span>Class</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1261237300%2FFunctions%2F-659909361"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":nfcreader/iosMain" data-filterable-set=":nfcreader/iosMain" data-active="" data-toggle=":nfcreader/iosMain">iOS</button></div>
+<div class="content sourceset-dependent-content" data-active="" data-togglable=":nfcreader/iosMain"><div class="symbol monospace"><span class="token keyword">expect </span><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="index.html#1261237300%2FFunctions%2F-659909361"><span class="token function">isMemberOfClass</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">aClass<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlinx.cinterop/-obj-c-class/index.html">ObjCClass</a><span class="token operator">?</span></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-boolean/index.html">Boolean</a></div></div>                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="874970199%2FFunctions%2F-659909361" anchor-label="isProxy" id="874970199%2FFunctions%2F-659909361" data-filterable-set=":nfcreader/iosMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":nfcreader/iosMain" data-filterable-set=":nfcreader/iosMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="index.html#874970199%2FFunctions%2F-659909361"><span>is</span><wbr></wbr><span><span>Proxy</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="874970199%2FFunctions%2F-659909361"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":nfcreader/iosMain" data-filterable-set=":nfcreader/iosMain" data-active="" data-toggle=":nfcreader/iosMain">iOS</button></div>
+<div class="content sourceset-dependent-content" data-active="" data-togglable=":nfcreader/iosMain"><div class="symbol monospace"><span class="token keyword">expect </span><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="index.html#874970199%2FFunctions%2F-659909361"><span class="token function">isProxy</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-boolean/index.html">Boolean</a></div></div>                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1508216455%2FFunctions%2F-659909361" anchor-label="methodForSelector" id="1508216455%2FFunctions%2F-659909361" data-filterable-set=":nfcreader/iosMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":nfcreader/iosMain" data-filterable-set=":nfcreader/iosMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="index.html#1508216455%2FFunctions%2F-659909361"><span>method</span><wbr></wbr><span>For</span><wbr></wbr><span><span>Selector</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1508216455%2FFunctions%2F-659909361"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":nfcreader/iosMain" data-filterable-set=":nfcreader/iosMain" data-active="" data-toggle=":nfcreader/iosMain">iOS</button></div>
+<div class="content sourceset-dependent-content" data-active="" data-togglable=":nfcreader/iosMain"><div class="symbol monospace"><span class="token keyword">expect </span><span class="token keyword">open </span><span class="token keyword">fun </span><a href="index.html#1508216455%2FFunctions%2F-659909361"><span class="token function">methodForSelector</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">aSelector<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlinx.cinterop/-c-opaque-pointer/index.html">COpaquePointer</a><span class="token operator">?</span></span></span><span class="token punctuation">)</span><span class="token operator">: </span><span data-unresolved-link="platform.darwin/IMP///PointingToDeclaration/">IMP</span><span class="token operator">?</span></div></div>                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1366135821%2FFunctions%2F-659909361" anchor-label="methodSignatureForSelector" id="1366135821%2FFunctions%2F-659909361" data-filterable-set=":nfcreader/iosMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":nfcreader/iosMain" data-filterable-set=":nfcreader/iosMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="index.html#1366135821%2FFunctions%2F-659909361"><span>method</span><wbr></wbr><span>Signature</span><wbr></wbr><span>For</span><wbr></wbr><span><span>Selector</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1366135821%2FFunctions%2F-659909361"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":nfcreader/iosMain" data-filterable-set=":nfcreader/iosMain" data-active="" data-toggle=":nfcreader/iosMain">iOS</button></div>
+<div class="content sourceset-dependent-content" data-active="" data-togglable=":nfcreader/iosMain"><div class="symbol monospace"><span class="token keyword">expect </span><span class="token keyword">open </span><span class="token keyword">fun </span><a href="index.html#1366135821%2FFunctions%2F-659909361"><span class="token function">methodSignatureForSelector</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">aSelector<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlinx.cinterop/-c-opaque-pointer/index.html">COpaquePointer</a><span class="token operator">?</span></span></span><span class="token punctuation">)</span><span class="token operator">: </span>objcnames/classes/NSMethodSignature?<span class="token operator">?</span></div></div>                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1810377952%2FFunctions%2F-659909361" anchor-label="mutableCopy" id="1810377952%2FFunctions%2F-659909361" data-filterable-set=":nfcreader/iosMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":nfcreader/iosMain" data-filterable-set=":nfcreader/iosMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="index.html#1810377952%2FFunctions%2F-659909361"><span>mutable</span><wbr></wbr><span><span>Copy</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1810377952%2FFunctions%2F-659909361"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":nfcreader/iosMain" data-filterable-set=":nfcreader/iosMain" data-active="" data-toggle=":nfcreader/iosMain">iOS</button></div>
+<div class="content sourceset-dependent-content" data-active="" data-togglable=":nfcreader/iosMain"><div class="symbol monospace"><span class="token keyword">expect </span><span class="token keyword">open </span><span class="token keyword">fun </span><a href="index.html#1810377952%2FFunctions%2F-659909361"><span class="token function">mutableCopy</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-any/index.html">Any</a><span class="token operator">?</span></div></div>                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1631881943%2FFunctions%2F-67378253" anchor-label="onTagDiscovered" id="-1631881943%2FFunctions%2F-67378253" data-filterable-set=":nfcreader/androidMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":nfcreader/androidMain" data-filterable-set=":nfcreader/androidMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="on-tag-discovered.html"><span>on</span><wbr></wbr><span>Tag</span><wbr></wbr><span><span>Discovered</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1631881943%2FFunctions%2F-67378253"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":nfcreader/androidMain" data-filterable-set=":nfcreader/androidMain" data-active="" data-toggle=":nfcreader/androidMain">Android</button></div>
+<div class="content sourceset-dependent-content" data-active="" data-togglable=":nfcreader/androidMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="on-tag-discovered.html"><span class="token function">onTagDiscovered</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">tag<span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/android/nfc/Tag.html">Tag</a><span class="token operator">?</span></span></span><span class="token punctuation">)</span></div></div>                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="963103057%2FFunctions%2F-659909361" anchor-label="performSelector" id="963103057%2FFunctions%2F-659909361" data-filterable-set=":nfcreader/iosMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":nfcreader/iosMain" data-filterable-set=":nfcreader/iosMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="index.html#1013303680%2FFunctions%2F-659909361"><span>perform</span><wbr></wbr><span><span>Selector</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="963103057%2FFunctions%2F-659909361"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":nfcreader/iosMain" data-filterable-set=":nfcreader/iosMain" data-active="" data-toggle=":nfcreader/iosMain">iOS</button></div>
+<div class="content sourceset-dependent-content" data-active="" data-togglable=":nfcreader/iosMain"><div class="symbol monospace"><span class="token keyword">expect </span><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="index.html#1013303680%2FFunctions%2F-659909361"><span class="token function">performSelector</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">aSelector<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlinx.cinterop/-c-opaque-pointer/index.html">COpaquePointer</a><span class="token operator">?</span></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-any/index.html">Any</a><span class="token operator">?</span></div><div class="symbol monospace"><span class="token keyword">expect </span><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="index.html#367831459%2FFunctions%2F-659909361"><span class="token function">performSelector</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">aSelector<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlinx.cinterop/-c-opaque-pointer/index.html">COpaquePointer</a><span class="token operator">?</span><span class="token punctuation">, </span></span><span class="parameter ">withObject<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-any/index.html">Any</a><span class="token operator">?</span></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-any/index.html">Any</a><span class="token operator">?</span></div><div class="symbol monospace"><span class="token keyword">expect </span><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="index.html#403533126%2FFunctions%2F-659909361"><span class="token function">performSelector</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">aSelector<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlinx.cinterop/-c-opaque-pointer/index.html">COpaquePointer</a><span class="token operator">?</span><span class="token punctuation">, </span></span><span class="parameter ">withObject<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-any/index.html">Any</a><span class="token operator">?</span><span class="token punctuation">, </span></span><span class="parameter ">_withObject<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-any/index.html">Any</a><span class="token operator">?</span></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-any/index.html">Any</a><span class="token operator">?</span></div></div>                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="19329439%2FFunctions%2F-659909361" anchor-label="readerSession" id="19329439%2FFunctions%2F-659909361" data-filterable-set=":nfcreader/iosMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":nfcreader/iosMain" data-filterable-set=":nfcreader/iosMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="reader-session.html"><span>reader</span><wbr></wbr><span><span>Session</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="19329439%2FFunctions%2F-659909361"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":nfcreader/iosMain" data-filterable-set=":nfcreader/iosMain" data-active="" data-toggle=":nfcreader/iosMain">iOS</button></div>
+<div class="content sourceset-dependent-content" data-active="" data-togglable=":nfcreader/iosMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="reader-session.html"><span class="token function">readerSession</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">session<span class="token operator">: </span><span data-unresolved-link="platform.CoreNFC/NFCNDEFReaderSession///PointingToDeclaration/">NFCNDEFReaderSession</span><span class="token punctuation">, </span></span><span class="parameter ">didDetectNDEFs<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin.collections/-list/index.html">List</a><span class="token operator">&lt;</span><span class="token operator">*</span><span class="token operator">&gt;</span></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Called when NDEF messages are detected. Extracts records from the first detected message, joins their payloads into a single string, and updates <a href="nfc-result.html">nfcResult</a> with <span data-unresolved-link="com.devtamuno.kmp.nfcreader.data/NfcReadResult.Success///PointingToDeclaration/">NfcReadResult.Success</span>. The session is invalidated after a successful read.</p></div><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="reader-session.html"><span class="token function">readerSession</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">session<span class="token operator">: </span><span data-unresolved-link="platform.CoreNFC/NFCNDEFReaderSession///PointingToDeclaration/">NFCNDEFReaderSession</span><span class="token punctuation">, </span></span><span class="parameter ">didInvalidateWithError<span class="token operator">: </span><span data-unresolved-link="platform.Foundation/NSError///PointingToDeclaration/">NSError</span></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Called when the NFC session is invalidated, either due to an error or user cancellation. Updates <a href="nfc-result.html">nfcResult</a> with either <span data-unresolved-link="com.devtamuno.kmp.nfcreader.data/NfcReadResult.OperationCancelled///PointingToDeclaration/">NfcReadResult.OperationCancelled</span> (code 200) or <span data-unresolved-link="com.devtamuno.kmp.nfcreader.data/NfcReadResult.Error///PointingToDeclaration/">NfcReadResult.Error</span>.</p></div></div>                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1560117062%2FFunctions%2F-659909361" anchor-label="readerSessionDidBecomeActive" id="1560117062%2FFunctions%2F-659909361" data-filterable-set=":nfcreader/iosMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":nfcreader/iosMain" data-filterable-set=":nfcreader/iosMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="reader-session-did-become-active.html"><span>reader</span><wbr></wbr><span>Session</span><wbr></wbr><span>Did</span><wbr></wbr><span>Become</span><wbr></wbr><span><span>Active</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1560117062%2FFunctions%2F-659909361"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":nfcreader/iosMain" data-filterable-set=":nfcreader/iosMain" data-active="" data-toggle=":nfcreader/iosMain">iOS</button></div>
+<div class="content sourceset-dependent-content" data-active="" data-togglable=":nfcreader/iosMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="reader-session-did-become-active.html"><span class="token function">readerSessionDidBecomeActive</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">session<span class="token operator">: </span><span data-unresolved-link="platform.CoreNFC/NFCNDEFReaderSession///PointingToDeclaration/">NFCNDEFReaderSession</span></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Called when the NFC reader session becomes active.</p></div></div>                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1409694103%2FFunctions%2F1219539547" anchor-label="RegisterManager" id="-1409694103%2FFunctions%2F1219539547" data-filterable-set=":nfcreader/commonMain,:nfcreader/androidMain,:nfcreader/iosMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":nfcreader/commonMain,:nfcreader/androidMain,:nfcreader/iosMain" data-filterable-set=":nfcreader/commonMain,:nfcreader/androidMain,:nfcreader/iosMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-register-manager.html"><span>Register</span><wbr></wbr><span><span>Manager</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1409694103%2FFunctions%2F1219539547"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":nfcreader/androidMain" data-filterable-set=":nfcreader/androidMain" data-active="" data-toggle=":nfcreader/androidMain">Android</button><button class="platform-bookmark" data-filterable-current=":nfcreader/commonMain" data-filterable-set=":nfcreader/commonMain" data-toggle=":nfcreader/commonMain">Common</button><button class="platform-bookmark" data-filterable-current=":nfcreader/iosMain" data-filterable-set=":nfcreader/iosMain" data-toggle=":nfcreader/iosMain">iOS</button></div>
+<div class="content sourceset-dependent-content" data-togglable=":nfcreader/androidMain"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="https://developer.android.com/reference/kotlin/androidx/compose/runtime/Composable.html"><span class="token annotation builtin">Composable</span></a></div></div><span class="token keyword">actual </span><span class="token keyword">fun </span><a href="-register-manager.html"><span class="token function">RegisterManager</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Registers the <a href="index.html">NfcReadManager</a> with the current <a href="https://developer.android.com/reference/kotlin/android/app/Activity.html">Activity</a> and initializes the <a href="https://developer.android.com/reference/kotlin/android/nfc/NfcAdapter.html">NfcAdapter</a>. It also displays the <span data-unresolved-link="com.devtamuno.kmp.nfcreader.contract/NfcReadManager/ScanBottomSheet/#/PointingToDeclaration/">ScanBottomSheet</span> when scanning is active.</p></div></div><div class="content sourceset-dependent-content" data-active="" data-togglable=":nfcreader/commonMain"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="https://developer.android.com/reference/kotlin/androidx/compose/runtime/Composable.html"><span class="token annotation builtin">Composable</span></a></div></div><span class="token keyword">expect </span><span class="token keyword">fun </span><a href="-register-manager.html"><span class="token function">RegisterManager</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">A <a href="https://developer.android.com/reference/kotlin/androidx/compose/runtime/Composable.html">Composable</a> function that registers the manager within the Compose UI hierarchy. This is typically used to handle lifecycle events and show scanning-related UI components.</p></div></div><div class="content sourceset-dependent-content" data-togglable=":nfcreader/iosMain"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="https://developer.android.com/reference/kotlin/androidx/compose/runtime/Composable.html"><span class="token annotation builtin">Composable</span></a></div></div><span class="token keyword">actual </span><span class="token keyword">fun </span><a href="-register-manager.html"><span class="token function">RegisterManager</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Registers the manager. On iOS, this is a NO-OP as the scanning UI is handled natively by the system.</p></div></div>                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="2027637748%2FFunctions%2F-659909361" anchor-label="respondsToSelector" id="2027637748%2FFunctions%2F-659909361" data-filterable-set=":nfcreader/iosMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":nfcreader/iosMain" data-filterable-set=":nfcreader/iosMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="index.html#2027637748%2FFunctions%2F-659909361"><span>responds</span><wbr></wbr><span>To</span><wbr></wbr><span><span>Selector</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="2027637748%2FFunctions%2F-659909361"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":nfcreader/iosMain" data-filterable-set=":nfcreader/iosMain" data-active="" data-toggle=":nfcreader/iosMain">iOS</button></div>
+<div class="content sourceset-dependent-content" data-active="" data-togglable=":nfcreader/iosMain"><div class="symbol monospace"><span class="token keyword">expect </span><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="index.html#2027637748%2FFunctions%2F-659909361"><span class="token function">respondsToSelector</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">aSelector<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlinx.cinterop/-c-opaque-pointer/index.html">COpaquePointer</a><span class="token operator">?</span></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-boolean/index.html">Boolean</a></div></div>                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="619555904%2FFunctions%2F1219539547" anchor-label="startScanning" id="619555904%2FFunctions%2F1219539547" data-filterable-set=":nfcreader/commonMain,:nfcreader/androidMain,:nfcreader/iosMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":nfcreader/commonMain,:nfcreader/androidMain,:nfcreader/iosMain" data-filterable-set=":nfcreader/commonMain,:nfcreader/androidMain,:nfcreader/iosMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="start-scanning.html"><span>start</span><wbr></wbr><span><span>Scanning</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="619555904%2FFunctions%2F1219539547"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":nfcreader/androidMain" data-filterable-set=":nfcreader/androidMain" data-active="" data-toggle=":nfcreader/androidMain">Android</button><button class="platform-bookmark" data-filterable-current=":nfcreader/commonMain" data-filterable-set=":nfcreader/commonMain" data-toggle=":nfcreader/commonMain">Common</button><button class="platform-bookmark" data-filterable-current=":nfcreader/iosMain" data-filterable-set=":nfcreader/iosMain" data-toggle=":nfcreader/iosMain">iOS</button></div>
+<div class="content sourceset-dependent-content" data-togglable=":nfcreader/androidMain"><div class="symbol monospace"><span class="token keyword">actual </span><span class="token keyword">fun </span><a href="start-scanning.html"><span class="token function">startScanning</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Starts the NFC scanning process in reader mode. It sets up a timeout job and enables the <a href="https://developer.android.com/reference/kotlin/android/nfc/NfcAdapter.html">NfcAdapter</a>'s reader mode.</p></div></div><div class="content sourceset-dependent-content" data-active="" data-togglable=":nfcreader/commonMain"><div class="symbol monospace"><span class="token keyword">expect </span><span class="token keyword">fun </span><a href="start-scanning.html"><span class="token function">startScanning</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Starts the NFC scanning process.</p></div></div><div class="content sourceset-dependent-content" data-togglable=":nfcreader/iosMain"><div class="symbol monospace"><span class="token keyword">actual </span><span class="token keyword">fun </span><a href="start-scanning.html"><span class="token function">startScanning</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Starts the NFC scanning process using <span data-unresolved-link="platform.CoreNFC/NFCNDEFReaderSession///PointingToDeclaration/">NFCNDEFReaderSession</span>. Checks if NFC reading is available on the device before starting.</p></div></div>                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="240109876%2FFunctions%2F1219539547" anchor-label="stopScanning" id="240109876%2FFunctions%2F1219539547" data-filterable-set=":nfcreader/commonMain,:nfcreader/androidMain,:nfcreader/iosMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":nfcreader/commonMain,:nfcreader/androidMain,:nfcreader/iosMain" data-filterable-set=":nfcreader/commonMain,:nfcreader/androidMain,:nfcreader/iosMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="stop-scanning.html"><span>stop</span><wbr></wbr><span><span>Scanning</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="240109876%2FFunctions%2F1219539547"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":nfcreader/androidMain" data-filterable-set=":nfcreader/androidMain" data-active="" data-toggle=":nfcreader/androidMain">Android</button><button class="platform-bookmark" data-filterable-current=":nfcreader/commonMain" data-filterable-set=":nfcreader/commonMain" data-toggle=":nfcreader/commonMain">Common</button><button class="platform-bookmark" data-filterable-current=":nfcreader/iosMain" data-filterable-set=":nfcreader/iosMain" data-toggle=":nfcreader/iosMain">iOS</button></div>
+<div class="content sourceset-dependent-content" data-togglable=":nfcreader/androidMain"><div class="symbol monospace"><span class="token keyword">actual </span><span class="token keyword">fun </span><a href="stop-scanning.html"><span class="token function">stopScanning</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Stops the NFC scanning process and disables reader mode.</p></div></div><div class="content sourceset-dependent-content" data-active="" data-togglable=":nfcreader/commonMain"><div class="symbol monospace"><span class="token keyword">expect </span><span class="token keyword">fun </span><a href="stop-scanning.html"><span class="token function">stopScanning</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Stops the NFC scanning process.</p></div></div><div class="content sourceset-dependent-content" data-togglable=":nfcreader/iosMain"><div class="symbol monospace"><span class="token keyword">actual </span><span class="token keyword">fun </span><a href="stop-scanning.html"><span class="token function">stopScanning</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Stops the NFC scanning process and invalidates the session.</p></div></div>                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1687492798%2FFunctions%2F-659909361" anchor-label="superclass" id="-1687492798%2FFunctions%2F-659909361" data-filterable-set=":nfcreader/iosMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":nfcreader/iosMain" data-filterable-set=":nfcreader/iosMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="index.html#-1687492798%2FFunctions%2F-659909361"><span><span>superclass</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1687492798%2FFunctions%2F-659909361"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":nfcreader/iosMain" data-filterable-set=":nfcreader/iosMain" data-active="" data-toggle=":nfcreader/iosMain">iOS</button></div>
+<div class="content sourceset-dependent-content" data-active="" data-togglable=":nfcreader/iosMain"><div class="symbol monospace"><span class="token keyword">expect </span><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="index.html#-1687492798%2FFunctions%2F-659909361"><span class="token function">superclass</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlinx.cinterop/-obj-c-class/index.html">ObjCClass</a><span class="token operator">?</span></div></div>                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    <div class="footer">
+        <div class="footer--container">
+            <a href="#content" id="go-to-top-link" class="footer--button footer--button_go-to-top"></a>
+            <div class="footer--content">
+                <div>
+                    <span>Generated by </span>
+                    <a class="footer--link footer--link_external" href="https://github.com/Kotlin/dokka">
+                        Dokka
+                    </a>
+                    <div>Built with ❤️ for the KMP community by Samuel Dalafiari</div>
+                </div>
+            </div>
+        </div>
+    </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

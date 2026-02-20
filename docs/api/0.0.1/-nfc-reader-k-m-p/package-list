@@ -1,0 +1,80 @@
+$dokka.format:html-v1
+$dokka.linkExtension:html
+$dokka.location:com.devtamuno.kmp.nfcreader.contract////PointingToDeclaration/-nfc-reader-k-m-p/com.devtamuno.kmp.nfcreader.contract/index.html
+$dokka.location:com.devtamuno.kmp.nfcreader.contract/NfcReadManager///PointingToDeclaration/-nfc-reader-k-m-p/com.devtamuno.kmp.nfcreader.contract/-nfc-read-manager/index.html
+$dokka.location:com.devtamuno.kmp.nfcreader.contract/NfcReadManager/NfcReadManager/#com.devtamuno.kmp.nfcreader.data.NfcConfig/PointingToDeclaration/-nfc-reader-k-m-p/com.devtamuno.kmp.nfcreader.contract/-nfc-read-manager/-nfc-read-manager.html
+$dokka.location:com.devtamuno.kmp.nfcreader.contract/NfcReadManager/RegisterManager/#/PointingToDeclaration/-nfc-reader-k-m-p/com.devtamuno.kmp.nfcreader.contract/-nfc-read-manager/-register-manager.html
+$dokka.location:com.devtamuno.kmp.nfcreader.contract/NfcReadManager/nfcResult/#/PointingToDeclaration/-nfc-reader-k-m-p/com.devtamuno.kmp.nfcreader.contract/-nfc-read-manager/nfc-result.html
+$dokka.location:com.devtamuno.kmp.nfcreader.contract/NfcReadManager/onTagDiscovered/#android.nfc.Tag?/PointingToDeclaration/-nfc-reader-k-m-p/com.devtamuno.kmp.nfcreader.contract/-nfc-read-manager/on-tag-discovered.html
+$dokka.location:com.devtamuno.kmp.nfcreader.contract/NfcReadManager/readerSession/#platform.CoreNFC.NFCNDEFReaderSession#kotlin.collections.List[*]/PointingToDeclaration/-nfc-reader-k-m-p/com.devtamuno.kmp.nfcreader.contract/-nfc-read-manager/reader-session.html
+$dokka.location:com.devtamuno.kmp.nfcreader.contract/NfcReadManager/readerSession/#platform.CoreNFC.NFCNDEFReaderSession#platform.Foundation.NSError/PointingToDeclaration/-nfc-reader-k-m-p/com.devtamuno.kmp.nfcreader.contract/-nfc-read-manager/reader-session.html
+$dokka.location:com.devtamuno.kmp.nfcreader.contract/NfcReadManager/readerSessionDidBecomeActive/#platform.CoreNFC.NFCNDEFReaderSession/PointingToDeclaration/-nfc-reader-k-m-p/com.devtamuno.kmp.nfcreader.contract/-nfc-read-manager/reader-session-did-become-active.html
+$dokka.location:com.devtamuno.kmp.nfcreader.contract/NfcReadManager/startScanning/#/PointingToDeclaration/-nfc-reader-k-m-p/com.devtamuno.kmp.nfcreader.contract/-nfc-read-manager/start-scanning.html
+$dokka.location:com.devtamuno.kmp.nfcreader.contract/NfcReadManager/stopScanning/#/PointingToDeclaration/-nfc-reader-k-m-p/com.devtamuno.kmp.nfcreader.contract/-nfc-read-manager/stop-scanning.html
+$dokka.location:com.devtamuno.kmp.nfcreader.contract/NfcReadManagerState///PointingToDeclaration/-nfc-reader-k-m-p/com.devtamuno.kmp.nfcreader.contract/-nfc-read-manager-state/index.html
+$dokka.location:com.devtamuno.kmp.nfcreader.contract/NfcReadManagerState/InitNfcManager/#/PointingToDeclaration/-nfc-reader-k-m-p/com.devtamuno.kmp.nfcreader.contract/-nfc-read-manager-state/-init-nfc-manager.html
+$dokka.location:com.devtamuno.kmp.nfcreader.contract/NfcReadManagerState/nfcReadResult/#/PointingToDeclaration/-nfc-reader-k-m-p/com.devtamuno.kmp.nfcreader.contract/-nfc-read-manager-state/nfc-read-result.html
+$dokka.location:com.devtamuno.kmp.nfcreader.contract/NfcReadManagerState/startScanning/#/PointingToDeclaration/-nfc-reader-k-m-p/com.devtamuno.kmp.nfcreader.contract/-nfc-read-manager-state/start-scanning.html
+$dokka.location:com.devtamuno.kmp.nfcreader.contract/NfcReadManagerState/stopScanning/#/PointingToDeclaration/-nfc-reader-k-m-p/com.devtamuno.kmp.nfcreader.contract/-nfc-read-manager-state/stop-scanning.html
+$dokka.location:com.devtamuno.kmp.nfcreader.contract/NfcReadManagerStateImpl///PointingToDeclaration/-nfc-reader-k-m-p/com.devtamuno.kmp.nfcreader.contract/-nfc-read-manager-state-impl/index.html
+$dokka.location:com.devtamuno.kmp.nfcreader.contract/NfcReadManagerStateImpl/InitNfcManager/#/PointingToDeclaration/-nfc-reader-k-m-p/com.devtamuno.kmp.nfcreader.contract/-nfc-read-manager-state-impl/-init-nfc-manager.html
+$dokka.location:com.devtamuno.kmp.nfcreader.contract/NfcReadManagerStateImpl/NfcReadManagerStateImpl/#com.devtamuno.kmp.nfcreader.data.NfcConfig/PointingToDeclaration/-nfc-reader-k-m-p/com.devtamuno.kmp.nfcreader.contract/-nfc-read-manager-state-impl/-nfc-read-manager-state-impl.html
+$dokka.location:com.devtamuno.kmp.nfcreader.contract/NfcReadManagerStateImpl/nfcReadResult/#/PointingToDeclaration/-nfc-reader-k-m-p/com.devtamuno.kmp.nfcreader.contract/-nfc-read-manager-state-impl/nfc-read-result.html
+$dokka.location:com.devtamuno.kmp.nfcreader.contract/NfcReadManagerStateImpl/startScanning/#/PointingToDeclaration/-nfc-reader-k-m-p/com.devtamuno.kmp.nfcreader.contract/-nfc-read-manager-state-impl/start-scanning.html
+$dokka.location:com.devtamuno.kmp.nfcreader.contract/NfcReadManagerStateImpl/stopScanning/#/PointingToDeclaration/-nfc-reader-k-m-p/com.devtamuno.kmp.nfcreader.contract/-nfc-read-manager-state-impl/stop-scanning.html
+$dokka.location:com.devtamuno.kmp.nfcreader.data////PointingToDeclaration/-nfc-reader-k-m-p/com.devtamuno.kmp.nfcreader.data/index.html
+$dokka.location:com.devtamuno.kmp.nfcreader.data/NfcConfig///PointingToDeclaration/-nfc-reader-k-m-p/com.devtamuno.kmp.nfcreader.data/-nfc-config/index.html
+$dokka.location:com.devtamuno.kmp.nfcreader.data/NfcConfig/NfcConfig/#kotlin.String#kotlin.String#kotlin.String#kotlin.Boolean#kotlin.Boolean#kotlin.Boolean#kotlin.time.Duration#kotlin.Function1[androidx.compose.foundation.layout.ColumnScope,kotlin.Unit]/PointingToDeclaration/-nfc-reader-k-m-p/com.devtamuno.kmp.nfcreader.data/-nfc-config/-nfc-config.html
+$dokka.location:com.devtamuno.kmp.nfcreader.data/NfcConfig/buttonText/#/PointingToDeclaration/-nfc-reader-k-m-p/com.devtamuno.kmp.nfcreader.data/-nfc-config/button-text.html
+$dokka.location:com.devtamuno.kmp.nfcreader.data/NfcConfig/nfcReadTimeout/#/PointingToDeclaration/-nfc-reader-k-m-p/com.devtamuno.kmp.nfcreader.data/-nfc-config/nfc-read-timeout.html
+$dokka.location:com.devtamuno.kmp.nfcreader.data/NfcConfig/nfcScanningAnimationSlot/#/PointingToDeclaration/-nfc-reader-k-m-p/com.devtamuno.kmp.nfcreader.data/-nfc-config/nfc-scanning-animation-slot.html
+$dokka.location:com.devtamuno.kmp.nfcreader.data/NfcConfig/sheetGesturesEnabled/#/PointingToDeclaration/-nfc-reader-k-m-p/com.devtamuno.kmp.nfcreader.data/-nfc-config/sheet-gestures-enabled.html
+$dokka.location:com.devtamuno.kmp.nfcreader.data/NfcConfig/shouldDismissBottomSheetOnBackPress/#/PointingToDeclaration/-nfc-reader-k-m-p/com.devtamuno.kmp.nfcreader.data/-nfc-config/should-dismiss-bottom-sheet-on-back-press.html
+$dokka.location:com.devtamuno.kmp.nfcreader.data/NfcConfig/shouldDismissBottomSheetOnClickOutside/#/PointingToDeclaration/-nfc-reader-k-m-p/com.devtamuno.kmp.nfcreader.data/-nfc-config/should-dismiss-bottom-sheet-on-click-outside.html
+$dokka.location:com.devtamuno.kmp.nfcreader.data/NfcConfig/subtitleMessage/#/PointingToDeclaration/-nfc-reader-k-m-p/com.devtamuno.kmp.nfcreader.data/-nfc-config/subtitle-message.html
+$dokka.location:com.devtamuno.kmp.nfcreader.data/NfcConfig/titleMessage/#/PointingToDeclaration/-nfc-reader-k-m-p/com.devtamuno.kmp.nfcreader.data/-nfc-config/title-message.html
+$dokka.location:com.devtamuno.kmp.nfcreader.data/NfcReadResult.Error///PointingToDeclaration/-nfc-reader-k-m-p/com.devtamuno.kmp.nfcreader.data/-nfc-read-result/-error/index.html
+$dokka.location:com.devtamuno.kmp.nfcreader.data/NfcReadResult.Error/Error/#kotlin.String/PointingToDeclaration/-nfc-reader-k-m-p/com.devtamuno.kmp.nfcreader.data/-nfc-read-result/-error/-error.html
+$dokka.location:com.devtamuno.kmp.nfcreader.data/NfcReadResult.Error/message/#/PointingToDeclaration/-nfc-reader-k-m-p/com.devtamuno.kmp.nfcreader.data/-nfc-read-result/-error/message.html
+$dokka.location:com.devtamuno.kmp.nfcreader.data/NfcReadResult.Initial///PointingToDeclaration/-nfc-reader-k-m-p/com.devtamuno.kmp.nfcreader.data/-nfc-read-result/-initial/index.html
+$dokka.location:com.devtamuno.kmp.nfcreader.data/NfcReadResult.OperationCancelled///PointingToDeclaration/-nfc-reader-k-m-p/com.devtamuno.kmp.nfcreader.data/-nfc-read-result/-operation-cancelled/index.html
+$dokka.location:com.devtamuno.kmp.nfcreader.data/NfcReadResult.Success///PointingToDeclaration/-nfc-reader-k-m-p/com.devtamuno.kmp.nfcreader.data/-nfc-read-result/-success/index.html
+$dokka.location:com.devtamuno.kmp.nfcreader.data/NfcReadResult.Success/Success/#com.devtamuno.kmp.nfcreader.data.NfcTagData/PointingToDeclaration/-nfc-reader-k-m-p/com.devtamuno.kmp.nfcreader.data/-nfc-read-result/-success/-success.html
+$dokka.location:com.devtamuno.kmp.nfcreader.data/NfcReadResult.Success/data/#/PointingToDeclaration/-nfc-reader-k-m-p/com.devtamuno.kmp.nfcreader.data/-nfc-read-result/-success/data.html
+$dokka.location:com.devtamuno.kmp.nfcreader.data/NfcReadResult///PointingToDeclaration/-nfc-reader-k-m-p/com.devtamuno.kmp.nfcreader.data/-nfc-read-result/index.html
+$dokka.location:com.devtamuno.kmp.nfcreader.data/NfcTagData///PointingToDeclaration/-nfc-reader-k-m-p/com.devtamuno.kmp.nfcreader.data/-nfc-tag-data/index.html
+$dokka.location:com.devtamuno.kmp.nfcreader.data/NfcTagData/NfcTagData/#kotlin.String#com.devtamuno.kmp.nfcreader.data.NfcTagType#kotlin.String?#kotlin.collections.List[kotlin.String]/PointingToDeclaration/-nfc-reader-k-m-p/com.devtamuno.kmp.nfcreader.data/-nfc-tag-data/-nfc-tag-data.html
+$dokka.location:com.devtamuno.kmp.nfcreader.data/NfcTagData/payload/#/PointingToDeclaration/-nfc-reader-k-m-p/com.devtamuno.kmp.nfcreader.data/-nfc-tag-data/payload.html
+$dokka.location:com.devtamuno.kmp.nfcreader.data/NfcTagData/serialNumber/#/PointingToDeclaration/-nfc-reader-k-m-p/com.devtamuno.kmp.nfcreader.data/-nfc-tag-data/serial-number.html
+$dokka.location:com.devtamuno.kmp.nfcreader.data/NfcTagData/techList/#/PointingToDeclaration/-nfc-reader-k-m-p/com.devtamuno.kmp.nfcreader.data/-nfc-tag-data/tech-list.html
+$dokka.location:com.devtamuno.kmp.nfcreader.data/NfcTagData/type/#/PointingToDeclaration/-nfc-reader-k-m-p/com.devtamuno.kmp.nfcreader.data/-nfc-tag-data/type.html
+$dokka.location:com.devtamuno.kmp.nfcreader.data/NfcTagType.NDEF///PointingToDeclaration/{"org.jetbrains.dokka.links.EnumEntryDRIExtra":{"key":"org.jetbrains.dokka.links.EnumEntryDRIExtra"}}-nfc-reader-k-m-p/com.devtamuno.kmp.nfcreader.data/-nfc-tag-type/-n-d-e-f/index.html
+$dokka.location:com.devtamuno.kmp.nfcreader.data/NfcTagType.NON_NDEF///PointingToDeclaration/{"org.jetbrains.dokka.links.EnumEntryDRIExtra":{"key":"org.jetbrains.dokka.links.EnumEntryDRIExtra"}}-nfc-reader-k-m-p/com.devtamuno.kmp.nfcreader.data/-nfc-tag-type/-n-o-n_-n-d-e-f/index.html
+$dokka.location:com.devtamuno.kmp.nfcreader.data/NfcTagType///PointingToDeclaration/-nfc-reader-k-m-p/com.devtamuno.kmp.nfcreader.data/-nfc-tag-type/index.html
+$dokka.location:com.devtamuno.kmp.nfcreader.data/NfcTagType/entries/#/PointingToDeclaration/-nfc-reader-k-m-p/com.devtamuno.kmp.nfcreader.data/-nfc-tag-type/entries.html
+$dokka.location:com.devtamuno.kmp.nfcreader.data/NfcTagType/valueOf/#kotlin.String/PointingToDeclaration/-nfc-reader-k-m-p/com.devtamuno.kmp.nfcreader.data/-nfc-tag-type/value-of.html
+$dokka.location:com.devtamuno.kmp.nfcreader.data/NfcTagType/values/#/PointingToDeclaration/-nfc-reader-k-m-p/com.devtamuno.kmp.nfcreader.data/-nfc-tag-type/values.html
+$dokka.location:com.devtamuno.kmp.nfcreader.resources////PointingToDeclaration/-nfc-reader-k-m-p/com.devtamuno.kmp.nfcreader.resources/index.html
+$dokka.location:com.devtamuno.kmp.nfcreader.resources//allDrawableResources/com.devtamuno.kmp.nfcreader.resources.Res#/PointingToDeclaration/-nfc-reader-k-m-p/com.devtamuno.kmp.nfcreader.resources/all-drawable-resources.html
+$dokka.location:com.devtamuno.kmp.nfcreader.resources//allFontResources/com.devtamuno.kmp.nfcreader.resources.Res#/PointingToDeclaration/-nfc-reader-k-m-p/com.devtamuno.kmp.nfcreader.resources/all-font-resources.html
+$dokka.location:com.devtamuno.kmp.nfcreader.resources//allPluralStringResources/com.devtamuno.kmp.nfcreader.resources.Res#/PointingToDeclaration/-nfc-reader-k-m-p/com.devtamuno.kmp.nfcreader.resources/all-plural-string-resources.html
+$dokka.location:com.devtamuno.kmp.nfcreader.resources//allStringArrayResources/com.devtamuno.kmp.nfcreader.resources.Res#/PointingToDeclaration/-nfc-reader-k-m-p/com.devtamuno.kmp.nfcreader.resources/all-string-array-resources.html
+$dokka.location:com.devtamuno.kmp.nfcreader.resources//allStringResources/com.devtamuno.kmp.nfcreader.resources.Res#/PointingToDeclaration/-nfc-reader-k-m-p/com.devtamuno.kmp.nfcreader.resources/all-string-resources.html
+$dokka.location:com.devtamuno.kmp.nfcreader.resources/Res.array///PointingToDeclaration/-nfc-reader-k-m-p/com.devtamuno.kmp.nfcreader.resources/-res/array/index.html
+$dokka.location:com.devtamuno.kmp.nfcreader.resources/Res.drawable///PointingToDeclaration/-nfc-reader-k-m-p/com.devtamuno.kmp.nfcreader.resources/-res/drawable/index.html
+$dokka.location:com.devtamuno.kmp.nfcreader.resources/Res.font///PointingToDeclaration/-nfc-reader-k-m-p/com.devtamuno.kmp.nfcreader.resources/-res/font/index.html
+$dokka.location:com.devtamuno.kmp.nfcreader.resources/Res.plurals///PointingToDeclaration/-nfc-reader-k-m-p/com.devtamuno.kmp.nfcreader.resources/-res/plurals/index.html
+$dokka.location:com.devtamuno.kmp.nfcreader.resources/Res.string///PointingToDeclaration/-nfc-reader-k-m-p/com.devtamuno.kmp.nfcreader.resources/-res/string/index.html
+$dokka.location:com.devtamuno.kmp.nfcreader.resources/Res///PointingToDeclaration/-nfc-reader-k-m-p/com.devtamuno.kmp.nfcreader.resources/-res/index.html
+$dokka.location:com.devtamuno.kmp.nfcreader.resources/Res/getUri/#kotlin.String/PointingToDeclaration/-nfc-reader-k-m-p/com.devtamuno.kmp.nfcreader.resources/-res/get-uri.html
+$dokka.location:com.devtamuno.kmp.nfcreader.resources/Res/readBytes/#kotlin.String/PointingToDeclaration/-nfc-reader-k-m-p/com.devtamuno.kmp.nfcreader.resources/-res/read-bytes.html
+$dokka.location:com.devtamuno.kmp.nfcreader.ui////PointingToDeclaration/-nfc-reader-k-m-p/com.devtamuno.kmp.nfcreader.ui/index.html
+$dokka.location:com.devtamuno.kmp.nfcreader.ui/ScanningAnimationDefault///PointingToDeclaration/-nfc-reader-k-m-p/com.devtamuno.kmp.nfcreader.ui/-scanning-animation-default/index.html
+$dokka.location:com.devtamuno.kmp.nfcreader.ui/ScanningAnimationDefault/NfcScanningAnimation/#androidx.compose.ui.Modifier/PointingToDeclaration/-nfc-reader-k-m-p/com.devtamuno.kmp.nfcreader.ui/-scanning-animation-default/-nfc-scanning-animation.html
+$dokka.location:com.devtamuno.kmp.nfcreader////PointingToDeclaration/-nfc-reader-k-m-p/com.devtamuno.kmp.nfcreader/index.html
+$dokka.location:com.devtamuno.kmp.nfcreader//rememberNfcReadManagerState/#com.devtamuno.kmp.nfcreader.data.NfcConfig/PointingToDeclaration/-nfc-reader-k-m-p/com.devtamuno.kmp.nfcreader/remember-nfc-read-manager-state.html
+com.devtamuno.kmp.nfcreader
+com.devtamuno.kmp.nfcreader.contract
+com.devtamuno.kmp.nfcreader.data
+com.devtamuno.kmp.nfcreader.resources
+com.devtamuno.kmp.nfcreader.ui
