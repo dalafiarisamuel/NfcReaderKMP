@@ -12,9 +12,9 @@ import android.os.Bundle
 import androidx.activity.compose.LocalActivity
 import androidx.compose.foundation.background
 import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -122,6 +122,7 @@ internal actual class NfcReadManager actual constructor(private val config: NfcC
                 Column(
                     modifier = Modifier.fillMaxWidth().padding(vertical = 20.dp),
                     horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.spacedBy(10.dp),
                 ) {
                     Box(
                         modifier =
@@ -137,8 +138,6 @@ internal actual class NfcReadManager actual constructor(private val config: NfcC
                                 )
                     )
 
-                    Spacer(modifier = Modifier.height(10.dp))
-
                     Text(
                         text = config.titleMessage,
                         style =
@@ -148,17 +147,12 @@ internal actual class NfcReadManager actual constructor(private val config: NfcC
                         textAlign = TextAlign.Center,
                     )
                     Text(
-                        modifier = Modifier.padding(top = 16.dp),
                         text = config.subtitleMessage,
                         style = MaterialTheme.typography.bodyMedium,
                         textAlign = TextAlign.Center,
                     )
 
-                    Spacer(modifier = Modifier.height(10.dp))
-
                     config.nfcScanningAnimationSlot(this)
-
-                    Spacer(modifier = Modifier.height(10.dp))
 
                     OutlinedButton(
                         modifier =
