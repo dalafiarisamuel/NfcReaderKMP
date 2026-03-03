@@ -56,13 +56,10 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
 /**
- * Manager class for handling NFC reading operations on Android.
+ * Android implementation of [NfcReadManager].
+ * This class handles NFC tag scanning using the Android NFC Adapter in Reader Mode.
  *
- * This class implements the [NfcAdapter.ReaderCallback] to receive NFC tag discovery events. It
- * manages a [ModalBottomSheet] to provide a scanning UI and uses the [NfcAdapter] for reader mode
- * scanning.
- *
- * @property config The [NfcConfig] used to configure the scanning behavior and UI.
+ * @property config Configuration settings for NFC reading and the associated UI.
  */
 internal actual class NfcReadManager actual constructor(private val config: NfcConfig) :
     NfcAdapter.ReaderCallback {
@@ -74,13 +71,15 @@ internal actual class NfcReadManager actual constructor(private val config: NfcC
     private var isScanning by mutableStateOf(false)
     private var timeoutJob: Job? = null
 
-    /** A [StateFlow] that emits the current [NfcReadResult] of the NFC scanning process. */
+    /**
+     * A [StateFlow] that emits the current [NfcReadResult] during the scanning process.
+     */
     actual val nfcResult: StateFlow<NfcReadResult>
         get() = _tagData.asStateFlow()
 
     /**
-     * Registers the [NfcReadManager] with the current [Activity] and initializes the [NfcAdapter].
-     * It also displays the [ScanBottomSheet] when scanning is active.
+     * A Composable function that registers the manager with the current Activity and Context.
+     * It handles the lifecycle of the NFC adapter and displays the scan bottom sheet when active.
      */
     @Composable
     actual fun RegisterManager() {
@@ -100,6 +99,9 @@ internal actual class NfcReadManager actual constructor(private val config: NfcC
         ScanBottomSheet()
     }
 
+    /**
+     * Displays a bottom sheet to guide the user during the NFC scanning process.
+     */
     @Composable
     private fun ScanBottomSheet() {
         val sheetState = rememberModalBottomSheetState()
@@ -182,8 +184,8 @@ internal actual class NfcReadManager actual constructor(private val config: NfcC
     }
 
     /**
-     * Starts the NFC scanning process in reader mode. It sets up a timeout job and enables the
-     * [NfcAdapter]'s reader mode.
+     * Starts the NFC scanning process.
+     * Checks if the NFC adapter is available and enabled, then enables Reader Mode.
      */
     actual fun startScanning() {
         val currentActivity = activity
@@ -205,7 +207,7 @@ internal actual class NfcReadManager actual constructor(private val config: NfcC
         }
 
         isScanning = true
-        _tagData.value = NfcReadResult.Initial
+        _tagData.value = NfcReadResult.Scanning
 
         timeoutJob?.cancel()
         timeoutJob =
@@ -231,7 +233,9 @@ internal actual class NfcReadManager actual constructor(private val config: NfcC
         )
     }
 
-    /** Stops the NFC scanning process and disables reader mode. */
+    /**
+     * Stops the NFC scanning process and disables Reader Mode.
+     */
     actual fun stopScanning() {
         timeoutJob?.cancel()
         timeoutJob = null
@@ -239,9 +243,14 @@ internal actual class NfcReadManager actual constructor(private val config: NfcC
         isScanning = false
     }
 
+    /**
+     * Callback triggered when an NFC tag is discovered.
+     * Parses the tag data and updates [nfcResult].
+     *
+     * @param tag The discovered [Tag].
+     */
+    @OptIn(ExperimentalStdlibApi::class)
     override fun onTagDiscovered(tag: Tag?) {
-
-        // Stop scanning hardware and cancel timeout UI immediately
         scope.launch { stopScanning() }
 
         if (tag == null) {
@@ -249,68 +258,97 @@ internal actual class NfcReadManager actual constructor(private val config: NfcC
             return
         }
 
-        val tagId = tag.id.joinToString(":") { "%02X".format(it) }
-        val techList = tag.techList.map { getFriendlyName(it) }
+        val tagId =
+            tag.id.toHexString(
+                HexFormat {
+                    upperCase = true
+                    bytes { byteSeparator = ":" }
+                }
+            )
+
+        val hardwareTechList =
+            tag.techList.filter { !it.contains("tech.Ndef") }.map { getFriendlyName(it) }
+
+        val tagType = getNfcTagType(tag)
         val ndef = Ndef.get(tag)
 
         if (ndef == null) {
-            val data =
-                NfcTagData(
-                    serialNumber = tagId,
-                    type = NfcTagType.NON_NDEF,
-                    payload = null,
-                    techList = techList,
-                )
-            _tagData.value = NfcReadResult.Success(data)
+            _tagData.value =
+                NfcReadResult.Success(NfcTagData(tagId, tagType, null, hardwareTechList))
             return
         }
 
         val ndefMessage: NdefMessage? = ndef.cachedNdefMessage
         if (ndefMessage == null) {
-            val data =
-                NfcTagData(
-                    serialNumber = tagId,
-                    type = NfcTagType.NDEF,
-                    payload = null,
-                    techList = techList,
-                )
-            _tagData.value = NfcReadResult.Success(data)
+            _tagData.value =
+                NfcReadResult.Success(NfcTagData(tagId, tagType, null, hardwareTechList))
             return
         }
 
         val records: Array<NdefRecord>? = ndefMessage.records
         if (records.isNullOrEmpty()) {
-            val data =
-                NfcTagData(
-                    serialNumber = tagId,
-                    type = NfcTagType.NDEF,
-                    payload = null,
-                    techList = techList,
-                )
-            _tagData.value = NfcReadResult.Success(data)
+            _tagData.value =
+                NfcReadResult.Success(NfcTagData(tagId, tagType, null, hardwareTechList))
             return
         }
 
-        val combinedPayload =
-            records.joinToString(separator = "\n") { record ->
-                String(record.payload, Charsets.UTF_8)
-            }
+        val combinedPayload = records.joinToString(separator = "\n") { it.toReadableText() }
         val data =
             NfcTagData(
                 serialNumber = tagId,
                 type = NfcTagType.NDEF,
                 payload = combinedPayload,
-                techList = techList,
+                techList = hardwareTechList + "NDEF",
             )
         _tagData.value = NfcReadResult.Success(data)
     }
 
+    /**
+     * Extension function to convert [NdefRecord] payload to a readable string.
+     */
+    private fun NdefRecord.toReadableText(): String {
+        return try {
+            val payload = this.payload
+            if (payload.isEmpty()) return ""
+            val statusByte = payload[0].toInt()
+            val languageCodeLength = statusByte and 0x3F
+            val textStartIndex = languageCodeLength + 1
+            if (payload.size <= textStartIndex) return ""
+            String(payload, textStartIndex, payload.size - textStartIndex, Charsets.UTF_8)
+        } catch (e: Exception) {
+            ""
+        }
+    }
+
+    /**
+     * Maps hardware technology class names to user-friendly names.
+     */
     private fun getFriendlyName(tech: String): String {
         return when {
             tech.contains("MifareClassic") -> "Mifare Classic"
             tech.contains("MifareUltralight") -> "Mifare Ultralight"
-            tech.contains("NfcA") -> "ISO 14443-3A"
+            tech.contains("NfcA") -> "ISO 14443-3A (NfcA)"
+            tech.contains("NfcB") -> "ISO 14443-3B (NfcB)"
+            tech.contains("NfcF") -> "FeliCa (NfcF)"
+            tech.contains("NfcV") -> "ISO 15693 (NfcV)"
+            tech.contains("IsoDep") -> "ISO 14443-4 (ISO-DEP)"
             else -> tech.split(".").last()
+        }
+    }
+
+    /**
+     * Determines the [NfcTagType] based on the tag's technology list.
+     */
+    private fun getNfcTagType(tag: Tag): NfcTagType {
+        val techList = tag.techList
+        return when {
+            techList.any { it.contains("Mifare") } -> NfcTagType.MIFARE
+            techList.any { it.contains("NfcV") } -> NfcTagType.ISO15693
+            techList.any { it.contains("NfcF") } -> NfcTagType.FELICA
+            techList.any { it.contains("IsoDep") } ||
+                techList.any { it.contains("NfcA") } ||
+                techList.any { it.contains("NfcB") } -> NfcTagType.ISO7816
+            else -> NfcTagType.NON_NDEF
         }
     }
 }

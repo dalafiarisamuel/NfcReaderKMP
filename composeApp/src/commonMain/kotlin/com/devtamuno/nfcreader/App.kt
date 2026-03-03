@@ -87,6 +87,10 @@ fun App() {
                 NfcReadResult.OperationCancelled -> {
                     Text("Operation Cancelled")
                 }
+
+                NfcReadResult.Scanning -> {
+                    Text("Scanning for NFC Tag....")
+                }
             }
         }
     }
