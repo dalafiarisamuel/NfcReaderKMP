@@ -127,6 +127,14 @@ when (val state = result) {
 
 ---
 
+## 📺 Demo
+
+|                            Android Implementation                            |                            iOS Implementation                            |
+|:----------------------------------------------------------------------------:|:------------------------------------------------------------------------:|
+| <video src="images/android_implementation.mp4" width="320" controls></video> | <video src="images/ios_implementation.mp4" width="320" controls></video> |
+
+---
+
 ## 🤝 Contributing
 
 Contributions are welcome! Please feel free to submit a Pull Request.
