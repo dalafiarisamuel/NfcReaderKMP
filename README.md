@@ -127,17 +127,17 @@ when (val state = result) {
 
 ---
 
-## 🤝 Contributing
+## 📺 Demo
 
-Contributions are welcome! Please feel free to submit a Pull Request.
+|                   Android Implementation                    |                   iOS Implementation                    |
+|:-----------------------------------------------------------:|:-------------------------------------------------------:|
+| <img src="images/android_implementation.gif" width="300" /> | <img src="images/ios_implementation.gif" width="300" /> |
 
 ---
 
-## 📺 Demo
+## 🤝 Contributing
 
-|                                                 Android Implementation                                                 |                                               iOS Implementation                                               |
-|:----------------------------------------------------------------------------------------------------------------------:|:--------------------------------------------------------------------------------------------------------------:|
-| ![Android Demo](https://raw.githubusercontent.com/dalafiarisamuel/NfcReaderKMP/main/images/android_implementation.mp4) | ![iOS Demo](https://raw.githubusercontent.com/dalafiarisamuel/NfcReaderKMP/main/images/ios_implementation.mp4) |
+Contributions are welcome! Please feel free to submit a Pull Request.
 
 ---
 
