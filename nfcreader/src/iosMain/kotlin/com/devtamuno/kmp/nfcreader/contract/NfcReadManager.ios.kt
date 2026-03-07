@@ -33,42 +33,32 @@ import platform.darwin.dispatch_get_main_queue
 import platform.posix.memcpy
 
 /**
- * iOS implementation of [NfcReadManager].
- * This class handles NFC tag scanning using CoreNFC's [NFCTagReaderSession].
- *
- * @property config Configuration settings for NFC reading.
+ * iOS implementation of [NfcReadManager]. This class handles NFC tag scanning using CoreNFC's
+ * [NFCTagReaderSession].
  */
 internal actual class NfcReadManager actual constructor(private val config: NfcConfig) :
     NSObject(), NFCTagReaderSessionDelegateProtocol {
 
     private val _nfcResult = MutableStateFlow<NfcReadResult>(NfcReadResult.Initial)
-    private var resultCaptured = false
+    private var pendingResult: NfcReadResult? = null
 
-    /**
-     * A [StateFlow] that emits the current [NfcReadResult] during the scanning process.
-     */
+    /** A [StateFlow] that emits the current [NfcReadResult]. */
     actual val nfcResult: StateFlow<NfcReadResult>
         get() = _nfcResult.asStateFlow()
 
     private var session: NFCTagReaderSession? = null
 
-    /**
-     * A Composable function that registers the manager.
-     * On iOS, this is currently a no-op as the scanning UI is handled by the system.
-     */
+    /** Registers the manager (no-op on iOS as the system handles the UI). */
     @Composable actual fun RegisterManager() = Unit
 
-    /**
-     * Starts the NFC scanning process by initiating an [NFCTagReaderSession].
-     * Checks if NFC reading is available on the device before starting.
-     */
+    /** Starts the NFC scanning process. */
     actual fun startScanning() {
         if (!NFCTagReaderSession.readingAvailable()) {
             updateState(NfcReadResult.Error("NFC not available"))
             return
         }
 
-        resultCaptured = false
+        pendingResult = null
         updateState(NfcReadResult.Scanning)
         session =
             NFCTagReaderSession(
@@ -82,9 +72,7 @@ internal actual class NfcReadManager actual constructor(private val config: NfcC
                 }
     }
 
-    /**
-     * Stops the NFC scanning process and invalidates the current session.
-     */
+    /** Stops the NFC scanning process. */
     actual fun stopScanning() {
         session?.invalidateSession()
         session = null
@@ -93,33 +81,32 @@ internal actual class NfcReadManager actual constructor(private val config: NfcC
     override fun tagReaderSessionDidBecomeActive(session: NFCTagReaderSession) = Unit
 
     /**
-     * Invoked when the session is invalidated, either by the user or due to an error.
+     * Invoked when the session is invalidated. We emit the captured result only HERE, after the
+     * system UI has dismissed.
      */
     override fun tagReaderSession(session: NFCTagReaderSession, didInvalidateWithError: NSError) {
         this.session = null
 
-        if (resultCaptured) return
-
         val result =
-            when (didInvalidateWithError.code) {
-                200L -> NfcReadResult.OperationCancelled
-                else -> NfcReadResult.Error(didInvalidateWithError.localizedDescription)
-            }
+            pendingResult
+                ?: run {
+                    when (didInvalidateWithError.code) {
+                        200L -> NfcReadResult.OperationCancelled
+                        else -> NfcReadResult.Error(didInvalidateWithError.localizedDescription)
+                    }
+                }
 
         updateState(result)
+        pendingResult = null
     }
 
-    /**
-     * Invoked when one or more NFC tags are detected.
-     */
+    /** Invoked when tags are detected. */
     override fun tagReaderSession(session: NFCTagReaderSession, didDetectTags: List<*>) {
         val tag = didDetectTags.firstOrNull() as? NFCTagProtocol ?: return
 
         session.connectToTag(tag) { error ->
             if (error != null) {
-                resultCaptured = true
-                updateState(NfcReadResult.Error(error.localizedDescription))
-                session.invalidateSession()
+                finishSession(session, NfcReadResult.Error(error.localizedDescription))
                 return@connectToTag
             }
 
@@ -131,34 +118,26 @@ internal actual class NfcReadManager actual constructor(private val config: NfcC
                     val miFare = tag.asNFCMiFareTag()
                     readNdefIfAvailable(session, uid, techList, NfcTagType.MIFARE, miFare)
                 }
-
                 NFCTagTypeISO15693 -> {
                     val iso15693 = tag.asNFCISO15693Tag()
                     readNdefIfAvailable(session, uid, techList, NfcTagType.ISO15693, iso15693)
                 }
-
                 NFCTagTypeISO7816Compatible -> {
                     val iso7816 = tag.asNFCISO7816Tag()
                     readNdefIfAvailable(session, uid, techList, NfcTagType.ISO7816, iso7816)
                 }
-
                 NFCTagTypeFeliCa -> {
                     val felica = tag.asNFCFeliCaTag()
                     readNdefIfAvailable(session, uid, techList, NfcTagType.FELICA, felica)
                 }
-
                 else -> {
-                    resultCaptured = true
-                    updateState(NfcReadResult.Error("Unsupported tag type"))
-                    session.invalidateSession()
+                    finishSession(session, NfcReadResult.Error("Unsupported tag type"))
                 }
             }
         }
     }
 
-    /**
-     * Attempts to read NDEF data from the tag if supported.
-     */
+    /** Attempts to read NDEF data. */
     private fun readNdefIfAvailable(
         session: NFCTagReaderSession,
         uid: String,
@@ -168,25 +147,20 @@ internal actual class NfcReadManager actual constructor(private val config: NfcC
     ) {
         val ndefTag = tag as? platform.CoreNFC.NFCNDEFTagProtocol
         if (ndefTag == null) {
-            resultCaptured = true
-            updateState(NfcReadResult.Success(NfcTagData(uid, type, null, techList)))
-            session.invalidateSession()
+            finishSession(session, NfcReadResult.Success(NfcTagData(uid, type, null, techList)))
             return
         }
 
         ndefTag.queryNDEFStatusWithCompletionHandler { status, _, error ->
             if (error != null) {
-                resultCaptured = true
-                updateState(NfcReadResult.Error(error.localizedDescription))
-                session.invalidateSession()
+                finishSession(session, NfcReadResult.Error(error.localizedDescription))
                 return@queryNDEFStatusWithCompletionHandler
             }
 
             if (status == NFCNDEFStatusReadOnly || status == NFCNDEFStatusReadWrite) {
                 ndefTag.readNDEFWithCompletionHandler { message: NFCNDEFMessage?, readError ->
-                    resultCaptured = true
                     if (readError != null) {
-                        updateState(NfcReadResult.Error(readError.localizedDescription))
+                        finishSession(session, NfcReadResult.Error(readError.localizedDescription))
                     } else {
                         val payload =
                             message?.records?.filterIsInstance<NFCNDEFPayload>()?.joinToString(
@@ -194,25 +168,36 @@ internal actual class NfcReadManager actual constructor(private val config: NfcC
                             ) {
                                 it.readableText()
                             }
-                        updateState(
+                        finishSession(
+                            session,
                             NfcReadResult.Success(
                                 NfcTagData(uid, NfcTagType.NDEF, payload, techList + "NDEF")
-                            )
+                            ),
                         )
                     }
-                    session.invalidateSession()
                 }
             } else {
-                resultCaptured = true
-                updateState(NfcReadResult.Success(NfcTagData(uid, type, null, techList)))
-                session.invalidateSession()
+                finishSession(session, NfcReadResult.Success(NfcTagData(uid, type, null, techList)))
             }
         }
     }
 
     /**
-     * Determines the list of supported technologies for the detected tag.
+     * Captures the result and invalidates the session. The actual state update happens in
+     * [tagReaderSession(session, didInvalidateWithError)] once the system dialog is dismissed.
      */
+    private fun finishSession(session: NFCTagReaderSession, result: NfcReadResult) {
+        pendingResult = result
+        when (result) {
+            is NfcReadResult.Error -> session.invalidateSessionWithErrorMessage(result.message)
+            is NfcReadResult.Success -> {
+                session.alertMessage = "Tag Scanned Successfully"
+                session.invalidateSession()
+            }
+            else -> session.invalidateSession()
+        }
+    }
+
     private fun getTechList(tag: NFCTagProtocol): List<String> {
         return when (tag.type) {
             NFCTagTypeMiFare -> listOf("ISO 14443-3A", "NfcA", "Mifare")
@@ -230,15 +215,11 @@ internal actual class NfcReadManager actual constructor(private val config: NfcC
                 list.add("ISO 7816")
                 list
             }
-
             NFCTagTypeFeliCa -> listOf("FeliCa", "NfcF", "JIS 6319-4")
             else -> listOf("Unknown")
         }
     }
 
-    /**
-     * Extracts the UID (Unique Identifier) from the detected tag.
-     */
     private fun extractUid(tag: NFCTagProtocol): String {
         return when (tag.type) {
             NFCTagTypeMiFare -> tag.asNFCMiFareTag()?.identifier?.toByteArray()?.toHex() ?: ""
@@ -250,9 +231,6 @@ internal actual class NfcReadManager actual constructor(private val config: NfcC
         }
     }
 
-    /**
-     * Converts the [NFCNDEFPayload] to a readable string format.
-     */
     private fun NFCNDEFPayload.readableText(): String {
         return try {
             val bytes = payload.toByteArray()
@@ -267,18 +245,12 @@ internal actual class NfcReadManager actual constructor(private val config: NfcC
         }
     }
 
-    /**
-     * Helper to convert [NSData] to a [ByteArray].
-     */
     private fun NSData.toByteArray(): ByteArray {
         val bytes = ByteArray(length.toInt())
         memcpy(bytes.refTo(0), this.bytes, length)
         return bytes
     }
 
-    /**
-     * Helper to convert a [ByteArray] to a hex string.
-     */
     private fun ByteArray.toHex(): String =
         toHexString(
             HexFormat {
@@ -287,9 +259,6 @@ internal actual class NfcReadManager actual constructor(private val config: NfcC
             }
         )
 
-    /**
-     * Updates the [_nfcResult] on the main dispatch queue.
-     */
     private fun updateState(result: NfcReadResult) {
         dispatch_async(dispatch_get_main_queue()) { _nfcResult.value = result }
     }
