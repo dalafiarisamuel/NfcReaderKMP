@@ -10,6 +10,16 @@ A powerful, easy-to-use Kotlin Multiplatform (KMP) library for reading NFC tags 
 
 ---
 
+## 🚧 Work in Progress
+
+> **This library is currently under active development and has not yet been published to Maven Central.**
+>
+> The core functionality is implemented and working on both Android and iOS, but we are still completing testing before the first stable release. The API may change before the official release.
+>
+> Watch or star this repository to be notified when it is released.
+
+---
+
 ## ✨ Features
 
 - **🚀 Unified API**: A single, clean API to handle NFC scanning on both platforms.
@@ -46,7 +56,7 @@ sourceSets {
 <uses-feature android:name="android.hardware.nfc" android:required="false" />
 ```
 
-### iOS 
+### iOS
 
 1. Add `NFCReaderUsageDescription` to your `Info.plist`.
 2. Enable the **Near Field Communication Tag Reading** capability in your Xcode project.
@@ -58,20 +68,17 @@ sourceSets {
 
 ### 1. Initialize the State Manager
 
-You can use the declarative DSL to configure the reader:
+Create an `NfcConfig` and pass it to `rememberNfcReadManagerState`:
 
 ```kotlin
-val nfcManager = rememberNfcReadManagerState {
-    titleMessage = "Ready to Scan"
-    subtitleMessage = "Hold your tag near the device."
-    buttonText = "Cancel"
-    nfcReadTimeout = 30.seconds
-    
-    // Custom Lottie animation for Android (optional)
-    nfcScanningAnimationSlot = {
-      ScanningAnimationDefault.NfcScanningAnimation()
-    }
-}
+val nfcManager = rememberNfcReadManagerState(
+    config = NfcConfig(
+        titleMessage = "Ready to Scan",
+        subtitleMessage = "Hold your tag near the device.",
+        buttonText = "Cancel",
+        nfcReadTimeout = 30.seconds
+    )
+)
 ```
 
 ### 2. Observe Results
@@ -84,13 +91,18 @@ val result by nfcManager.nfcReadResult.collectAsState()
 when (val state = result) {
     is NfcReadResult.Success -> {
         Text("Tag ID: ${state.data.serialNumber}")
+        Text("Type: ${state.data.type}")
         Text("Payload: ${state.data.payload}")
+        Text("Technologies: ${state.data.techList.joinToString()}")
     }
     is NfcReadResult.Error -> {
         Text("Error: ${state.message}", color = Color.Red)
     }
+    NfcReadResult.Scanning -> {
+        Text("Scanning for NFC tag...")
+    }
     NfcReadResult.OperationCancelled -> {
-        Text("Scanning cancelled by user")
+        Text("Scanning cancelled")
     }
     NfcReadResult.Initial -> {
         Button(onClick = { nfcManager.startScanning() }) {
@@ -106,24 +118,50 @@ when (val state = result) {
 
 | Property | Type | Default | Platform |
 | :--- | :--- | :--- | :--- |
-| `titleMessage` | `String` | `"Ready to Scan"` | Android |
-| `subtitleMessage` | `String` | `"Hold your tag near the device."` | Android & iOS |
-| `buttonText` | `String` | `"Cancel"` | Android |
-| `nfcReadTimeout` | `Duration` | `60.seconds` | Android |
+| `titleMessage` | `String` | Required | Android |
+| `subtitleMessage` | `String` | Required | Android & iOS |
+| `buttonText` | `String` | Required | Android |
+| `nfcReadTimeout` | `Duration` | `60.seconds` (min 5s) | Android |
+| `nfcUnsupportedMessage` | `String` | `"NFC is not supported on this device"` | Android |
+| `nfcDisabledMessage` | `String` | `"NFC is disabled on this device"` | Android |
+| `nfcScanTimeoutMessage` | `String` | `"NFC scan timed out"` | Android |
 | `sheetGesturesEnabled` | `Boolean` | `true` | Android |
 | `shouldDismissBottomSheetOnBackPress` | `Boolean` | `false` | Android |
 | `shouldDismissBottomSheetOnClickOutside` | `Boolean` | `false` | Android |
-| `nfcScanningAnimationSlot` | `Composable` | Default Animation | Android |
+| `nfcScanningAnimationSlot` | `@Composable ColumnScope.() -> Unit` | Built-in Lottie animation | Android |
+
+> **Note:** On iOS, only `subtitleMessage` is used — it maps directly to the native system NFC scanning dialog message. All other properties are Android-specific.
 
 ---
 
 ## 📄 Data Models
 
 ### `NfcTagData`
-- `serialNumber`: The tag's unique ID (Hex string). *Note: Android only.*
-- `type`: Either `NDEF` or `NON_NDEF`.
-- `payload`: The decoded string content of the tag.
-- `techList`: A list of hardware technologies detected (e.g., `Mifare Classic`, `ISO 14443-3A`).
+- `serialNumber`: The tag's unique ID as a hex-encoded string (available on both Android and iOS).
+- `type`: The tag type as an `NfcTagType` enum — see values below.
+- `payload`: The decoded string content of the tag. `null` if the tag is empty or non-NDEF.
+- `techList`: A list of hardware technologies detected (e.g., `"Mifare Classic"`, `"ISO 14443-3A"`).
+
+### `NfcTagType`
+
+| Value | Description |
+| :--- | :--- |
+| `NDEF` | NFC Data Exchange Format tag |
+| `NON_NDEF` | Tag that does not contain NDEF data |
+| `MIFARE` | MIFARE-based tag (Classic, Ultralight, DESFire) |
+| `ISO15693` | ISO 15693 vicinity tag |
+| `ISO7816` | ISO 7816-4 based smart card or tag |
+| `FELICA` | Sony FeliCa tag (transit/payments) |
+
+### `NfcReadResult`
+
+| State | Description |
+| :--- | :--- |
+| `Initial` | No scan has been initiated yet |
+| `Scanning` | Actively scanning for a tag |
+| `Success(data)` | Tag was read successfully |
+| `Error(message)` | An error occurred during scanning |
+| `OperationCancelled` | Scanning was cancelled by the user or system |
 
 ---
 

@@ -19,6 +19,9 @@ import kotlin.time.Duration.Companion.seconds
  * @property shouldDismissBottomSheetOnClickOutside Whether to dismiss the bottom sheet on click
  *   outside.
  * @property nfcReadTimeout The timeout for NFC reading.
+ * @property nfcUnsupportedMessage Error message emitted when NFC hardware is unavailable.
+ * @property nfcDisabledMessage Error message emitted when NFC is turned off on the device.
+ * @property nfcScanTimeoutMessage Error message emitted when scanning exceeds [nfcReadTimeout].
  * @property nfcScanningAnimationSlot The composable component for NFC scanning animation.
  */
 data class NfcConfig(
@@ -29,6 +32,9 @@ data class NfcConfig(
     val shouldDismissBottomSheetOnBackPress: Boolean = false,
     val shouldDismissBottomSheetOnClickOutside: Boolean = false,
     val nfcReadTimeout: Duration = 60.seconds,
+    val nfcUnsupportedMessage: String = "NFC is not supported on this device",
+    val nfcDisabledMessage: String = "NFC is disabled on this device",
+    val nfcScanTimeoutMessage: String = "NFC scan timed out",
     val nfcScanningAnimationSlot: @Composable ColumnScope.() -> Unit = {
         ScanningAnimationDefault.NfcScanningAnimation()
     },

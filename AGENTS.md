@@ -23,9 +23,10 @@ The project is divided into two main modules:
 - **`NfcReadManagerStateImpl`**: Internal implementation that coordinates between the `NfcReadManager` and the public state.
 
 ### Data Layer (`com.devtamuno.kmp.nfcreader.data`)
-- **`NfcConfig`**: Configuration for scanning behavior (timeouts, messages, animations).
-- **`NfcReadResult`**: Sealed class representing the lifecycle of an NFC scan (Initial, Scanning, Success, Error, Cancelled).
-- **`NfcTagData`**: Model for scanned tag information (Serial Number, Type, Payload, Tech List).
+- **`NfcConfig`**: Configuration for scanning behavior (timeouts, messages, animations). The `nfcScanningAnimationSlot` composable slot is Android-only and has a built-in Lottie default.
+- **`NfcReadResult`**: Sealed class representing the lifecycle of an NFC scan (`Initial`, `Scanning`, `Success`, `Error`, `OperationCancelled`).
+- **`NfcTagData`**: Model for scanned tag information (Serial Number, Type, Payload, Tech List). `serialNumber` is available on both Android and iOS.
+- **`NfcTagType`**: Enum of supported tag types — `NDEF`, `NON_NDEF`, `MIFARE`, `ISO15693`, `ISO7816`, `FELICA`.
 
 ### UI Layer (`com.devtamuno.kmp.nfcreader.ui`)
 - Contains default UI components like `ScanningAnimationDefault`.
@@ -41,7 +42,11 @@ Example:
 ```kotlin
 @Composable
 fun rememberNfcReadManagerState(config: NfcConfig): NfcReadManagerState =
-    remember { NfcReadManagerStateImpl(config) }.also { it.InitNfcManager() }
+    rememberMutableNfcReadManagerState(config).also { it.InitNfcManager() }
+
+@Composable
+private fun rememberMutableNfcReadManagerState(config: NfcConfig): NfcReadManagerState =
+    remember { NfcReadManagerStateImpl(config) }
 ```
 
 ### Naming Conventions
@@ -78,12 +83,12 @@ fun rememberNfcReadManagerState(config: NfcConfig): NfcReadManagerState =
 
 ### Defining a Result (Sealed Class)
 ```kotlin
-sealed interface NfcReadResult {
-    data object Initial : NfcReadResult
-    data object Scanning : NfcReadResult
-    data class Success(val data: NfcTagData) : NfcReadResult
-    data class Error(val message: String) : NfcReadResult
-    data object OperationCancelled : NfcReadResult
+sealed class NfcReadResult {
+    data object Initial : NfcReadResult()
+    data object Scanning : NfcReadResult()
+    data class Success(val data: NfcTagData) : NfcReadResult()
+    data class Error(val message: String) : NfcReadResult()
+    data object OperationCancelled : NfcReadResult()
 }
 ```
 
