@@ -4,18 +4,6 @@ import android.nfc.NdefRecord
 import android.nfc.Tag
 import com.devtamuno.kmp.nfcreader.data.NfcTagType
 
-// NFC Forum URI identifier codes (NFC Data Exchange Format spec, Section 3.2.2)
-private val URI_PREFIXES = arrayOf(
-    "", "http://www.", "https://www.", "http://", "https://",
-    "tel:", "mailto:", "ftp://anonymous:anonymous@", "ftp://ftp.",
-    "ftps://", "sftp://", "smb://", "nfs://", "ftp://", "dav://",
-    "news:", "telnet://", "imap:", "rtsp://", "urn:", "pop:", "sip:",
-    "sips:", "tftp:", "btspp://", "btl2cap://", "btgoep://",
-    "tcpobex://", "irdaobex://", "file://", "urn:epc:id:",
-    "urn:epc:tag:", "urn:epc:pat:", "urn:epc:raw:", "urn:epc:",
-    "urn:nfc:",
-)
-
 /**
  * Determines the [NfcTagType] based on the tag's technology list.
  * Only [IsoDep] maps to [NfcTagType.ISO7816]; bare NfcA/NfcB fall through to [NfcTagType.NON_NDEF].
@@ -68,7 +56,7 @@ internal fun NdefRecord.toReadableText(): String {
             }
             // Well-Known URI: identifier byte prefix + URI string
             tnf == NdefRecord.TNF_WELL_KNOWN && type.contentEquals(NdefRecord.RTD_URI) -> {
-                val prefix = URI_PREFIXES.getOrElse(payload[0].toInt() and 0xFF) { "" }
+                val prefix = NFC_URI_PREFIXES.getOrElse(payload[0].toInt() and 0xFF) { "" }
                 prefix + String(payload, 1, payload.size - 1, Charsets.UTF_8)
             }
             // MIME or external type: raw payload as UTF-8

@@ -125,6 +125,7 @@ when (val state = result) {
 | `nfcUnsupportedMessage` | `String` | `"NFC is not supported on this device"` | Android |
 | `nfcDisabledMessage` | `String` | `"NFC is disabled on this device"` | Android |
 | `nfcScanTimeoutMessage` | `String` | `"NFC scan timed out"` | Android |
+| `nfcSuccessMessage` | `String` | `"Tag scanned successfully"` | iOS |
 | `sheetGesturesEnabled` | `Boolean` | `true` | Android |
 | `shouldDismissBottomSheetOnBackPress` | `Boolean` | `false` | Android |
 | `shouldDismissBottomSheetOnClickOutside` | `Boolean` | `false` | Android |

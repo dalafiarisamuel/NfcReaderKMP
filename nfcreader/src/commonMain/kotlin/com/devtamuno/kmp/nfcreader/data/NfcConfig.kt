@@ -22,6 +22,8 @@ import kotlin.time.Duration.Companion.seconds
  * @property nfcUnsupportedMessage Error message emitted when NFC hardware is unavailable.
  * @property nfcDisabledMessage Error message emitted when NFC is turned off on the device.
  * @property nfcScanTimeoutMessage Error message emitted when scanning exceeds [nfcReadTimeout].
+ * @property nfcSuccessMessage Message shown in the native iOS scanning dialog after a successful
+ *   read. Has no effect on Android.
  * @property nfcScanningAnimationSlot The composable component for NFC scanning animation.
  */
 data class NfcConfig(
@@ -35,6 +37,7 @@ data class NfcConfig(
     val nfcUnsupportedMessage: String = "NFC is not supported on this device",
     val nfcDisabledMessage: String = "NFC is disabled on this device",
     val nfcScanTimeoutMessage: String = "NFC scan timed out",
+    val nfcSuccessMessage: String = "Tag scanned successfully",
     val nfcScanningAnimationSlot: @Composable ColumnScope.() -> Unit = {
         ScanningAnimationDefault.NfcScanningAnimation()
     },
