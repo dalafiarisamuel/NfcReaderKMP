@@ -1,6 +1,17 @@
 $dokka.format:html-v1
 $dokka.linkExtension:html
 $dokka.location:com.devtamuno.kmp.nfcreader.contract////PointingToDeclaration/-nfc-reader-k-m-p/com.devtamuno.kmp.nfcreader.contract/index.html
+$dokka.location:com.devtamuno.kmp.nfcreader.contract//NFC_URI_PREFIXES/#/PointingToDeclaration/-nfc-reader-k-m-p/com.devtamuno.kmp.nfcreader.contract/-n-f-c_-u-r-i_-p-r-e-f-i-x-e-s.html
+$dokka.location:com.devtamuno.kmp.nfcreader.contract//NfcScanBottomSheet/#com.devtamuno.kmp.nfcreader.data.NfcConfig#kotlin.Boolean#kotlin.Function0[kotlin.Unit]/PointingToDeclaration/-nfc-reader-k-m-p/com.devtamuno.kmp.nfcreader.contract/-nfc-scan-bottom-sheet.html
+$dokka.location:com.devtamuno.kmp.nfcreader.contract//extractUid/#platform.CoreNFC.NFCTagProtocol/PointingToDeclaration/-nfc-reader-k-m-p/com.devtamuno.kmp.nfcreader.contract/extract-uid.html
+$dokka.location:com.devtamuno.kmp.nfcreader.contract//getFriendlyName/#kotlin.String/PointingToDeclaration/-nfc-reader-k-m-p/com.devtamuno.kmp.nfcreader.contract/get-friendly-name.html
+$dokka.location:com.devtamuno.kmp.nfcreader.contract//getNfcTagType/#android.nfc.Tag/PointingToDeclaration/-nfc-reader-k-m-p/com.devtamuno.kmp.nfcreader.contract/get-nfc-tag-type.html
+$dokka.location:com.devtamuno.kmp.nfcreader.contract//getTechList/#platform.CoreNFC.NFCTagProtocol/PointingToDeclaration/-nfc-reader-k-m-p/com.devtamuno.kmp.nfcreader.contract/get-tech-list.html
+$dokka.location:com.devtamuno.kmp.nfcreader.contract//readableText/platform.CoreNFC.NFCNDEFPayload#/PointingToDeclaration/-nfc-reader-k-m-p/com.devtamuno.kmp.nfcreader.contract/readable-text.html
+$dokka.location:com.devtamuno.kmp.nfcreader.contract//toByteArray/platform.Foundation.NSData#/PointingToDeclaration/-nfc-reader-k-m-p/com.devtamuno.kmp.nfcreader.contract/to-byte-array.html
+$dokka.location:com.devtamuno.kmp.nfcreader.contract//toHex/kotlin.ByteArray#/PointingToDeclaration/-nfc-reader-k-m-p/com.devtamuno.kmp.nfcreader.contract/to-hex.html
+$dokka.location:com.devtamuno.kmp.nfcreader.contract//toReadableText/android.nfc.NdefRecord#/PointingToDeclaration/-nfc-reader-k-m-p/com.devtamuno.kmp.nfcreader.contract/to-readable-text.html
+$dokka.location:com.devtamuno.kmp.nfcreader.contract/NfcReadManager.Companion///PointingToDeclaration/-nfc-reader-k-m-p/com.devtamuno.kmp.nfcreader.contract/-nfc-read-manager/-companion/index.html
 $dokka.location:com.devtamuno.kmp.nfcreader.contract/NfcReadManager///PointingToDeclaration/-nfc-reader-k-m-p/com.devtamuno.kmp.nfcreader.contract/-nfc-read-manager/index.html
 $dokka.location:com.devtamuno.kmp.nfcreader.contract/NfcReadManager/NfcReadManager/#com.devtamuno.kmp.nfcreader.data.NfcConfig/PointingToDeclaration/-nfc-reader-k-m-p/com.devtamuno.kmp.nfcreader.contract/-nfc-read-manager/-nfc-read-manager.html
 $dokka.location:com.devtamuno.kmp.nfcreader.contract/NfcReadManager/RegisterManager/#/PointingToDeclaration/-nfc-reader-k-m-p/com.devtamuno.kmp.nfcreader.contract/-nfc-read-manager/-register-manager.html
@@ -24,10 +35,14 @@ $dokka.location:com.devtamuno.kmp.nfcreader.contract/NfcReadManagerStateImpl/sta
 $dokka.location:com.devtamuno.kmp.nfcreader.contract/NfcReadManagerStateImpl/stopScanning/#/PointingToDeclaration/-nfc-reader-k-m-p/com.devtamuno.kmp.nfcreader.contract/-nfc-read-manager-state-impl/stop-scanning.html
 $dokka.location:com.devtamuno.kmp.nfcreader.data////PointingToDeclaration/-nfc-reader-k-m-p/com.devtamuno.kmp.nfcreader.data/index.html
 $dokka.location:com.devtamuno.kmp.nfcreader.data/NfcConfig///PointingToDeclaration/-nfc-reader-k-m-p/com.devtamuno.kmp.nfcreader.data/-nfc-config/index.html
-$dokka.location:com.devtamuno.kmp.nfcreader.data/NfcConfig/NfcConfig/#kotlin.String#kotlin.String#kotlin.String#kotlin.Boolean#kotlin.Boolean#kotlin.Boolean#kotlin.time.Duration#kotlin.Function1[androidx.compose.foundation.layout.ColumnScope,kotlin.Unit]/PointingToDeclaration/-nfc-reader-k-m-p/com.devtamuno.kmp.nfcreader.data/-nfc-config/-nfc-config.html
+$dokka.location:com.devtamuno.kmp.nfcreader.data/NfcConfig/NfcConfig/#kotlin.String#kotlin.String#kotlin.String#kotlin.Boolean#kotlin.Boolean#kotlin.Boolean#kotlin.time.Duration#kotlin.String#kotlin.String#kotlin.String#kotlin.String#kotlin.Function1[androidx.compose.foundation.layout.ColumnScope,kotlin.Unit]/PointingToDeclaration/-nfc-reader-k-m-p/com.devtamuno.kmp.nfcreader.data/-nfc-config/-nfc-config.html
 $dokka.location:com.devtamuno.kmp.nfcreader.data/NfcConfig/buttonText/#/PointingToDeclaration/-nfc-reader-k-m-p/com.devtamuno.kmp.nfcreader.data/-nfc-config/button-text.html
+$dokka.location:com.devtamuno.kmp.nfcreader.data/NfcConfig/nfcDisabledMessage/#/PointingToDeclaration/-nfc-reader-k-m-p/com.devtamuno.kmp.nfcreader.data/-nfc-config/nfc-disabled-message.html
 $dokka.location:com.devtamuno.kmp.nfcreader.data/NfcConfig/nfcReadTimeout/#/PointingToDeclaration/-nfc-reader-k-m-p/com.devtamuno.kmp.nfcreader.data/-nfc-config/nfc-read-timeout.html
+$dokka.location:com.devtamuno.kmp.nfcreader.data/NfcConfig/nfcScanTimeoutMessage/#/PointingToDeclaration/-nfc-reader-k-m-p/com.devtamuno.kmp.nfcreader.data/-nfc-config/nfc-scan-timeout-message.html
 $dokka.location:com.devtamuno.kmp.nfcreader.data/NfcConfig/nfcScanningAnimationSlot/#/PointingToDeclaration/-nfc-reader-k-m-p/com.devtamuno.kmp.nfcreader.data/-nfc-config/nfc-scanning-animation-slot.html
+$dokka.location:com.devtamuno.kmp.nfcreader.data/NfcConfig/nfcSuccessMessage/#/PointingToDeclaration/-nfc-reader-k-m-p/com.devtamuno.kmp.nfcreader.data/-nfc-config/nfc-success-message.html
+$dokka.location:com.devtamuno.kmp.nfcreader.data/NfcConfig/nfcUnsupportedMessage/#/PointingToDeclaration/-nfc-reader-k-m-p/com.devtamuno.kmp.nfcreader.data/-nfc-config/nfc-unsupported-message.html
 $dokka.location:com.devtamuno.kmp.nfcreader.data/NfcConfig/sheetGesturesEnabled/#/PointingToDeclaration/-nfc-reader-k-m-p/com.devtamuno.kmp.nfcreader.data/-nfc-config/sheet-gestures-enabled.html
 $dokka.location:com.devtamuno.kmp.nfcreader.data/NfcConfig/shouldDismissBottomSheetOnBackPress/#/PointingToDeclaration/-nfc-reader-k-m-p/com.devtamuno.kmp.nfcreader.data/-nfc-config/should-dismiss-bottom-sheet-on-back-press.html
 $dokka.location:com.devtamuno.kmp.nfcreader.data/NfcConfig/shouldDismissBottomSheetOnClickOutside/#/PointingToDeclaration/-nfc-reader-k-m-p/com.devtamuno.kmp.nfcreader.data/-nfc-config/should-dismiss-bottom-sheet-on-click-outside.html
