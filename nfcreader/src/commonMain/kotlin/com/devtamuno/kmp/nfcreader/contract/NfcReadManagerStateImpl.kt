@@ -48,4 +48,12 @@ internal class NfcReadManagerStateImpl(config: NfcConfig) : NfcReadManagerState 
     override fun stopScanning() {
         nfcReadManager.stopScanning()
     }
+
+    /**
+     * Sends an APDU (Application Protocol Data Unit) command to an ISO 7816-4 compatible tag.
+     * Delegates to the underlying [NfcReadManager].
+     */
+    override suspend fun sendApdu(command: ByteArray): ByteArray {
+        return nfcReadManager.sendApdu(command)
+    }
 }

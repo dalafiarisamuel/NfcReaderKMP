@@ -1,4 +1,4 @@
-@file:OptIn(ExperimentalForeignApi::class)
+@file:OptIn(ExperimentalForeignApi::class, BetaInteropApi::class)
 
 package com.devtamuno.kmp.nfcreader.contract
 
@@ -7,10 +7,17 @@ import com.devtamuno.kmp.nfcreader.data.NfcConfig
 import com.devtamuno.kmp.nfcreader.data.NfcReadResult
 import com.devtamuno.kmp.nfcreader.data.NfcTagData
 import com.devtamuno.kmp.nfcreader.data.NfcTagType
+import kotlin.coroutines.resume
+import kotlin.coroutines.resumeWithException
+import kotlinx.cinterop.BetaInteropApi
 import kotlinx.cinterop.ExperimentalForeignApi
+import kotlinx.cinterop.addressOf
+import kotlinx.cinterop.usePinned
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.suspendCancellableCoroutine
+import platform.CoreNFC.NFCISO7816APDU
 import platform.CoreNFC.NFCNDEFMessage
 import platform.CoreNFC.NFCNDEFPayload
 import platform.CoreNFC.NFCNDEFStatusReadOnly
@@ -26,7 +33,9 @@ import platform.CoreNFC.NFCTagTypeISO15693
 import platform.CoreNFC.NFCTagTypeISO7816Compatible
 import platform.CoreNFC.NFCMiFareUnknown
 import platform.CoreNFC.NFCTagTypeMiFare
+import platform.Foundation.NSData
 import platform.Foundation.NSError
+import platform.Foundation.create
 import platform.darwin.NSObject
 import platform.darwin.dispatch_async
 import platform.darwin.dispatch_get_main_queue
@@ -44,8 +53,6 @@ private const val NFC_SESSION_TIMEOUT_ERROR_CODE = 201L
 internal actual class NfcReadManager actual constructor(private val config: NfcConfig) :
     NSObject(), NFCTagReaderSessionDelegateProtocol {
 
-
-
     private val _nfcResult = MutableStateFlow<NfcReadResult>(NfcReadResult.Initial)
 
     /**
@@ -61,6 +68,8 @@ internal actual class NfcReadManager actual constructor(private val config: NfcC
      * effectively serialised in practice.
      */
     private var session: NFCTagReaderSession? = null
+
+    private var discoveredTag: NFCTagProtocol? = null
 
     /** A [StateFlow] that emits the current [NfcReadResult]. */
     actual val nfcResult: StateFlow<NfcReadResult>
@@ -81,6 +90,7 @@ internal actual class NfcReadManager actual constructor(private val config: NfcC
         }
 
         pendingResult = null
+        discoveredTag = null
         updateState(NfcReadResult.Scanning)
         session =
             NFCTagReaderSession(
@@ -99,6 +109,7 @@ internal actual class NfcReadManager actual constructor(private val config: NfcC
     actual fun stopScanning() {
         session?.invalidateSession()
         session = null
+        discoveredTag = null
     }
 
     override fun tagReaderSessionDidBecomeActive(session: NFCTagReaderSession) = Unit
@@ -109,6 +120,7 @@ internal actual class NfcReadManager actual constructor(private val config: NfcC
      */
     override fun tagReaderSession(session: NFCTagReaderSession, didInvalidateWithError: NSError) {
         this.session = null
+        this.discoveredTag = null
 
         val result =
             pendingResult
@@ -125,6 +137,7 @@ internal actual class NfcReadManager actual constructor(private val config: NfcC
     /** Invoked when tags are detected. Only the first tag in the field is processed. */
     override fun tagReaderSession(session: NFCTagReaderSession, didDetectTags: List<*>) {
         val tag = didDetectTags.firstOrNull() as? NFCTagProtocol ?: return
+        this.discoveredTag = tag
 
         // MIFARE Classic (NFCMiFareUnknown) uses Crypto1 which CoreNFC does not support.
         // The UID and mifareFamily are set during ISO 14443-3A anticollision and are available
@@ -256,5 +269,41 @@ internal actual class NfcReadManager actual constructor(private val config: NfcC
 
     private fun updateState(result: NfcReadResult) {
         dispatch_async(dispatch_get_main_queue()) { _nfcResult.value = result }
+    }
+
+    /**
+     * Sends an APDU (Application Protocol Data Unit) command to an ISO 7816-4 compatible tag.
+     *
+     * @param command The APDU command bytes.
+     * @return The response bytes from the tag.
+     * @throws Exception if the tag does not support ISO 7816 or the command fails.
+     */
+    actual suspend fun sendApdu(command: ByteArray): ByteArray = suspendCancellableCoroutine { continuation ->
+        val tag = discoveredTag?.asNFCISO7816Tag()
+        if (tag == null) {
+            continuation.resumeWithException(Exception("Tag does not support ISO 7816-4"))
+            return@suspendCancellableCoroutine
+        }
+
+        val apdu = command.toNSData()?.let { NFCISO7816APDU(data = it) }
+        if (apdu == null) {
+            continuation.resumeWithException(Exception("Invalid APDU command"))
+            return@suspendCancellableCoroutine
+        }
+
+        tag.sendCommandAPDU(apdu) { responseData, sw1, sw2, error ->
+            if (error != null) {
+                continuation.resumeWithException(Exception(error.localizedDescription))
+            } else {
+                val responseBytes = responseData?.toByteArray() ?: byteArrayOf()
+                continuation.resume(responseBytes + sw1.toByte() + sw2.toByte())
+            }
+        }
+    }
+
+    private fun ByteArray.toNSData(): NSData? = if (isEmpty()) null else {
+        this.usePinned { pinned ->
+            NSData.create(bytes = pinned.addressOf(0), length = size.toULong())
+        }
     }
 }

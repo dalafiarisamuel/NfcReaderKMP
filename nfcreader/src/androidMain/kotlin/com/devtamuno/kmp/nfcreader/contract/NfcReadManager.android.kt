@@ -6,6 +6,7 @@ import android.nfc.NdefRecord
 import android.nfc.NfcAdapter
 import android.nfc.NfcManager
 import android.nfc.Tag
+import android.nfc.tech.IsoDep
 import android.nfc.tech.Ndef
 import android.os.Bundle
 import androidx.activity.compose.LocalActivity
@@ -29,6 +30,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 /**
  * Android implementation of [NfcReadManager].
@@ -47,6 +49,7 @@ internal actual class NfcReadManager actual constructor(private val config: NfcC
     private var scope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
     private var isScanning by mutableStateOf(false)
     @Volatile private var timeoutJob: Job? = null
+    private var discoveredTag: Tag? = null
 
     /**
      * A [StateFlow] that emits the current [NfcReadResult] during the scanning process.
@@ -151,6 +154,7 @@ internal actual class NfcReadManager actual constructor(private val config: NfcC
         timeoutJob = null
         activity?.let { nfcAdapter?.disableReaderMode(it) }
         isScanning = false
+        discoveredTag = null
     }
 
     /**
@@ -162,6 +166,7 @@ internal actual class NfcReadManager actual constructor(private val config: NfcC
     @OptIn(ExperimentalStdlibApi::class)
     override fun onTagDiscovered(tag: Tag?) {
         timeoutJob?.cancel()
+        discoveredTag = tag
 
         if (tag == null) {
             scope.launch {
@@ -205,6 +210,25 @@ internal actual class NfcReadManager actual constructor(private val config: NfcC
         scope.launch {
             stopScanning()
             _tagData.value = result
+        }
+    }
+
+    /**
+     * Sends an APDU (Application Protocol Data Unit) command to an ISO 7816-4 compatible tag.
+     *
+     * @param command The APDU command bytes.
+     * @return The response bytes from the tag.
+     * @throws Exception if the tag does not support ISO 7816 or the command fails.
+     */
+    actual suspend fun sendApdu(command: ByteArray): ByteArray = withContext(Dispatchers.IO) {
+        val tag = discoveredTag ?: throw Exception("No tag discovered")
+        val isoDep = IsoDep.get(tag) ?: throw Exception("Tag does not support ISO 7816-4 (IsoDep)")
+
+        isoDep.use {
+            if (!it.isConnected) {
+                it.connect()
+            }
+            it.transceive(command)
         }
     }
 }
