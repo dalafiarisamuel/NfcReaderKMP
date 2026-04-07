@@ -24,11 +24,16 @@ import platform.CoreNFC.NFCTagReaderSessionDelegateProtocol
 import platform.CoreNFC.NFCTagTypeFeliCa
 import platform.CoreNFC.NFCTagTypeISO15693
 import platform.CoreNFC.NFCTagTypeISO7816Compatible
+import platform.CoreNFC.NFCMiFareUnknown
 import platform.CoreNFC.NFCTagTypeMiFare
 import platform.Foundation.NSError
 import platform.darwin.NSObject
 import platform.darwin.dispatch_async
 import platform.darwin.dispatch_get_main_queue
+
+
+private const val NFC_USER_CANCELLED_ERROR_CODE = 200L
+private const val NFC_SESSION_TIMEOUT_ERROR_CODE = 201L
 
 /**
  * iOS implementation of [NfcReadManager]. Handles NFC tag scanning using CoreNFC's
@@ -39,11 +44,7 @@ import platform.darwin.dispatch_get_main_queue
 internal actual class NfcReadManager actual constructor(private val config: NfcConfig) :
     NSObject(), NFCTagReaderSessionDelegateProtocol {
 
-    companion object {
-        // CoreNFC session invalidation error codes
-        private const val NFC_USER_CANCELLED_ERROR_CODE = 200L
-        private const val NFC_SESSION_TIMEOUT_ERROR_CODE = 201L
-    }
+
 
     private val _nfcResult = MutableStateFlow<NfcReadResult>(NfcReadResult.Initial)
 
@@ -70,6 +71,10 @@ internal actual class NfcReadManager actual constructor(private val config: NfcC
 
     /** Starts the NFC scanning process. */
     actual fun startScanning() {
+        if (session != null) return
+
+        _nfcResult.value = NfcReadResult.Initial
+
         if (!NFCTagReaderSession.readingAvailable()) {
             updateState(NfcReadResult.Error(config.nfcUnsupportedMessage))
             return
@@ -120,6 +125,18 @@ internal actual class NfcReadManager actual constructor(private val config: NfcC
     /** Invoked when tags are detected. Only the first tag in the field is processed. */
     override fun tagReaderSession(session: NFCTagReaderSession, didDetectTags: List<*>) {
         val tag = didDetectTags.firstOrNull() as? NFCTagProtocol ?: return
+
+        // MIFARE Classic (NFCMiFareUnknown) uses Crypto1 which CoreNFC does not support.
+        // The UID and mifareFamily are set during ISO 14443-3A anticollision and are available
+        // before connectToTag. Calling connectToTag or any NDEF operation causes the session to
+        // hang and eventually time out, so we return the UID immediately without connecting.
+        if (tag.type == NFCTagTypeMiFare &&
+            tag.asNFCMiFareTag()?.mifareFamily == NFCMiFareUnknown) {
+            val uid = extractUid(tag)
+            val techList = getTechList(tag)
+            finishSession(session, NfcReadResult.Success(NfcTagData(uid, NfcTagType.MIFARE, null, techList)))
+            return
+        }
 
         session.connectToTag(tag) { error ->
             if (error != null) {
@@ -188,7 +205,7 @@ internal actual class NfcReadManager actual constructor(private val config: NfcC
 
         ndefTag.queryNDEFStatusWithCompletionHandler { status, _, error ->
             if (error != null) {
-                finishSession(session, NfcReadResult.Error(error.localizedDescription))
+                finishSession(session, NfcReadResult.Success(NfcTagData(uid, type, null, techList)))
                 return@queryNDEFStatusWithCompletionHandler
             }
 

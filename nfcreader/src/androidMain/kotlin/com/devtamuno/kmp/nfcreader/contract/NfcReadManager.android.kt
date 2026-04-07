@@ -44,7 +44,7 @@ internal actual class NfcReadManager actual constructor(private val config: NfcC
     private var nfcAdapter: NfcAdapter? = null
     private var activity: Activity? = null
     private val _tagData = MutableStateFlow<NfcReadResult>(NfcReadResult.Initial)
-    private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
+    private var scope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
     private var isScanning by mutableStateOf(false)
     @Volatile private var timeoutJob: Job? = null
 
@@ -65,7 +65,10 @@ internal actual class NfcReadManager actual constructor(private val config: NfcC
         val context = LocalContext.current
 
         DisposableEffect(Unit) {
-            onDispose { scope.cancel() }
+            onDispose {
+                scope.cancel()
+                scope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
+            }
         }
 
         DisposableEffect(currentActivity) {
@@ -93,6 +96,8 @@ internal actual class NfcReadManager actual constructor(private val config: NfcC
      * Validates the adapter and NFC state, then enables Reader Mode with a timeout.
      */
     actual fun startScanning() {
+        _tagData.value = NfcReadResult.Initial
+
         val currentActivity = activity
         val adapter = nfcAdapter
 
@@ -157,10 +162,12 @@ internal actual class NfcReadManager actual constructor(private val config: NfcC
     @OptIn(ExperimentalStdlibApi::class)
     override fun onTagDiscovered(tag: Tag?) {
         timeoutJob?.cancel()
-        scope.launch { stopScanning() }
 
         if (tag == null) {
-            _tagData.value = NfcReadResult.Error(config.nfcUnsupportedMessage)
+            scope.launch {
+                stopScanning()
+                _tagData.value = NfcReadResult.Error(config.nfcUnsupportedMessage)
+            }
             return
         }
 
@@ -177,36 +184,27 @@ internal actual class NfcReadManager actual constructor(private val config: NfcC
 
         val tagType = getNfcTagType(tag)
         val ndef = Ndef.get(tag)
+        val ndefMessage: NdefMessage? = ndef?.cachedNdefMessage
+        val records: Array<NdefRecord>? = ndefMessage?.records
 
-        if (ndef == null) {
-            _tagData.value =
+        val result =
+            if (records.isNullOrEmpty()) {
                 NfcReadResult.Success(NfcTagData(tagId, tagType, null, hardwareTechList))
-            return
-        }
-
-        val ndefMessage: NdefMessage? = ndef.cachedNdefMessage
-        if (ndefMessage == null) {
-            _tagData.value =
-                NfcReadResult.Success(NfcTagData(tagId, tagType, null, hardwareTechList))
-            return
-        }
-
-        val records: Array<NdefRecord>? = ndefMessage.records
-        if (records.isNullOrEmpty()) {
-            _tagData.value =
-                NfcReadResult.Success(NfcTagData(tagId, tagType, null, hardwareTechList))
-            return
-        }
-
-        val combinedPayload = records.joinToString(separator = "\n") { it.toReadableText() }
-        _tagData.value =
-            NfcReadResult.Success(
-                NfcTagData(
-                    serialNumber = tagId,
-                    type = NfcTagType.NDEF,
-                    payload = combinedPayload,
-                    techList = hardwareTechList + "NDEF",
+            } else {
+                val combinedPayload = records.joinToString(separator = "\n") { it.toReadableText() }
+                NfcReadResult.Success(
+                    NfcTagData(
+                        serialNumber = tagId,
+                        type = NfcTagType.NDEF,
+                        payload = combinedPayload,
+                        techList = hardwareTechList + "NDEF",
+                    )
                 )
-            )
+            }
+
+        scope.launch {
+            stopScanning()
+            _tagData.value = result
+        }
     }
 }
