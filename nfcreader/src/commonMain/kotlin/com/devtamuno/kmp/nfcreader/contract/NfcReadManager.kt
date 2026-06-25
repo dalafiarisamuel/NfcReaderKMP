@@ -1,5 +1,6 @@
 package com.devtamuno.kmp.nfcreader.contract
 
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.runtime.Composable
 import com.devtamuno.kmp.nfcreader.data.NfcConfig
 import com.devtamuno.kmp.nfcreader.data.NfcReadResult
@@ -13,8 +14,12 @@ import kotlinx.coroutines.flow.StateFlow
  * sheets on Android or native dialogs on iOS).
  *
  * @property config The [NfcConfig] used to configure the scanning behavior and UI.
+ * @property nfcScanningAnimationSlot A [Composable] slot for displaying a scanning animation.
  */
-internal expect class NfcReadManager(config: NfcConfig) {
+internal expect class NfcReadManager(
+    config: NfcConfig,
+    nfcScanningAnimationSlot: @Composable ColumnScope.() -> Unit,
+) {
 
     /** A [StateFlow] that emits the current [NfcReadResult] of the NFC scanning process. */
     val nfcResult: StateFlow<NfcReadResult>

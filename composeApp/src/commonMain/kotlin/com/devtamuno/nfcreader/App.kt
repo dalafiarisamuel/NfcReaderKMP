@@ -18,10 +18,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.devtamuno.kmp.nfcreader.data.NfcConfig
 import com.devtamuno.kmp.nfcreader.data.NfcReadResult
 import com.devtamuno.kmp.nfcreader.rememberNfcReadManagerState
+import com.devtamuno.kmp.nfcreader.ui.ScanningAnimationDefault
 
 @Composable
 @Preview
@@ -34,8 +34,9 @@ fun App() {
                         titleMessage = "Ready to Scan",
                         subtitleMessage = "Bring a tag closer to your phone to read it.",
                         buttonText = "Cancel",
-                        shouldDismissBottomSheetOnBackPress = true
-                    )
+                        shouldDismissBottomSheetOnBackPress = true,
+                    ),
+                nfcScanningAnimationSlot = { ScanningAnimationDefault.NfcScanningAnimation() },
             )
 
         val value by nfcManager.nfcReadResult.collectAsState(NfcReadResult.Initial)

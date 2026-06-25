@@ -9,6 +9,7 @@ import android.nfc.Tag
 import android.nfc.tech.Ndef
 import android.os.Bundle
 import androidx.activity.compose.LocalActivity
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
@@ -31,15 +32,19 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
 /**
- * Android implementation of [NfcReadManager].
- * Handles NFC tag scanning using the Android NFC Adapter in Reader Mode.
+ * Android implementation of [NfcReadManager]. Handles NFC tag scanning using the Android NFC
+ * Adapter in Reader Mode.
  *
  * UI is delegated to [NfcScanBottomSheet]; tag parsing to `NfcTagParser.kt`.
  *
  * @property config Configuration settings for NFC reading and the associated UI.
+ * @property nfcScanningAnimationSlot A [Composable] slot for displaying a scanning animation.
  */
-internal actual class NfcReadManager actual constructor(private val config: NfcConfig) :
-    NfcAdapter.ReaderCallback {
+internal actual class NfcReadManager
+actual constructor(
+    private val config: NfcConfig,
+    private val nfcScanningAnimationSlot: @Composable ColumnScope.() -> Unit,
+) : NfcAdapter.ReaderCallback {
 
     private var nfcAdapter: NfcAdapter? = null
     private var activity: Activity? = null
@@ -48,16 +53,14 @@ internal actual class NfcReadManager actual constructor(private val config: NfcC
     private var isScanning by mutableStateOf(false)
     @Volatile private var timeoutJob: Job? = null
 
-    /**
-     * A [StateFlow] that emits the current [NfcReadResult] during the scanning process.
-     */
+    /** A [StateFlow] that emits the current [NfcReadResult] during the scanning process. */
     actual val nfcResult: StateFlow<NfcReadResult>
         get() = _tagData.asStateFlow()
 
     /**
-     * Registers the manager with the current Activity and Context, and renders the scan UI.
-     * The scope is cancelled when the composable leaves composition entirely.
-     * The NFC adapter reference is refreshed on Activity recreation (e.g. configuration change).
+     * Registers the manager with the current Activity and Context, and renders the scan UI. The
+     * scope is cancelled when the composable leaves composition entirely. The NFC adapter reference
+     * is refreshed on Activity recreation (e.g. configuration change).
      */
     @Composable
     actual fun RegisterManager() {
@@ -84,6 +87,7 @@ internal actual class NfcReadManager actual constructor(private val config: NfcC
         NfcScanBottomSheet(
             config = config,
             isVisible = isScanning,
+            nfcScanningAnimationSlot = nfcScanningAnimationSlot,
             onDismiss = {
                 stopScanning()
                 _tagData.value = NfcReadResult.OperationCancelled
@@ -92,8 +96,8 @@ internal actual class NfcReadManager actual constructor(private val config: NfcC
     }
 
     /**
-     * Starts the NFC scanning process.
-     * Validates the adapter and NFC state, then enables Reader Mode with a timeout.
+     * Starts the NFC scanning process. Validates the adapter and NFC state, then enables Reader
+     * Mode with a timeout.
      */
     actual fun startScanning() {
         _tagData.value = NfcReadResult.Initial
@@ -120,14 +124,13 @@ internal actual class NfcReadManager actual constructor(private val config: NfcC
         _tagData.value = NfcReadResult.Scanning
 
         timeoutJob?.cancel()
-        timeoutJob =
-            scope.launch {
-                delay(config.nfcReadTimeout)
-                if (isScanning) {
-                    _tagData.value = NfcReadResult.Error(config.nfcScanTimeoutMessage)
-                    stopScanning()
-                }
+        timeoutJob = scope.launch {
+            delay(config.nfcReadTimeout)
+            if (isScanning) {
+                _tagData.value = NfcReadResult.Error(config.nfcScanTimeoutMessage)
+                stopScanning()
             }
+        }
 
         val options = Bundle().apply { putInt(NfcAdapter.EXTRA_READER_PRESENCE_CHECK_DELAY, 500) }
 
@@ -143,9 +146,7 @@ internal actual class NfcReadManager actual constructor(private val config: NfcC
         )
     }
 
-    /**
-     * Stops the NFC scanning process and disables Reader Mode.
-     */
+    /** Stops the NFC scanning process and disables Reader Mode. */
     actual fun stopScanning() {
         timeoutJob?.cancel()
         timeoutJob = null
@@ -154,8 +155,8 @@ internal actual class NfcReadManager actual constructor(private val config: NfcC
     }
 
     /**
-     * Callback triggered when an NFC tag is discovered.
-     * Cancels the timeout immediately, then parses the tag and emits the result.
+     * Callback triggered when an NFC tag is discovered. Cancels the timeout immediately, then
+     * parses the tag and emits the result.
      *
      * @param tag The discovered [Tag].
      */

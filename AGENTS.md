@@ -35,7 +35,7 @@ The project is divided into two main modules:
 - **`NfcTagParser.kt`**: Tag parsing — `extractUid`, `getTechList`, `NFCNDEFPayload.readableText`, `NSData`/hex helpers.
 
 ### Data Layer (`com.devtamuno.kmp.nfcreader.data`)
-- **`NfcConfig`**: Configuration for scanning behaviour (timeouts, messages, animations). The `nfcScanningAnimationSlot` composable slot is Android-only and has a built-in Lottie default. Error/success messages are configurable via `nfcUnsupportedMessage`, `nfcDisabledMessage`, `nfcScanTimeoutMessage` (Android), and `nfcSuccessMessage` (iOS).
+- **`NfcConfig`**: Configuration for scanning behaviour (timeouts and messages). Error/success messages are configurable via `nfcUnsupportedMessage`, `nfcDisabledMessage`, `nfcScanTimeoutMessage` (Android), and `nfcSuccessMessage` (iOS).
 - **`NfcReadResult`**: Sealed class representing the lifecycle of an NFC scan (`Initial`, `Scanning`, `Success`, `Error`, `OperationCancelled`).
 - **`NfcTagData`**: Model for scanned tag information (Serial Number, Type, Payload, Tech List). `serialNumber` is available on both Android and iOS.
 - **`NfcTagType`**: Enum of supported tag types — `NDEF`, `NON_NDEF`, `MIFARE`, `ISO15693`, `ISO7816`, `FELICA`.
@@ -53,12 +53,22 @@ The project is divided into two main modules:
 Example:
 ```kotlin
 @Composable
-fun rememberNfcReadManagerState(config: NfcConfig): NfcReadManagerState =
-    rememberMutableNfcReadManagerState(config).also { it.InitNfcManager() }
+fun rememberNfcReadManagerState(
+    config: NfcConfig,
+    nfcScanningAnimationSlot: @Composable ColumnScope.() -> Unit = {
+        ScanningAnimationDefault.NfcScanningAnimation()
+    },
+): NfcReadManagerState =
+    rememberMutableNfcReadManagerState(config, nfcScanningAnimationSlot).also {
+        it.InitNfcManager()
+    }
 
 @Composable
-private fun rememberMutableNfcReadManagerState(config: NfcConfig): NfcReadManagerState =
-    remember { NfcReadManagerStateImpl(config) }
+private fun rememberMutableNfcReadManagerState(
+    config: NfcConfig,
+    nfcScanningAnimationSlot: @Composable ColumnScope.() -> Unit,
+): NfcReadManagerState =
+    remember { NfcReadManagerStateImpl(config, nfcScanningAnimationSlot) }
 ```
 
 ### Naming Conventions
@@ -116,8 +126,11 @@ sealed class NfcReadResult {
 
 ### Implementing Platform Logic (iOS snippet)
 ```kotlin
-internal actual class NfcReadManager actual constructor(private val config: NfcConfig) :
-    NSObject(), NFCTagReaderSessionDelegateProtocol {
+internal actual class NfcReadManager
+actual constructor(
+    private val config: NfcConfig,
+    nfcScanningAnimationSlot: @Composable ColumnScope.() -> Unit,
+) : NSObject(), NFCTagReaderSessionDelegateProtocol {
 
     private var pendingResult: NfcReadResult? = null
     private var session: NFCTagReaderSession? = null

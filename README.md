@@ -68,7 +68,7 @@ sourceSets {
 
 ### 1. Initialize the State Manager
 
-Create an `NfcConfig` and pass it to `rememberNfcReadManagerState`:
+Create an `NfcConfig` and pass it to `rememberNfcReadManagerState`. You can optionally provide a custom animation slot:
 
 ```kotlin
 val nfcManager = rememberNfcReadManagerState(
@@ -77,7 +77,11 @@ val nfcManager = rememberNfcReadManagerState(
         subtitleMessage = "Hold your tag near the device.",
         buttonText = "Cancel",
         nfcReadTimeout = 30.seconds
-    )
+    ),
+    nfcScanningAnimationSlot = {
+        // Custom Compose animation here
+        Text("Scanning...")
+    }
 )
 ```
 
@@ -129,6 +133,12 @@ when (val state = result) {
 | `sheetGesturesEnabled` | `Boolean` | `true` | Android |
 | `shouldDismissBottomSheetOnBackPress` | `Boolean` | `false` | Android |
 | `shouldDismissBottomSheetOnClickOutside` | `Boolean` | `false` | Android |
+
+### `rememberNfcReadManagerState` Parameters
+
+| Parameter | Type | Default | Platform |
+| :--- | :--- | :--- | :--- |
+| `config` | `NfcConfig` | Required | Both |
 | `nfcScanningAnimationSlot` | `@Composable ColumnScope.() -> Unit` | Built-in Lottie animation | Android |
 
 > **Note:** On iOS, only `subtitleMessage` is used — it maps directly to the native system NFC scanning dialog message. All other properties are Android-specific.

@@ -1,8 +1,6 @@
 package com.devtamuno.kmp.nfcreader.data
 
-import androidx.compose.foundation.layout.ColumnScope
-import androidx.compose.runtime.Composable
-import com.devtamuno.kmp.nfcreader.ui.ScanningAnimationDefault
+import androidx.compose.runtime.Immutable
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
 
@@ -24,8 +22,8 @@ import kotlin.time.Duration.Companion.seconds
  * @property nfcScanTimeoutMessage Error message emitted when scanning exceeds [nfcReadTimeout].
  * @property nfcSuccessMessage Message shown in the native iOS scanning dialog after a successful
  *   read. Has no effect on Android.
- * @property nfcScanningAnimationSlot The composable component for NFC scanning animation.
  */
+@Immutable
 data class NfcConfig(
     val titleMessage: String,
     val subtitleMessage: String,
@@ -38,9 +36,6 @@ data class NfcConfig(
     val nfcDisabledMessage: String = "NFC is disabled on this device",
     val nfcScanTimeoutMessage: String = "NFC scan timed out",
     val nfcSuccessMessage: String = "Tag scanned successfully",
-    val nfcScanningAnimationSlot: @Composable ColumnScope.() -> Unit = {
-        ScanningAnimationDefault.NfcScanningAnimation()
-    },
 ) {
     init {
         require(titleMessage.isNotBlank()) { "titleMessage cannot be blank" }
