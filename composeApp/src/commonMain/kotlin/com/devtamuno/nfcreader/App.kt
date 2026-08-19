@@ -21,7 +21,6 @@ import androidx.compose.ui.unit.dp
 import com.devtamuno.kmp.nfcreader.data.NfcConfig
 import com.devtamuno.kmp.nfcreader.data.NfcReadResult
 import com.devtamuno.kmp.nfcreader.rememberNfcReadManagerState
-import com.devtamuno.kmp.nfcreader.ui.ScanningAnimationDefault
 
 @Composable
 @Preview
@@ -36,7 +35,6 @@ fun App() {
                         buttonText = "Cancel",
                         shouldDismissBottomSheetOnBackPress = true,
                     ),
-                nfcScanningAnimationSlot = { ScanningAnimationDefault.NfcScanningAnimation() },
             )
 
         val value by nfcManager.nfcReadResult.collectAsState(NfcReadResult.Initial)

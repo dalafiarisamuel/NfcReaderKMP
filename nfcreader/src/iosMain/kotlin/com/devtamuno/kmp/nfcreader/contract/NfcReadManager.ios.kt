@@ -41,14 +41,10 @@ private const val NFC_SESSION_TIMEOUT_ERROR_CODE = 201L
  *
  * Tag parsing is delegated to `NfcTagParser.kt`.
  *
- * @param nfcScanningAnimationSlot A [Composable] slot for displaying a scanning animation (no-op
- *   on iOS).
+ * @param config Configuration for NFC scanning.
  */
 internal actual class NfcReadManager
-actual constructor(
-    private val config: NfcConfig,
-    nfcScanningAnimationSlot: @Composable ColumnScope.() -> Unit,
-) : NSObject(), NFCTagReaderSessionDelegateProtocol {
+actual constructor(private val config: NfcConfig) : NSObject(), NFCTagReaderSessionDelegateProtocol {
 
     private val _nfcResult = MutableStateFlow<NfcReadResult>(NfcReadResult.Initial)
 
@@ -71,7 +67,8 @@ actual constructor(
         get() = _nfcResult.asStateFlow()
 
     /** Registers the manager (no-op on iOS — the system owns the scanning UI). */
-    @Composable actual fun RegisterManager() = Unit
+    @Composable
+    actual fun RegisterManager(nfcScanningAnimationSlot: @Composable ColumnScope.() -> Unit) = Unit
 
     /** Starts the NFC scanning process. */
     actual fun startScanning() {

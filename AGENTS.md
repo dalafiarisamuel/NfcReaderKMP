@@ -88,7 +88,7 @@ private fun rememberMutableNfcReadManagerState(
 - Requires `NfcAdapter.ReaderCallback`. Reader mode flags: `FLAG_READER_NFC_A | NFC_B | NFC_F | NFC_V | NO_PLATFORM_SOUNDS`.
 - Uses `NfcScanBottomSheet` (a separate file) to guide the user during scanning.
 - Must handle `Activity` and `Context` via `LocalActivity.current` and `LocalContext.current`.
-- The coroutine scope must be cancelled in `DisposableEffect(Unit) { onDispose { scope.cancel() } }` — a separate effect from the activity-bound one — so it is only cancelled when the composable fully leaves composition, not on configuration change.
+- The coroutine scope must have its children cancelled in `DisposableEffect(Unit) { onDispose { scope.coroutineContext.cancelChildren() } }` — a separate effect from the activity-bound one — so it only stops active jobs when the composable fully leaves composition, not on configuration change.
 - `timeoutJob` is marked `@Volatile` because it is written on the Main thread and read from the NFC callback thread in `onTagDiscovered`.
 
 ### iOS

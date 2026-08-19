@@ -14,12 +14,8 @@ import kotlinx.coroutines.flow.StateFlow
  * sheets on Android or native dialogs on iOS).
  *
  * @property config The [NfcConfig] used to configure the scanning behavior and UI.
- * @property nfcScanningAnimationSlot A [Composable] slot for displaying a scanning animation.
  */
-internal expect class NfcReadManager(
-    config: NfcConfig,
-    nfcScanningAnimationSlot: @Composable ColumnScope.() -> Unit,
-) {
+internal expect class NfcReadManager(config: NfcConfig) {
 
     /** A [StateFlow] that emits the current [NfcReadResult] of the NFC scanning process. */
     val nfcResult: StateFlow<NfcReadResult>
@@ -27,8 +23,10 @@ internal expect class NfcReadManager(
     /**
      * A [Composable] function that registers the manager within the Compose UI hierarchy. This is
      * typically used to handle lifecycle events and show scanning-related UI components.
+     *
+     * @param nfcScanningAnimationSlot A [Composable] slot for displaying a scanning animation.
      */
-    @Composable fun RegisterManager()
+    @Composable fun RegisterManager(nfcScanningAnimationSlot: @Composable ColumnScope.() -> Unit)
 
     /** Starts the NFC scanning process. */
     fun startScanning()

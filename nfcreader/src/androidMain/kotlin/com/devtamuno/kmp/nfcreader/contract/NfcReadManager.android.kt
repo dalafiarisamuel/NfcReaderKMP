@@ -24,7 +24,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.cancel
+import kotlinx.coroutines.cancelChildren
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -38,18 +38,14 @@ import kotlinx.coroutines.launch
  * UI is delegated to [NfcScanBottomSheet]; tag parsing to `NfcTagParser.kt`.
  *
  * @property config Configuration settings for NFC reading and the associated UI.
- * @property nfcScanningAnimationSlot A [Composable] slot for displaying a scanning animation.
  */
 internal actual class NfcReadManager
-actual constructor(
-    private val config: NfcConfig,
-    private val nfcScanningAnimationSlot: @Composable ColumnScope.() -> Unit,
-) : NfcAdapter.ReaderCallback {
+actual constructor(private val config: NfcConfig) : NfcAdapter.ReaderCallback {
 
     private var nfcAdapter: NfcAdapter? = null
     private var activity: Activity? = null
     private val _tagData = MutableStateFlow<NfcReadResult>(NfcReadResult.Initial)
-    private var scope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
+    private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate)
     private var isScanning by mutableStateOf(false)
     @Volatile private var timeoutJob: Job? = null
 
@@ -61,16 +57,17 @@ actual constructor(
      * Registers the manager with the current Activity and Context, and renders the scan UI. The
      * scope is cancelled when the composable leaves composition entirely. The NFC adapter reference
      * is refreshed on Activity recreation (e.g. configuration change).
+     *
+     * @param nfcScanningAnimationSlot A [Composable] slot for displaying a scanning animation.
      */
     @Composable
-    actual fun RegisterManager() {
+    actual fun RegisterManager(nfcScanningAnimationSlot: @Composable ColumnScope.() -> Unit) {
         val currentActivity = LocalActivity.current
         val context = LocalContext.current
 
         DisposableEffect(Unit) {
             onDispose {
-                scope.cancel()
-                scope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
+                scope.coroutineContext.cancelChildren()
             }
         }
 

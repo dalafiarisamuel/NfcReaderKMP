@@ -26,8 +26,8 @@ fun rememberNfcReadManagerState(
         ScanningAnimationDefault.NfcScanningAnimation()
     },
 ): NfcReadManagerState =
-    rememberMutableNfcReadManagerState(config, nfcScanningAnimationSlot).also {
-        it.InitNfcManager()
+    rememberMutableNfcReadManagerState(config).also {
+        it.InitNfcManager(nfcScanningAnimationSlot)
     }
 
 /**
@@ -38,11 +38,9 @@ fun rememberNfcReadManagerState(
  * recompositions.
  *
  * @param config The [NfcConfig] for the NFC reader.
- * @param nfcScanningAnimationSlot A [Composable] slot for displaying a scanning animation.
  * @return A remembered [NfcReadManagerState] instance.
  */
 @Composable
 private fun rememberMutableNfcReadManagerState(
-    config: NfcConfig,
-    nfcScanningAnimationSlot: @Composable ColumnScope.() -> Unit,
-): NfcReadManagerState = remember { NfcReadManagerStateImpl(config, nfcScanningAnimationSlot) }
+    config: NfcConfig
+): NfcReadManagerState = remember { NfcReadManagerStateImpl(config) }

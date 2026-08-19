@@ -1,5 +1,6 @@
 package com.devtamuno.kmp.nfcreader.contract
 
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.runtime.Composable
 import com.devtamuno.kmp.nfcreader.data.NfcReadResult
 import kotlinx.coroutines.flow.StateFlow
@@ -19,8 +20,10 @@ interface NfcReadManagerState {
     /**
      * A [Composable] function that initializes and registers the underlying NFC manager.
      * This should be called within the Composable where the NFC reader is being used.
+     *
+     * @param nfcScanningAnimationSlot A [Composable] slot for displaying a scanning animation.
      */
-    @Composable fun InitNfcManager()
+    @Composable fun InitNfcManager(nfcScanningAnimationSlot: @Composable ColumnScope.() -> Unit)
 
     /**
      * Starts the NFC scanning process.
