@@ -1,4 +1,4 @@
-# NfcReaderKMP 📱
+# NfcReaderKMP
 
 [![Kotlin](https://img.shields.io/badge/kotlin-2.1.0-blue.svg?logo=kotlin)](http://kotlinlang.org)
 [![Compose Multiplatform](https://img.shields.io/badge/Compose%20Multiplatform-1.10.1-blue?logo=jetbrains)](https://www.jetbrains.com/lp/compose-multiplatform/)
@@ -6,11 +6,11 @@
 
 A powerful, easy-to-use Kotlin Multiplatform (KMP) library for reading NFC tags on Android and iOS using Compose Multiplatform.
 
-[**📖 View Full API Documentation**](https://dalafiarisamuel.github.io/NfcReaderKMP/)
+[**View Full API Documentation**](https://dalafiarisamuel.github.io/NfcReaderKMP/)
 
 ---
 
-## 🚧 Work in Progress
+## Work in Progress
 
 > **This library is currently under active development and has not yet been published to Maven Central.**
 >
@@ -20,19 +20,19 @@ A powerful, easy-to-use Kotlin Multiplatform (KMP) library for reading NFC tags 
 
 ---
 
-## ✨ Features
+## Features
 
-- **🚀 Unified API**: A single, clean API to handle NFC scanning on both platforms.
-- **🎨 Compose Native**: Lifecycle-aware state management that fits perfectly into your Compose UI.
-- **🛠️ Fully Customizable**:
+- **Unified API**: A single, clean API to handle NFC scanning on both platforms.
+- **Compose Native**: Lifecycle-aware state management that fits perfectly into your Compose UI.
+- **Fully Customizable**:
     - **Android**: Custom Bottom Sheet with support for Lottie animations (via [Compottie](https://github.com/AlexZhirkevich/compottie)).
     - **iOS**: Seamless integration with the native system NFC scanning dialog.
-- **⚙️ Flexible Configuration**: Control timeouts, dismissal behaviors, and UI strings with a type-safe DSL.
-- **📊 Detailed Tag Info**: Extract Serial Numbers, NDEF payloads, and supported technology lists.
+- **Flexible Configuration**: Control timeouts, dismissal behaviors, and UI strings with a type-safe DSL.
+- **Detailed Tag Info**: Extract Serial Numbers, NDEF payloads, and supported technology lists.
 
 ---
 
-## 📦 Installation
+## Installation
 
 Add the dependency to your `commonMain` source set in `build.gradle.kts`:
 
@@ -46,9 +46,9 @@ sourceSets {
 
 ---
 
-## 🛠️ Platform Setup
+## Platform Setup
 
-### Android 🤖
+### Android
 
 1. Add NFC permissions to your `AndroidManifest.xml`:
 ```xml
@@ -64,11 +64,11 @@ sourceSets {
 
 ---
 
-## 🚀 Usage
+## Usage
 
 ### 1. Initialize the State Manager
 
-Create an `NfcConfig` and pass it to `rememberNfcReadManagerState`:
+Create an `NfcConfig` and pass it to `rememberNfcReadManagerState`. You can optionally provide a custom animation slot:
 
 ```kotlin
 val nfcManager = rememberNfcReadManagerState(
@@ -77,7 +77,11 @@ val nfcManager = rememberNfcReadManagerState(
         subtitleMessage = "Hold your tag near the device.",
         buttonText = "Cancel",
         nfcReadTimeout = 30.seconds
-    )
+    ),
+    nfcScanningAnimationSlot = {
+        // Custom Compose animation here
+        Text("Scanning...")
+    }
 )
 ```
 
@@ -114,7 +118,7 @@ when (val state = result) {
 
 ---
 
-## ⚙️ Configuration Options (`NfcConfig`)
+## Configuration Options (`NfcConfig`)
 
 | Property | Type | Default | Platform |
 | :--- | :--- | :--- | :--- |
@@ -129,13 +133,19 @@ when (val state = result) {
 | `sheetGesturesEnabled` | `Boolean` | `true` | Android |
 | `shouldDismissBottomSheetOnBackPress` | `Boolean` | `false` | Android |
 | `shouldDismissBottomSheetOnClickOutside` | `Boolean` | `false` | Android |
+
+### `rememberNfcReadManagerState` Parameters
+
+| Parameter | Type | Default | Platform |
+| :--- | :--- | :--- | :--- |
+| `config` | `NfcConfig` | Required | Both |
 | `nfcScanningAnimationSlot` | `@Composable ColumnScope.() -> Unit` | Built-in Lottie animation | Android |
 
 > **Note:** On iOS, only `subtitleMessage` is used — it maps directly to the native system NFC scanning dialog message. All other properties are Android-specific.
 
 ---
 
-## 📄 Data Models
+## Data Models
 
 ### `NfcTagData`
 - `serialNumber`: The tag's unique ID as a hex-encoded string (available on both Android and iOS).
@@ -166,7 +176,7 @@ when (val state = result) {
 
 ---
 
-## 📺 Demo
+## Demo
 
 |                   Android Implementation                    |                   iOS Implementation                    |
 |:-----------------------------------------------------------:|:-------------------------------------------------------:|
@@ -174,12 +184,12 @@ when (val state = result) {
 
 ---
 
-## 🤝 Contributing
+## Contributing
 
 Contributions are welcome! Please feel free to submit a Pull Request.
 
 ---
 
-## 📜 License
+## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.

@@ -1,10 +1,12 @@
 package com.devtamuno.kmp.nfcreader
 
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import com.devtamuno.kmp.nfcreader.contract.NfcReadManagerState
 import com.devtamuno.kmp.nfcreader.contract.NfcReadManagerStateImpl
 import com.devtamuno.kmp.nfcreader.data.NfcConfig
+import com.devtamuno.kmp.nfcreader.ui.ScanningAnimationDefault
 
 /**
  * Creates and remembers an [NfcReadManagerState] instance.
@@ -14,11 +16,19 @@ import com.devtamuno.kmp.nfcreader.data.NfcConfig
  * manager.
  *
  * @param config The [NfcConfig] to configure the NFC scanning behavior and UI.
+ * @param nfcScanningAnimationSlot A [Composable] slot for displaying a scanning animation.
  * @return A remembered [NfcReadManagerState] instance.
  */
 @Composable
-fun rememberNfcReadManagerState(config: NfcConfig): NfcReadManagerState =
-    rememberMutableNfcReadManagerState(config).also { it.InitNfcManager() }
+fun rememberNfcReadManagerState(
+    config: NfcConfig,
+    nfcScanningAnimationSlot: @Composable ColumnScope.() -> Unit = {
+        ScanningAnimationDefault.NfcScanningAnimation()
+    },
+): NfcReadManagerState =
+    rememberMutableNfcReadManagerState(config).also {
+        it.InitNfcManager(nfcScanningAnimationSlot)
+    }
 
 /**
  * Creates and remembers a mutable [NfcReadManagerState] instance.
@@ -31,6 +41,6 @@ fun rememberNfcReadManagerState(config: NfcConfig): NfcReadManagerState =
  * @return A remembered [NfcReadManagerState] instance.
  */
 @Composable
-private fun rememberMutableNfcReadManagerState(config: NfcConfig): NfcReadManagerState = remember {
-    NfcReadManagerStateImpl(config)
-}
+private fun rememberMutableNfcReadManagerState(
+    config: NfcConfig
+): NfcReadManagerState = remember { NfcReadManagerStateImpl(config) }

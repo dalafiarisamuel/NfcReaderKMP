@@ -1,5 +1,6 @@
 package com.devtamuno.kmp.nfcreader.contract
 
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.runtime.Composable
 import com.devtamuno.kmp.nfcreader.data.NfcConfig
 import com.devtamuno.kmp.nfcreader.data.NfcReadResult
@@ -22,8 +23,10 @@ internal expect class NfcReadManager(config: NfcConfig) {
     /**
      * A [Composable] function that registers the manager within the Compose UI hierarchy. This is
      * typically used to handle lifecycle events and show scanning-related UI components.
+     *
+     * @param nfcScanningAnimationSlot A [Composable] slot for displaying a scanning animation.
      */
-    @Composable fun RegisterManager()
+    @Composable fun RegisterManager(nfcScanningAnimationSlot: @Composable ColumnScope.() -> Unit)
 
     /** Starts the NFC scanning process. */
     fun startScanning()

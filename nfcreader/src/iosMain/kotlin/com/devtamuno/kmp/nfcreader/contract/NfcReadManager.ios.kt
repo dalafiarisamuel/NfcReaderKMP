@@ -2,6 +2,7 @@
 
 package com.devtamuno.kmp.nfcreader.contract
 
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.runtime.Composable
 import com.devtamuno.kmp.nfcreader.data.NfcConfig
 import com.devtamuno.kmp.nfcreader.data.NfcReadResult
@@ -11,6 +12,7 @@ import kotlinx.cinterop.ExperimentalForeignApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import platform.CoreNFC.NFCMiFareUnknown
 import platform.CoreNFC.NFCNDEFMessage
 import platform.CoreNFC.NFCNDEFPayload
 import platform.CoreNFC.NFCNDEFStatusReadOnly
@@ -24,13 +26,11 @@ import platform.CoreNFC.NFCTagReaderSessionDelegateProtocol
 import platform.CoreNFC.NFCTagTypeFeliCa
 import platform.CoreNFC.NFCTagTypeISO15693
 import platform.CoreNFC.NFCTagTypeISO7816Compatible
-import platform.CoreNFC.NFCMiFareUnknown
 import platform.CoreNFC.NFCTagTypeMiFare
 import platform.Foundation.NSError
 import platform.darwin.NSObject
 import platform.darwin.dispatch_async
 import platform.darwin.dispatch_get_main_queue
-
 
 private const val NFC_USER_CANCELLED_ERROR_CODE = 200L
 private const val NFC_SESSION_TIMEOUT_ERROR_CODE = 201L
@@ -40,11 +40,11 @@ private const val NFC_SESSION_TIMEOUT_ERROR_CODE = 201L
  * [NFCTagReaderSession]. The system manages the scanning UI; [RegisterManager] is a no-op.
  *
  * Tag parsing is delegated to `NfcTagParser.kt`.
+ *
+ * @param config Configuration for NFC scanning.
  */
-internal actual class NfcReadManager actual constructor(private val config: NfcConfig) :
-    NSObject(), NFCTagReaderSessionDelegateProtocol {
-
-
+internal actual class NfcReadManager
+actual constructor(private val config: NfcConfig) : NSObject(), NFCTagReaderSessionDelegateProtocol {
 
     private val _nfcResult = MutableStateFlow<NfcReadResult>(NfcReadResult.Initial)
 
@@ -67,7 +67,8 @@ internal actual class NfcReadManager actual constructor(private val config: NfcC
         get() = _nfcResult.asStateFlow()
 
     /** Registers the manager (no-op on iOS — the system owns the scanning UI). */
-    @Composable actual fun RegisterManager() = Unit
+    @Composable
+    actual fun RegisterManager(nfcScanningAnimationSlot: @Composable ColumnScope.() -> Unit) = Unit
 
     /** Starts the NFC scanning process. */
     actual fun startScanning() {
@@ -130,11 +131,15 @@ internal actual class NfcReadManager actual constructor(private val config: NfcC
         // The UID and mifareFamily are set during ISO 14443-3A anticollision and are available
         // before connectToTag. Calling connectToTag or any NDEF operation causes the session to
         // hang and eventually time out, so we return the UID immediately without connecting.
-        if (tag.type == NFCTagTypeMiFare &&
-            tag.asNFCMiFareTag()?.mifareFamily == NFCMiFareUnknown) {
+        if (
+            tag.type == NFCTagTypeMiFare && tag.asNFCMiFareTag()?.mifareFamily == NFCMiFareUnknown
+        ) {
             val uid = extractUid(tag)
             val techList = getTechList(tag)
-            finishSession(session, NfcReadResult.Success(NfcTagData(uid, NfcTagType.MIFARE, null, techList)))
+            finishSession(
+                session,
+                NfcReadResult.Success(NfcTagData(uid, NfcTagType.MIFARE, null, techList)),
+            )
             return
         }
 

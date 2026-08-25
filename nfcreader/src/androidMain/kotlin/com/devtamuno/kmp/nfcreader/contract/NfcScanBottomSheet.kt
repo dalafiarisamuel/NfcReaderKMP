@@ -7,6 +7,7 @@ import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -35,12 +36,14 @@ import com.devtamuno.kmp.nfcreader.data.NfcConfig
  *
  * @param config The [NfcConfig] supplying UI strings, animation slot, and dismissal behaviour.
  * @param isVisible Whether the sheet is currently shown.
+ * @param nfcScanningAnimationSlot A [Composable] slot for displaying a scanning animation.
  * @param onDismiss Called when the sheet is dismissed (drag, back press, outside tap, or cancel button).
  */
 @Composable
 internal fun NfcScanBottomSheet(
     config: NfcConfig,
     isVisible: Boolean,
+    nfcScanningAnimationSlot: @Composable ColumnScope.() -> Unit,
     onDismiss: () -> Unit,
 ) {
     val sheetState = rememberModalBottomSheetState()
@@ -88,7 +91,7 @@ internal fun NfcScanBottomSheet(
                     textAlign = TextAlign.Center,
                 )
 
-                config.nfcScanningAnimationSlot(this)
+                nfcScanningAnimationSlot(this)
 
                 OutlinedButton(
                     modifier =
