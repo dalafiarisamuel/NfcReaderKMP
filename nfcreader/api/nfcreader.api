@@ -1,0 +1,178 @@
+public final class com/devtamuno/kmp/nfcreader/ComposableSingletons$NfcReaderStateKt {
+	public static final field INSTANCE Lcom/devtamuno/kmp/nfcreader/ComposableSingletons$NfcReaderStateKt;
+	public fun <init> ()V
+	public final fun getLambda$1929482709$nfcreader ()Lkotlin/jvm/functions/Function3;
+}
+
+public final class com/devtamuno/kmp/nfcreader/NfcReaderStateKt {
+	public static final fun rememberNfcReadManagerState (Lcom/devtamuno/kmp/nfcreader/data/NfcConfig;Lkotlin/jvm/functions/Function3;Landroidx/compose/runtime/Composer;II)Lcom/devtamuno/kmp/nfcreader/contract/NfcReadManagerState;
+}
+
+public abstract interface class com/devtamuno/kmp/nfcreader/contract/NfcReadManagerState {
+	public abstract fun getNfcReadResult ()Lkotlinx/coroutines/flow/StateFlow;
+	public abstract fun startScanning ()V
+	public abstract fun stopScanning ()V
+}
+
+public final class com/devtamuno/kmp/nfcreader/data/NfcConfig {
+	public static final field $stable I
+	public synthetic fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;ZZZJLjava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public synthetic fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;ZZZJLjava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component10 ()Ljava/lang/String;
+	public final fun component11 ()Ljava/lang/String;
+	public final fun component2 ()Ljava/lang/String;
+	public final fun component3 ()Ljava/lang/String;
+	public final fun component4 ()Z
+	public final fun component5 ()Z
+	public final fun component6 ()Z
+	public final fun component7-UwyO8pc ()J
+	public final fun component8 ()Ljava/lang/String;
+	public final fun component9 ()Ljava/lang/String;
+	public final fun copy-k8zXyTc (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;ZZZJLjava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Lcom/devtamuno/kmp/nfcreader/data/NfcConfig;
+	public static synthetic fun copy-k8zXyTc$default (Lcom/devtamuno/kmp/nfcreader/data/NfcConfig;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;ZZZJLjava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;ILjava/lang/Object;)Lcom/devtamuno/kmp/nfcreader/data/NfcConfig;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getButtonText ()Ljava/lang/String;
+	public final fun getNfcDisabledMessage ()Ljava/lang/String;
+	public final fun getNfcReadTimeout-UwyO8pc ()J
+	public final fun getNfcScanTimeoutMessage ()Ljava/lang/String;
+	public final fun getNfcSuccessMessage ()Ljava/lang/String;
+	public final fun getNfcUnsupportedMessage ()Ljava/lang/String;
+	public final fun getSheetGesturesEnabled ()Z
+	public final fun getShouldDismissBottomSheetOnBackPress ()Z
+	public final fun getShouldDismissBottomSheetOnClickOutside ()Z
+	public final fun getSubtitleMessage ()Ljava/lang/String;
+	public final fun getTitleMessage ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public abstract class com/devtamuno/kmp/nfcreader/data/NfcReadResult {
+	public static final field $stable I
+}
+
+public final class com/devtamuno/kmp/nfcreader/data/NfcReadResult$Error : com/devtamuno/kmp/nfcreader/data/NfcReadResult {
+	public static final field $stable I
+	public fun <init> (Ljava/lang/String;)V
+	public final fun component1 ()Ljava/lang/String;
+	public final fun copy (Ljava/lang/String;)Lcom/devtamuno/kmp/nfcreader/data/NfcReadResult$Error;
+	public static synthetic fun copy$default (Lcom/devtamuno/kmp/nfcreader/data/NfcReadResult$Error;Ljava/lang/String;ILjava/lang/Object;)Lcom/devtamuno/kmp/nfcreader/data/NfcReadResult$Error;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getMessage ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/devtamuno/kmp/nfcreader/data/NfcReadResult$Initial : com/devtamuno/kmp/nfcreader/data/NfcReadResult {
+	public static final field $stable I
+	public static final field INSTANCE Lcom/devtamuno/kmp/nfcreader/data/NfcReadResult$Initial;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/devtamuno/kmp/nfcreader/data/NfcReadResult$OperationCancelled : com/devtamuno/kmp/nfcreader/data/NfcReadResult {
+	public static final field $stable I
+	public static final field INSTANCE Lcom/devtamuno/kmp/nfcreader/data/NfcReadResult$OperationCancelled;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/devtamuno/kmp/nfcreader/data/NfcReadResult$Scanning : com/devtamuno/kmp/nfcreader/data/NfcReadResult {
+	public static final field $stable I
+	public static final field INSTANCE Lcom/devtamuno/kmp/nfcreader/data/NfcReadResult$Scanning;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/devtamuno/kmp/nfcreader/data/NfcReadResult$Success : com/devtamuno/kmp/nfcreader/data/NfcReadResult {
+	public static final field $stable I
+	public fun <init> (Lcom/devtamuno/kmp/nfcreader/data/NfcTagData;)V
+	public final fun component1 ()Lcom/devtamuno/kmp/nfcreader/data/NfcTagData;
+	public final fun copy (Lcom/devtamuno/kmp/nfcreader/data/NfcTagData;)Lcom/devtamuno/kmp/nfcreader/data/NfcReadResult$Success;
+	public static synthetic fun copy$default (Lcom/devtamuno/kmp/nfcreader/data/NfcReadResult$Success;Lcom/devtamuno/kmp/nfcreader/data/NfcTagData;ILjava/lang/Object;)Lcom/devtamuno/kmp/nfcreader/data/NfcReadResult$Success;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getData ()Lcom/devtamuno/kmp/nfcreader/data/NfcTagData;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/devtamuno/kmp/nfcreader/data/NfcTagData {
+	public static final field $stable I
+	public fun <init> (Ljava/lang/String;Lcom/devtamuno/kmp/nfcreader/data/NfcTagType;Ljava/lang/String;Ljava/util/List;)V
+	public synthetic fun <init> (Ljava/lang/String;Lcom/devtamuno/kmp/nfcreader/data/NfcTagType;Ljava/lang/String;Ljava/util/List;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component2 ()Lcom/devtamuno/kmp/nfcreader/data/NfcTagType;
+	public final fun component3 ()Ljava/lang/String;
+	public final fun component4 ()Ljava/util/List;
+	public final fun copy (Ljava/lang/String;Lcom/devtamuno/kmp/nfcreader/data/NfcTagType;Ljava/lang/String;Ljava/util/List;)Lcom/devtamuno/kmp/nfcreader/data/NfcTagData;
+	public static synthetic fun copy$default (Lcom/devtamuno/kmp/nfcreader/data/NfcTagData;Ljava/lang/String;Lcom/devtamuno/kmp/nfcreader/data/NfcTagType;Ljava/lang/String;Ljava/util/List;ILjava/lang/Object;)Lcom/devtamuno/kmp/nfcreader/data/NfcTagData;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getPayload ()Ljava/lang/String;
+	public final fun getSerialNumber ()Ljava/lang/String;
+	public final fun getTechList ()Ljava/util/List;
+	public final fun getType ()Lcom/devtamuno/kmp/nfcreader/data/NfcTagType;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/devtamuno/kmp/nfcreader/data/NfcTagType : java/lang/Enum {
+	public static final field FELICA Lcom/devtamuno/kmp/nfcreader/data/NfcTagType;
+	public static final field ISO15693 Lcom/devtamuno/kmp/nfcreader/data/NfcTagType;
+	public static final field ISO7816 Lcom/devtamuno/kmp/nfcreader/data/NfcTagType;
+	public static final field MIFARE Lcom/devtamuno/kmp/nfcreader/data/NfcTagType;
+	public static final field NDEF Lcom/devtamuno/kmp/nfcreader/data/NfcTagType;
+	public static final field NON_NDEF Lcom/devtamuno/kmp/nfcreader/data/NfcTagType;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Lcom/devtamuno/kmp/nfcreader/data/NfcTagType;
+	public static fun values ()[Lcom/devtamuno/kmp/nfcreader/data/NfcTagType;
+}
+
+public final class com/devtamuno/kmp/nfcreader/resources/ActualResourceCollectorsKt {
+	public static final fun getAllDrawableResources (Lcom/devtamuno/kmp/nfcreader/resources/Res;)Ljava/util/Map;
+	public static final fun getAllFontResources (Lcom/devtamuno/kmp/nfcreader/resources/Res;)Ljava/util/Map;
+	public static final fun getAllPluralStringResources (Lcom/devtamuno/kmp/nfcreader/resources/Res;)Ljava/util/Map;
+	public static final fun getAllStringArrayResources (Lcom/devtamuno/kmp/nfcreader/resources/Res;)Ljava/util/Map;
+	public static final fun getAllStringResources (Lcom/devtamuno/kmp/nfcreader/resources/Res;)Ljava/util/Map;
+}
+
+public final class com/devtamuno/kmp/nfcreader/resources/Res {
+	public static final field $stable I
+	public static final field INSTANCE Lcom/devtamuno/kmp/nfcreader/resources/Res;
+	public final fun getUri (Ljava/lang/String;)Ljava/lang/String;
+	public final fun readBytes (Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public final class com/devtamuno/kmp/nfcreader/resources/Res$array {
+	public static final field $stable I
+	public static final field INSTANCE Lcom/devtamuno/kmp/nfcreader/resources/Res$array;
+}
+
+public final class com/devtamuno/kmp/nfcreader/resources/Res$drawable {
+	public static final field $stable I
+	public static final field INSTANCE Lcom/devtamuno/kmp/nfcreader/resources/Res$drawable;
+}
+
+public final class com/devtamuno/kmp/nfcreader/resources/Res$font {
+	public static final field $stable I
+	public static final field INSTANCE Lcom/devtamuno/kmp/nfcreader/resources/Res$font;
+}
+
+public final class com/devtamuno/kmp/nfcreader/resources/Res$plurals {
+	public static final field $stable I
+	public static final field INSTANCE Lcom/devtamuno/kmp/nfcreader/resources/Res$plurals;
+}
+
+public final class com/devtamuno/kmp/nfcreader/resources/Res$string {
+	public static final field $stable I
+	public static final field INSTANCE Lcom/devtamuno/kmp/nfcreader/resources/Res$string;
+}
+
+public final class com/devtamuno/kmp/nfcreader/ui/ScanningAnimationDefault {
+	public static final field $stable I
+	public static final field INSTANCE Lcom/devtamuno/kmp/nfcreader/ui/ScanningAnimationDefault;
+	public final fun NfcScanningAnimation (Landroidx/compose/ui/Modifier;Landroidx/compose/runtime/Composer;II)V
+}
+
