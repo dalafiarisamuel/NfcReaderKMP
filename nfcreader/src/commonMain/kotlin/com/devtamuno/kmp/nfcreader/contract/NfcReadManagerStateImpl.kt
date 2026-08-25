@@ -14,7 +14,7 @@ import kotlinx.coroutines.flow.StateFlow
  *
  * @property config The [NfcConfig] used to configure the NFC scanning.
  */
-internal class NfcReadManagerStateImpl(config: NfcConfig) : NfcReadManagerState {
+internal class NfcReadManagerStateImpl(config: NfcConfig) : InternalNfcReadManagerState {
 
     private val nfcReadManager = NfcReadManager(config)
 

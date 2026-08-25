@@ -1,5 +1,6 @@
 @file:OptIn(ExperimentalAbiValidation::class)
 
+import com.vanniktech.maven.publish.SonatypeHost
 import org.jetbrains.dokka.gradle.engine.parameters.KotlinPlatform
 import org.jetbrains.dokka.gradle.engine.parameters.VisibilityModifier
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
@@ -30,7 +31,11 @@ dokka {
         configureEach {
             reportUndocumented.set(true)
 
-            documentedVisibilities(VisibilityModifier.Public, VisibilityModifier.Internal)
+            documentedVisibilities(
+                VisibilityModifier.Public,
+                VisibilityModifier.Internal,
+                VisibilityModifier.Private,
+            )
 
             sourceLink {
                 localDirectory.set(projectDir.resolve("src"))
@@ -69,15 +74,65 @@ dokka {
 }
 
 signing {
-    useInMemoryPgpKeys(System.getenv("SIGNING_KEY"), System.getenv("SIGNING_KEY_PASSWORD"))
+    val signingKeyId = System.getenv("SIGNING_KEY_ID")
+    val signingKey = System.getenv("SIGNING_KEY")
+    val signingPassword = System.getenv("SIGNING_KEY_PASSWORD")
+
+    if (!signingKey.isNullOrBlank()) {
+        useInMemoryPgpKeys(signingKeyId, signingKey, signingPassword)
+    }
+
     sign(publishing.publications)
 
-    // Temporary workaround, see
-    // https://github.com/gradle/gradle/issues/26091#issuecomment-1722947958
+    // Temporary workaround, see https://github.com/gradle/gradle/issues/26091#issuecomment-1722947958
     tasks.withType<AbstractPublishToMaven>().configureEach {
         val signingTasks = tasks.withType<Sign>()
         mustRunAfter(signingTasks)
     }
+}
+
+mavenPublishing {
+    // Define coordinates for the published artifact
+    coordinates(
+        groupId = "io.github.dalafiarisamuel",
+        artifactId = "nfcreader",
+        version = libs.versions.nfcreader.version.get()
+    )
+
+    // Configure POM metadata for the published artifact
+    pom {
+        name.set("KMP Library to natively read NFC tags on Android and iOS")
+        description.set("A Kotlin Multiplatform (KMP) library for reading NFC tags on Android and iOS using Compose Multiplatform.")
+        inceptionYear.set("2026")
+        url.set("https://github.com/dalafiarisamuel/NfcReaderKMP")
+
+        licenses {
+            license {
+                name.set("MIT")
+                url.set("https://opensource.org/licenses/MIT")
+            }
+        }
+
+        // Specify developers information
+        developers {
+            developer {
+                id.set("devTamuno")
+                name.set("Samuel Dalafiari")
+                email.set("dalafiarisamuel@gmail.com")
+            }
+        }
+
+        // Specify SCM information
+        scm {
+            url.set("https://github.com/dalafiarisamuel/NfcReaderKMP")
+        }
+    }
+
+    // Configure publishing to Maven Central
+    publishToMavenCentral(SonatypeHost.CENTRAL_PORTAL)
+
+    // Enable GPG signing for all publications
+    signAllPublications()
 }
 
 compose.resources {

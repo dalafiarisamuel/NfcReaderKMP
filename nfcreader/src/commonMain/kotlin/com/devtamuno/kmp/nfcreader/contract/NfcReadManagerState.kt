@@ -18,14 +18,6 @@ interface NfcReadManagerState {
     val nfcReadResult: StateFlow<NfcReadResult>
 
     /**
-     * A [Composable] function that initializes and registers the underlying NFC manager.
-     * This should be called within the Composable where the NFC reader is being used.
-     *
-     * @param nfcScanningAnimationSlot A [Composable] slot for displaying a scanning animation.
-     */
-    @Composable fun InitNfcManager(nfcScanningAnimationSlot: @Composable ColumnScope.() -> Unit)
-
-    /**
      * Starts the NFC scanning process.
      */
     fun startScanning()
@@ -34,4 +26,16 @@ interface NfcReadManagerState {
      * Stops the NFC scanning process.
      */
     fun stopScanning()
+}
+
+internal interface InternalNfcReadManagerState : NfcReadManagerState {
+
+    /**
+     * A [Composable] function that initializes and registers the underlying NFC manager.
+     * This should be called within the Composable where the NFC reader is being used.
+     *
+     * @param nfcScanningAnimationSlot A [Composable] slot for displaying a scanning animation.
+     */
+    @Composable
+    fun InitNfcManager(nfcScanningAnimationSlot: @Composable ColumnScope.() -> Unit)
 }

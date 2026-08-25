@@ -1,0 +1,207 @@
+// Klib ABI Dump
+// Targets: [iosArm64, iosSimulatorArm64, iosX64]
+// Rendering settings:
+// - Signature version: 2
+// - Show manifest properties: true
+// - Show declarations: true
+
+// Library unique name: <NfcReaderKMP:nfcreader>
+final enum class com.devtamuno.kmp.nfcreader.data/NfcTagType : kotlin/Enum<com.devtamuno.kmp.nfcreader.data/NfcTagType> { // com.devtamuno.kmp.nfcreader.data/NfcTagType|null[0]
+    enum entry FELICA // com.devtamuno.kmp.nfcreader.data/NfcTagType.FELICA|null[0]
+    enum entry ISO15693 // com.devtamuno.kmp.nfcreader.data/NfcTagType.ISO15693|null[0]
+    enum entry ISO7816 // com.devtamuno.kmp.nfcreader.data/NfcTagType.ISO7816|null[0]
+    enum entry MIFARE // com.devtamuno.kmp.nfcreader.data/NfcTagType.MIFARE|null[0]
+    enum entry NDEF // com.devtamuno.kmp.nfcreader.data/NfcTagType.NDEF|null[0]
+    enum entry NON_NDEF // com.devtamuno.kmp.nfcreader.data/NfcTagType.NON_NDEF|null[0]
+
+    final val entries // com.devtamuno.kmp.nfcreader.data/NfcTagType.entries|#static{}entries[0]
+        final fun <get-entries>(): kotlin.enums/EnumEntries<com.devtamuno.kmp.nfcreader.data/NfcTagType> // com.devtamuno.kmp.nfcreader.data/NfcTagType.entries.<get-entries>|<get-entries>#static(){}[0]
+
+    final fun valueOf(kotlin/String): com.devtamuno.kmp.nfcreader.data/NfcTagType // com.devtamuno.kmp.nfcreader.data/NfcTagType.valueOf|valueOf#static(kotlin.String){}[0]
+    final fun values(): kotlin/Array<com.devtamuno.kmp.nfcreader.data/NfcTagType> // com.devtamuno.kmp.nfcreader.data/NfcTagType.values|values#static(){}[0]
+}
+
+abstract interface com.devtamuno.kmp.nfcreader.contract/NfcReadManagerState { // com.devtamuno.kmp.nfcreader.contract/NfcReadManagerState|null[0]
+    abstract val nfcReadResult // com.devtamuno.kmp.nfcreader.contract/NfcReadManagerState.nfcReadResult|{}nfcReadResult[0]
+        abstract fun <get-nfcReadResult>(): kotlinx.coroutines.flow/StateFlow<com.devtamuno.kmp.nfcreader.data/NfcReadResult> // com.devtamuno.kmp.nfcreader.contract/NfcReadManagerState.nfcReadResult.<get-nfcReadResult>|<get-nfcReadResult>(){}[0]
+
+    abstract fun startScanning() // com.devtamuno.kmp.nfcreader.contract/NfcReadManagerState.startScanning|startScanning(){}[0]
+    abstract fun stopScanning() // com.devtamuno.kmp.nfcreader.contract/NfcReadManagerState.stopScanning|stopScanning(){}[0]
+}
+
+final class com.devtamuno.kmp.nfcreader.data/NfcConfig { // com.devtamuno.kmp.nfcreader.data/NfcConfig|null[0]
+    constructor <init>(kotlin/String, kotlin/String, kotlin/String, kotlin/Boolean = ..., kotlin/Boolean = ..., kotlin/Boolean = ..., kotlin.time/Duration = ..., kotlin/String = ..., kotlin/String = ..., kotlin/String = ..., kotlin/String = ...) // com.devtamuno.kmp.nfcreader.data/NfcConfig.<init>|<init>(kotlin.String;kotlin.String;kotlin.String;kotlin.Boolean;kotlin.Boolean;kotlin.Boolean;kotlin.time.Duration;kotlin.String;kotlin.String;kotlin.String;kotlin.String){}[0]
+
+    final val buttonText // com.devtamuno.kmp.nfcreader.data/NfcConfig.buttonText|{}buttonText[0]
+        final fun <get-buttonText>(): kotlin/String // com.devtamuno.kmp.nfcreader.data/NfcConfig.buttonText.<get-buttonText>|<get-buttonText>(){}[0]
+    final val nfcDisabledMessage // com.devtamuno.kmp.nfcreader.data/NfcConfig.nfcDisabledMessage|{}nfcDisabledMessage[0]
+        final fun <get-nfcDisabledMessage>(): kotlin/String // com.devtamuno.kmp.nfcreader.data/NfcConfig.nfcDisabledMessage.<get-nfcDisabledMessage>|<get-nfcDisabledMessage>(){}[0]
+    final val nfcReadTimeout // com.devtamuno.kmp.nfcreader.data/NfcConfig.nfcReadTimeout|{}nfcReadTimeout[0]
+        final fun <get-nfcReadTimeout>(): kotlin.time/Duration // com.devtamuno.kmp.nfcreader.data/NfcConfig.nfcReadTimeout.<get-nfcReadTimeout>|<get-nfcReadTimeout>(){}[0]
+    final val nfcScanTimeoutMessage // com.devtamuno.kmp.nfcreader.data/NfcConfig.nfcScanTimeoutMessage|{}nfcScanTimeoutMessage[0]
+        final fun <get-nfcScanTimeoutMessage>(): kotlin/String // com.devtamuno.kmp.nfcreader.data/NfcConfig.nfcScanTimeoutMessage.<get-nfcScanTimeoutMessage>|<get-nfcScanTimeoutMessage>(){}[0]
+    final val nfcSuccessMessage // com.devtamuno.kmp.nfcreader.data/NfcConfig.nfcSuccessMessage|{}nfcSuccessMessage[0]
+        final fun <get-nfcSuccessMessage>(): kotlin/String // com.devtamuno.kmp.nfcreader.data/NfcConfig.nfcSuccessMessage.<get-nfcSuccessMessage>|<get-nfcSuccessMessage>(){}[0]
+    final val nfcUnsupportedMessage // com.devtamuno.kmp.nfcreader.data/NfcConfig.nfcUnsupportedMessage|{}nfcUnsupportedMessage[0]
+        final fun <get-nfcUnsupportedMessage>(): kotlin/String // com.devtamuno.kmp.nfcreader.data/NfcConfig.nfcUnsupportedMessage.<get-nfcUnsupportedMessage>|<get-nfcUnsupportedMessage>(){}[0]
+    final val sheetGesturesEnabled // com.devtamuno.kmp.nfcreader.data/NfcConfig.sheetGesturesEnabled|{}sheetGesturesEnabled[0]
+        final fun <get-sheetGesturesEnabled>(): kotlin/Boolean // com.devtamuno.kmp.nfcreader.data/NfcConfig.sheetGesturesEnabled.<get-sheetGesturesEnabled>|<get-sheetGesturesEnabled>(){}[0]
+    final val shouldDismissBottomSheetOnBackPress // com.devtamuno.kmp.nfcreader.data/NfcConfig.shouldDismissBottomSheetOnBackPress|{}shouldDismissBottomSheetOnBackPress[0]
+        final fun <get-shouldDismissBottomSheetOnBackPress>(): kotlin/Boolean // com.devtamuno.kmp.nfcreader.data/NfcConfig.shouldDismissBottomSheetOnBackPress.<get-shouldDismissBottomSheetOnBackPress>|<get-shouldDismissBottomSheetOnBackPress>(){}[0]
+    final val shouldDismissBottomSheetOnClickOutside // com.devtamuno.kmp.nfcreader.data/NfcConfig.shouldDismissBottomSheetOnClickOutside|{}shouldDismissBottomSheetOnClickOutside[0]
+        final fun <get-shouldDismissBottomSheetOnClickOutside>(): kotlin/Boolean // com.devtamuno.kmp.nfcreader.data/NfcConfig.shouldDismissBottomSheetOnClickOutside.<get-shouldDismissBottomSheetOnClickOutside>|<get-shouldDismissBottomSheetOnClickOutside>(){}[0]
+    final val subtitleMessage // com.devtamuno.kmp.nfcreader.data/NfcConfig.subtitleMessage|{}subtitleMessage[0]
+        final fun <get-subtitleMessage>(): kotlin/String // com.devtamuno.kmp.nfcreader.data/NfcConfig.subtitleMessage.<get-subtitleMessage>|<get-subtitleMessage>(){}[0]
+    final val titleMessage // com.devtamuno.kmp.nfcreader.data/NfcConfig.titleMessage|{}titleMessage[0]
+        final fun <get-titleMessage>(): kotlin/String // com.devtamuno.kmp.nfcreader.data/NfcConfig.titleMessage.<get-titleMessage>|<get-titleMessage>(){}[0]
+
+    final fun component1(): kotlin/String // com.devtamuno.kmp.nfcreader.data/NfcConfig.component1|component1(){}[0]
+    final fun component10(): kotlin/String // com.devtamuno.kmp.nfcreader.data/NfcConfig.component10|component10(){}[0]
+    final fun component11(): kotlin/String // com.devtamuno.kmp.nfcreader.data/NfcConfig.component11|component11(){}[0]
+    final fun component2(): kotlin/String // com.devtamuno.kmp.nfcreader.data/NfcConfig.component2|component2(){}[0]
+    final fun component3(): kotlin/String // com.devtamuno.kmp.nfcreader.data/NfcConfig.component3|component3(){}[0]
+    final fun component4(): kotlin/Boolean // com.devtamuno.kmp.nfcreader.data/NfcConfig.component4|component4(){}[0]
+    final fun component5(): kotlin/Boolean // com.devtamuno.kmp.nfcreader.data/NfcConfig.component5|component5(){}[0]
+    final fun component6(): kotlin/Boolean // com.devtamuno.kmp.nfcreader.data/NfcConfig.component6|component6(){}[0]
+    final fun component7(): kotlin.time/Duration // com.devtamuno.kmp.nfcreader.data/NfcConfig.component7|component7(){}[0]
+    final fun component8(): kotlin/String // com.devtamuno.kmp.nfcreader.data/NfcConfig.component8|component8(){}[0]
+    final fun component9(): kotlin/String // com.devtamuno.kmp.nfcreader.data/NfcConfig.component9|component9(){}[0]
+    final fun copy(kotlin/String = ..., kotlin/String = ..., kotlin/String = ..., kotlin/Boolean = ..., kotlin/Boolean = ..., kotlin/Boolean = ..., kotlin.time/Duration = ..., kotlin/String = ..., kotlin/String = ..., kotlin/String = ..., kotlin/String = ...): com.devtamuno.kmp.nfcreader.data/NfcConfig // com.devtamuno.kmp.nfcreader.data/NfcConfig.copy|copy(kotlin.String;kotlin.String;kotlin.String;kotlin.Boolean;kotlin.Boolean;kotlin.Boolean;kotlin.time.Duration;kotlin.String;kotlin.String;kotlin.String;kotlin.String){}[0]
+    final fun equals(kotlin/Any?): kotlin/Boolean // com.devtamuno.kmp.nfcreader.data/NfcConfig.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // com.devtamuno.kmp.nfcreader.data/NfcConfig.hashCode|hashCode(){}[0]
+    final fun toString(): kotlin/String // com.devtamuno.kmp.nfcreader.data/NfcConfig.toString|toString(){}[0]
+}
+
+final class com.devtamuno.kmp.nfcreader.data/NfcTagData { // com.devtamuno.kmp.nfcreader.data/NfcTagData|null[0]
+    constructor <init>(kotlin/String, com.devtamuno.kmp.nfcreader.data/NfcTagType, kotlin/String?, kotlin.collections/List<kotlin/String> = ...) // com.devtamuno.kmp.nfcreader.data/NfcTagData.<init>|<init>(kotlin.String;com.devtamuno.kmp.nfcreader.data.NfcTagType;kotlin.String?;kotlin.collections.List<kotlin.String>){}[0]
+
+    final val payload // com.devtamuno.kmp.nfcreader.data/NfcTagData.payload|{}payload[0]
+        final fun <get-payload>(): kotlin/String? // com.devtamuno.kmp.nfcreader.data/NfcTagData.payload.<get-payload>|<get-payload>(){}[0]
+    final val serialNumber // com.devtamuno.kmp.nfcreader.data/NfcTagData.serialNumber|{}serialNumber[0]
+        final fun <get-serialNumber>(): kotlin/String // com.devtamuno.kmp.nfcreader.data/NfcTagData.serialNumber.<get-serialNumber>|<get-serialNumber>(){}[0]
+    final val techList // com.devtamuno.kmp.nfcreader.data/NfcTagData.techList|{}techList[0]
+        final fun <get-techList>(): kotlin.collections/List<kotlin/String> // com.devtamuno.kmp.nfcreader.data/NfcTagData.techList.<get-techList>|<get-techList>(){}[0]
+    final val type // com.devtamuno.kmp.nfcreader.data/NfcTagData.type|{}type[0]
+        final fun <get-type>(): com.devtamuno.kmp.nfcreader.data/NfcTagType // com.devtamuno.kmp.nfcreader.data/NfcTagData.type.<get-type>|<get-type>(){}[0]
+
+    final fun component1(): kotlin/String // com.devtamuno.kmp.nfcreader.data/NfcTagData.component1|component1(){}[0]
+    final fun component2(): com.devtamuno.kmp.nfcreader.data/NfcTagType // com.devtamuno.kmp.nfcreader.data/NfcTagData.component2|component2(){}[0]
+    final fun component3(): kotlin/String? // com.devtamuno.kmp.nfcreader.data/NfcTagData.component3|component3(){}[0]
+    final fun component4(): kotlin.collections/List<kotlin/String> // com.devtamuno.kmp.nfcreader.data/NfcTagData.component4|component4(){}[0]
+    final fun copy(kotlin/String = ..., com.devtamuno.kmp.nfcreader.data/NfcTagType = ..., kotlin/String? = ..., kotlin.collections/List<kotlin/String> = ...): com.devtamuno.kmp.nfcreader.data/NfcTagData // com.devtamuno.kmp.nfcreader.data/NfcTagData.copy|copy(kotlin.String;com.devtamuno.kmp.nfcreader.data.NfcTagType;kotlin.String?;kotlin.collections.List<kotlin.String>){}[0]
+    final fun equals(kotlin/Any?): kotlin/Boolean // com.devtamuno.kmp.nfcreader.data/NfcTagData.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // com.devtamuno.kmp.nfcreader.data/NfcTagData.hashCode|hashCode(){}[0]
+    final fun toString(): kotlin/String // com.devtamuno.kmp.nfcreader.data/NfcTagData.toString|toString(){}[0]
+}
+
+sealed class com.devtamuno.kmp.nfcreader.data/NfcReadResult { // com.devtamuno.kmp.nfcreader.data/NfcReadResult|null[0]
+    final class Error : com.devtamuno.kmp.nfcreader.data/NfcReadResult { // com.devtamuno.kmp.nfcreader.data/NfcReadResult.Error|null[0]
+        constructor <init>(kotlin/String) // com.devtamuno.kmp.nfcreader.data/NfcReadResult.Error.<init>|<init>(kotlin.String){}[0]
+
+        final val message // com.devtamuno.kmp.nfcreader.data/NfcReadResult.Error.message|{}message[0]
+            final fun <get-message>(): kotlin/String // com.devtamuno.kmp.nfcreader.data/NfcReadResult.Error.message.<get-message>|<get-message>(){}[0]
+
+        final fun component1(): kotlin/String // com.devtamuno.kmp.nfcreader.data/NfcReadResult.Error.component1|component1(){}[0]
+        final fun copy(kotlin/String = ...): com.devtamuno.kmp.nfcreader.data/NfcReadResult.Error // com.devtamuno.kmp.nfcreader.data/NfcReadResult.Error.copy|copy(kotlin.String){}[0]
+        final fun equals(kotlin/Any?): kotlin/Boolean // com.devtamuno.kmp.nfcreader.data/NfcReadResult.Error.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // com.devtamuno.kmp.nfcreader.data/NfcReadResult.Error.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // com.devtamuno.kmp.nfcreader.data/NfcReadResult.Error.toString|toString(){}[0]
+    }
+
+    final class Success : com.devtamuno.kmp.nfcreader.data/NfcReadResult { // com.devtamuno.kmp.nfcreader.data/NfcReadResult.Success|null[0]
+        constructor <init>(com.devtamuno.kmp.nfcreader.data/NfcTagData) // com.devtamuno.kmp.nfcreader.data/NfcReadResult.Success.<init>|<init>(com.devtamuno.kmp.nfcreader.data.NfcTagData){}[0]
+
+        final val data // com.devtamuno.kmp.nfcreader.data/NfcReadResult.Success.data|{}data[0]
+            final fun <get-data>(): com.devtamuno.kmp.nfcreader.data/NfcTagData // com.devtamuno.kmp.nfcreader.data/NfcReadResult.Success.data.<get-data>|<get-data>(){}[0]
+
+        final fun component1(): com.devtamuno.kmp.nfcreader.data/NfcTagData // com.devtamuno.kmp.nfcreader.data/NfcReadResult.Success.component1|component1(){}[0]
+        final fun copy(com.devtamuno.kmp.nfcreader.data/NfcTagData = ...): com.devtamuno.kmp.nfcreader.data/NfcReadResult.Success // com.devtamuno.kmp.nfcreader.data/NfcReadResult.Success.copy|copy(com.devtamuno.kmp.nfcreader.data.NfcTagData){}[0]
+        final fun equals(kotlin/Any?): kotlin/Boolean // com.devtamuno.kmp.nfcreader.data/NfcReadResult.Success.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // com.devtamuno.kmp.nfcreader.data/NfcReadResult.Success.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // com.devtamuno.kmp.nfcreader.data/NfcReadResult.Success.toString|toString(){}[0]
+    }
+
+    final object Initial : com.devtamuno.kmp.nfcreader.data/NfcReadResult { // com.devtamuno.kmp.nfcreader.data/NfcReadResult.Initial|null[0]
+        final fun equals(kotlin/Any?): kotlin/Boolean // com.devtamuno.kmp.nfcreader.data/NfcReadResult.Initial.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // com.devtamuno.kmp.nfcreader.data/NfcReadResult.Initial.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // com.devtamuno.kmp.nfcreader.data/NfcReadResult.Initial.toString|toString(){}[0]
+    }
+
+    final object OperationCancelled : com.devtamuno.kmp.nfcreader.data/NfcReadResult { // com.devtamuno.kmp.nfcreader.data/NfcReadResult.OperationCancelled|null[0]
+        final fun equals(kotlin/Any?): kotlin/Boolean // com.devtamuno.kmp.nfcreader.data/NfcReadResult.OperationCancelled.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // com.devtamuno.kmp.nfcreader.data/NfcReadResult.OperationCancelled.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // com.devtamuno.kmp.nfcreader.data/NfcReadResult.OperationCancelled.toString|toString(){}[0]
+    }
+
+    final object Scanning : com.devtamuno.kmp.nfcreader.data/NfcReadResult { // com.devtamuno.kmp.nfcreader.data/NfcReadResult.Scanning|null[0]
+        final fun equals(kotlin/Any?): kotlin/Boolean // com.devtamuno.kmp.nfcreader.data/NfcReadResult.Scanning.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // com.devtamuno.kmp.nfcreader.data/NfcReadResult.Scanning.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // com.devtamuno.kmp.nfcreader.data/NfcReadResult.Scanning.toString|toString(){}[0]
+    }
+}
+
+final object com.devtamuno.kmp.nfcreader.resources/Res { // com.devtamuno.kmp.nfcreader.resources/Res|null[0]
+    final fun getUri(kotlin/String): kotlin/String // com.devtamuno.kmp.nfcreader.resources/Res.getUri|getUri(kotlin.String){}[0]
+    final suspend fun readBytes(kotlin/String): kotlin/ByteArray // com.devtamuno.kmp.nfcreader.resources/Res.readBytes|readBytes(kotlin.String){}[0]
+
+    final object array // com.devtamuno.kmp.nfcreader.resources/Res.array|null[0]
+
+    final object drawable // com.devtamuno.kmp.nfcreader.resources/Res.drawable|null[0]
+
+    final object font // com.devtamuno.kmp.nfcreader.resources/Res.font|null[0]
+
+    final object plurals // com.devtamuno.kmp.nfcreader.resources/Res.plurals|null[0]
+
+    final object string // com.devtamuno.kmp.nfcreader.resources/Res.string|null[0]
+}
+
+final object com.devtamuno.kmp.nfcreader.ui/ScanningAnimationDefault { // com.devtamuno.kmp.nfcreader.ui/ScanningAnimationDefault|null[0]
+    final fun NfcScanningAnimation(androidx.compose.ui/Modifier?, androidx.compose.runtime/Composer?, kotlin/Int, kotlin/Int) // com.devtamuno.kmp.nfcreader.ui/ScanningAnimationDefault.NfcScanningAnimation|NfcScanningAnimation(androidx.compose.ui.Modifier?;androidx.compose.runtime.Composer?;kotlin.Int;kotlin.Int){}[0]
+}
+
+final val com.devtamuno.kmp.nfcreader.contract/com_devtamuno_kmp_nfcreader_contract_NfcReadManager$stableprop // com.devtamuno.kmp.nfcreader.contract/com_devtamuno_kmp_nfcreader_contract_NfcReadManager$stableprop|#static{}com_devtamuno_kmp_nfcreader_contract_NfcReadManager$stableprop[0]
+final val com.devtamuno.kmp.nfcreader.contract/com_devtamuno_kmp_nfcreader_contract_NfcReadManagerStateImpl$stableprop // com.devtamuno.kmp.nfcreader.contract/com_devtamuno_kmp_nfcreader_contract_NfcReadManagerStateImpl$stableprop|#static{}com_devtamuno_kmp_nfcreader_contract_NfcReadManagerStateImpl$stableprop[0]
+final val com.devtamuno.kmp.nfcreader.data/com_devtamuno_kmp_nfcreader_data_NfcConfig$stableprop // com.devtamuno.kmp.nfcreader.data/com_devtamuno_kmp_nfcreader_data_NfcConfig$stableprop|#static{}com_devtamuno_kmp_nfcreader_data_NfcConfig$stableprop[0]
+final val com.devtamuno.kmp.nfcreader.data/com_devtamuno_kmp_nfcreader_data_NfcReadResult$stableprop // com.devtamuno.kmp.nfcreader.data/com_devtamuno_kmp_nfcreader_data_NfcReadResult$stableprop|#static{}com_devtamuno_kmp_nfcreader_data_NfcReadResult$stableprop[0]
+final val com.devtamuno.kmp.nfcreader.data/com_devtamuno_kmp_nfcreader_data_NfcReadResult_Error$stableprop // com.devtamuno.kmp.nfcreader.data/com_devtamuno_kmp_nfcreader_data_NfcReadResult_Error$stableprop|#static{}com_devtamuno_kmp_nfcreader_data_NfcReadResult_Error$stableprop[0]
+final val com.devtamuno.kmp.nfcreader.data/com_devtamuno_kmp_nfcreader_data_NfcReadResult_Initial$stableprop // com.devtamuno.kmp.nfcreader.data/com_devtamuno_kmp_nfcreader_data_NfcReadResult_Initial$stableprop|#static{}com_devtamuno_kmp_nfcreader_data_NfcReadResult_Initial$stableprop[0]
+final val com.devtamuno.kmp.nfcreader.data/com_devtamuno_kmp_nfcreader_data_NfcReadResult_OperationCancelled$stableprop // com.devtamuno.kmp.nfcreader.data/com_devtamuno_kmp_nfcreader_data_NfcReadResult_OperationCancelled$stableprop|#static{}com_devtamuno_kmp_nfcreader_data_NfcReadResult_OperationCancelled$stableprop[0]
+final val com.devtamuno.kmp.nfcreader.data/com_devtamuno_kmp_nfcreader_data_NfcReadResult_Scanning$stableprop // com.devtamuno.kmp.nfcreader.data/com_devtamuno_kmp_nfcreader_data_NfcReadResult_Scanning$stableprop|#static{}com_devtamuno_kmp_nfcreader_data_NfcReadResult_Scanning$stableprop[0]
+final val com.devtamuno.kmp.nfcreader.data/com_devtamuno_kmp_nfcreader_data_NfcReadResult_Success$stableprop // com.devtamuno.kmp.nfcreader.data/com_devtamuno_kmp_nfcreader_data_NfcReadResult_Success$stableprop|#static{}com_devtamuno_kmp_nfcreader_data_NfcReadResult_Success$stableprop[0]
+final val com.devtamuno.kmp.nfcreader.data/com_devtamuno_kmp_nfcreader_data_NfcTagData$stableprop // com.devtamuno.kmp.nfcreader.data/com_devtamuno_kmp_nfcreader_data_NfcTagData$stableprop|#static{}com_devtamuno_kmp_nfcreader_data_NfcTagData$stableprop[0]
+final val com.devtamuno.kmp.nfcreader.resources/allDrawableResources // com.devtamuno.kmp.nfcreader.resources/allDrawableResources|@com.devtamuno.kmp.nfcreader.resources.Res{}allDrawableResources[0]
+    final fun (com.devtamuno.kmp.nfcreader.resources/Res).<get-allDrawableResources>(): kotlin.collections/Map<kotlin/String, org.jetbrains.compose.resources/DrawableResource> // com.devtamuno.kmp.nfcreader.resources/allDrawableResources.<get-allDrawableResources>|<get-allDrawableResources>@com.devtamuno.kmp.nfcreader.resources.Res(){}[0]
+final val com.devtamuno.kmp.nfcreader.resources/allFontResources // com.devtamuno.kmp.nfcreader.resources/allFontResources|@com.devtamuno.kmp.nfcreader.resources.Res{}allFontResources[0]
+    final fun (com.devtamuno.kmp.nfcreader.resources/Res).<get-allFontResources>(): kotlin.collections/Map<kotlin/String, org.jetbrains.compose.resources/FontResource> // com.devtamuno.kmp.nfcreader.resources/allFontResources.<get-allFontResources>|<get-allFontResources>@com.devtamuno.kmp.nfcreader.resources.Res(){}[0]
+final val com.devtamuno.kmp.nfcreader.resources/allPluralStringResources // com.devtamuno.kmp.nfcreader.resources/allPluralStringResources|@com.devtamuno.kmp.nfcreader.resources.Res{}allPluralStringResources[0]
+    final fun (com.devtamuno.kmp.nfcreader.resources/Res).<get-allPluralStringResources>(): kotlin.collections/Map<kotlin/String, org.jetbrains.compose.resources/PluralStringResource> // com.devtamuno.kmp.nfcreader.resources/allPluralStringResources.<get-allPluralStringResources>|<get-allPluralStringResources>@com.devtamuno.kmp.nfcreader.resources.Res(){}[0]
+final val com.devtamuno.kmp.nfcreader.resources/allStringArrayResources // com.devtamuno.kmp.nfcreader.resources/allStringArrayResources|@com.devtamuno.kmp.nfcreader.resources.Res{}allStringArrayResources[0]
+    final fun (com.devtamuno.kmp.nfcreader.resources/Res).<get-allStringArrayResources>(): kotlin.collections/Map<kotlin/String, org.jetbrains.compose.resources/StringArrayResource> // com.devtamuno.kmp.nfcreader.resources/allStringArrayResources.<get-allStringArrayResources>|<get-allStringArrayResources>@com.devtamuno.kmp.nfcreader.resources.Res(){}[0]
+final val com.devtamuno.kmp.nfcreader.resources/allStringResources // com.devtamuno.kmp.nfcreader.resources/allStringResources|@com.devtamuno.kmp.nfcreader.resources.Res{}allStringResources[0]
+    final fun (com.devtamuno.kmp.nfcreader.resources/Res).<get-allStringResources>(): kotlin.collections/Map<kotlin/String, org.jetbrains.compose.resources/StringResource> // com.devtamuno.kmp.nfcreader.resources/allStringResources.<get-allStringResources>|<get-allStringResources>@com.devtamuno.kmp.nfcreader.resources.Res(){}[0]
+final val com.devtamuno.kmp.nfcreader.resources/com_devtamuno_kmp_nfcreader_resources_Res$stableprop // com.devtamuno.kmp.nfcreader.resources/com_devtamuno_kmp_nfcreader_resources_Res$stableprop|#static{}com_devtamuno_kmp_nfcreader_resources_Res$stableprop[0]
+final val com.devtamuno.kmp.nfcreader.resources/com_devtamuno_kmp_nfcreader_resources_Res_array$stableprop // com.devtamuno.kmp.nfcreader.resources/com_devtamuno_kmp_nfcreader_resources_Res_array$stableprop|#static{}com_devtamuno_kmp_nfcreader_resources_Res_array$stableprop[0]
+final val com.devtamuno.kmp.nfcreader.resources/com_devtamuno_kmp_nfcreader_resources_Res_drawable$stableprop // com.devtamuno.kmp.nfcreader.resources/com_devtamuno_kmp_nfcreader_resources_Res_drawable$stableprop|#static{}com_devtamuno_kmp_nfcreader_resources_Res_drawable$stableprop[0]
+final val com.devtamuno.kmp.nfcreader.resources/com_devtamuno_kmp_nfcreader_resources_Res_font$stableprop // com.devtamuno.kmp.nfcreader.resources/com_devtamuno_kmp_nfcreader_resources_Res_font$stableprop|#static{}com_devtamuno_kmp_nfcreader_resources_Res_font$stableprop[0]
+final val com.devtamuno.kmp.nfcreader.resources/com_devtamuno_kmp_nfcreader_resources_Res_plurals$stableprop // com.devtamuno.kmp.nfcreader.resources/com_devtamuno_kmp_nfcreader_resources_Res_plurals$stableprop|#static{}com_devtamuno_kmp_nfcreader_resources_Res_plurals$stableprop[0]
+final val com.devtamuno.kmp.nfcreader.resources/com_devtamuno_kmp_nfcreader_resources_Res_string$stableprop // com.devtamuno.kmp.nfcreader.resources/com_devtamuno_kmp_nfcreader_resources_Res_string$stableprop|#static{}com_devtamuno_kmp_nfcreader_resources_Res_string$stableprop[0]
+final val com.devtamuno.kmp.nfcreader.ui/com_devtamuno_kmp_nfcreader_ui_ScanningAnimationDefault$stableprop // com.devtamuno.kmp.nfcreader.ui/com_devtamuno_kmp_nfcreader_ui_ScanningAnimationDefault$stableprop|#static{}com_devtamuno_kmp_nfcreader_ui_ScanningAnimationDefault$stableprop[0]
+
+final fun com.devtamuno.kmp.nfcreader.contract/com_devtamuno_kmp_nfcreader_contract_NfcReadManager$stableprop_getter(): kotlin/Int // com.devtamuno.kmp.nfcreader.contract/com_devtamuno_kmp_nfcreader_contract_NfcReadManager$stableprop_getter|com_devtamuno_kmp_nfcreader_contract_NfcReadManager$stableprop_getter(){}[0]
+final fun com.devtamuno.kmp.nfcreader.contract/com_devtamuno_kmp_nfcreader_contract_NfcReadManagerStateImpl$stableprop_getter(): kotlin/Int // com.devtamuno.kmp.nfcreader.contract/com_devtamuno_kmp_nfcreader_contract_NfcReadManagerStateImpl$stableprop_getter|com_devtamuno_kmp_nfcreader_contract_NfcReadManagerStateImpl$stableprop_getter(){}[0]
+final fun com.devtamuno.kmp.nfcreader.data/com_devtamuno_kmp_nfcreader_data_NfcConfig$stableprop_getter(): kotlin/Int // com.devtamuno.kmp.nfcreader.data/com_devtamuno_kmp_nfcreader_data_NfcConfig$stableprop_getter|com_devtamuno_kmp_nfcreader_data_NfcConfig$stableprop_getter(){}[0]
+final fun com.devtamuno.kmp.nfcreader.data/com_devtamuno_kmp_nfcreader_data_NfcReadResult$stableprop_getter(): kotlin/Int // com.devtamuno.kmp.nfcreader.data/com_devtamuno_kmp_nfcreader_data_NfcReadResult$stableprop_getter|com_devtamuno_kmp_nfcreader_data_NfcReadResult$stableprop_getter(){}[0]
+final fun com.devtamuno.kmp.nfcreader.data/com_devtamuno_kmp_nfcreader_data_NfcReadResult_Error$stableprop_getter(): kotlin/Int // com.devtamuno.kmp.nfcreader.data/com_devtamuno_kmp_nfcreader_data_NfcReadResult_Error$stableprop_getter|com_devtamuno_kmp_nfcreader_data_NfcReadResult_Error$stableprop_getter(){}[0]
+final fun com.devtamuno.kmp.nfcreader.data/com_devtamuno_kmp_nfcreader_data_NfcReadResult_Initial$stableprop_getter(): kotlin/Int // com.devtamuno.kmp.nfcreader.data/com_devtamuno_kmp_nfcreader_data_NfcReadResult_Initial$stableprop_getter|com_devtamuno_kmp_nfcreader_data_NfcReadResult_Initial$stableprop_getter(){}[0]
+final fun com.devtamuno.kmp.nfcreader.data/com_devtamuno_kmp_nfcreader_data_NfcReadResult_OperationCancelled$stableprop_getter(): kotlin/Int // com.devtamuno.kmp.nfcreader.data/com_devtamuno_kmp_nfcreader_data_NfcReadResult_OperationCancelled$stableprop_getter|com_devtamuno_kmp_nfcreader_data_NfcReadResult_OperationCancelled$stableprop_getter(){}[0]
+final fun com.devtamuno.kmp.nfcreader.data/com_devtamuno_kmp_nfcreader_data_NfcReadResult_Scanning$stableprop_getter(): kotlin/Int // com.devtamuno.kmp.nfcreader.data/com_devtamuno_kmp_nfcreader_data_NfcReadResult_Scanning$stableprop_getter|com_devtamuno_kmp_nfcreader_data_NfcReadResult_Scanning$stableprop_getter(){}[0]
+final fun com.devtamuno.kmp.nfcreader.data/com_devtamuno_kmp_nfcreader_data_NfcReadResult_Success$stableprop_getter(): kotlin/Int // com.devtamuno.kmp.nfcreader.data/com_devtamuno_kmp_nfcreader_data_NfcReadResult_Success$stableprop_getter|com_devtamuno_kmp_nfcreader_data_NfcReadResult_Success$stableprop_getter(){}[0]
+final fun com.devtamuno.kmp.nfcreader.data/com_devtamuno_kmp_nfcreader_data_NfcTagData$stableprop_getter(): kotlin/Int // com.devtamuno.kmp.nfcreader.data/com_devtamuno_kmp_nfcreader_data_NfcTagData$stableprop_getter|com_devtamuno_kmp_nfcreader_data_NfcTagData$stableprop_getter(){}[0]
+final fun com.devtamuno.kmp.nfcreader.resources/com_devtamuno_kmp_nfcreader_resources_Res$stableprop_getter(): kotlin/Int // com.devtamuno.kmp.nfcreader.resources/com_devtamuno_kmp_nfcreader_resources_Res$stableprop_getter|com_devtamuno_kmp_nfcreader_resources_Res$stableprop_getter(){}[0]
+final fun com.devtamuno.kmp.nfcreader.resources/com_devtamuno_kmp_nfcreader_resources_Res_array$stableprop_getter(): kotlin/Int // com.devtamuno.kmp.nfcreader.resources/com_devtamuno_kmp_nfcreader_resources_Res_array$stableprop_getter|com_devtamuno_kmp_nfcreader_resources_Res_array$stableprop_getter(){}[0]
+final fun com.devtamuno.kmp.nfcreader.resources/com_devtamuno_kmp_nfcreader_resources_Res_drawable$stableprop_getter(): kotlin/Int // com.devtamuno.kmp.nfcreader.resources/com_devtamuno_kmp_nfcreader_resources_Res_drawable$stableprop_getter|com_devtamuno_kmp_nfcreader_resources_Res_drawable$stableprop_getter(){}[0]
+final fun com.devtamuno.kmp.nfcreader.resources/com_devtamuno_kmp_nfcreader_resources_Res_font$stableprop_getter(): kotlin/Int // com.devtamuno.kmp.nfcreader.resources/com_devtamuno_kmp_nfcreader_resources_Res_font$stableprop_getter|com_devtamuno_kmp_nfcreader_resources_Res_font$stableprop_getter(){}[0]
+final fun com.devtamuno.kmp.nfcreader.resources/com_devtamuno_kmp_nfcreader_resources_Res_plurals$stableprop_getter(): kotlin/Int // com.devtamuno.kmp.nfcreader.resources/com_devtamuno_kmp_nfcreader_resources_Res_plurals$stableprop_getter|com_devtamuno_kmp_nfcreader_resources_Res_plurals$stableprop_getter(){}[0]
+final fun com.devtamuno.kmp.nfcreader.resources/com_devtamuno_kmp_nfcreader_resources_Res_string$stableprop_getter(): kotlin/Int // com.devtamuno.kmp.nfcreader.resources/com_devtamuno_kmp_nfcreader_resources_Res_string$stableprop_getter|com_devtamuno_kmp_nfcreader_resources_Res_string$stableprop_getter(){}[0]
+final fun com.devtamuno.kmp.nfcreader.ui/com_devtamuno_kmp_nfcreader_ui_ScanningAnimationDefault$stableprop_getter(): kotlin/Int // com.devtamuno.kmp.nfcreader.ui/com_devtamuno_kmp_nfcreader_ui_ScanningAnimationDefault$stableprop_getter|com_devtamuno_kmp_nfcreader_ui_ScanningAnimationDefault$stableprop_getter(){}[0]
+final fun com.devtamuno.kmp.nfcreader/rememberNfcReadManagerState(com.devtamuno.kmp.nfcreader.data/NfcConfig, kotlin/Function3<androidx.compose.foundation.layout/ColumnScope, androidx.compose.runtime/Composer, kotlin/Int, kotlin/Unit>?, androidx.compose.runtime/Composer?, kotlin/Int, kotlin/Int): com.devtamuno.kmp.nfcreader.contract/NfcReadManagerState // com.devtamuno.kmp.nfcreader/rememberNfcReadManagerState|rememberNfcReadManagerState(com.devtamuno.kmp.nfcreader.data.NfcConfig;kotlin.Function3<androidx.compose.foundation.layout.ColumnScope,androidx.compose.runtime.Composer,kotlin.Int,kotlin.Unit>?;androidx.compose.runtime.Composer?;kotlin.Int;kotlin.Int){}[0]

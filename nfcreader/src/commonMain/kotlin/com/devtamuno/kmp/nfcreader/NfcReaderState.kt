@@ -3,6 +3,7 @@ package com.devtamuno.kmp.nfcreader
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
+import com.devtamuno.kmp.nfcreader.contract.InternalNfcReadManagerState
 import com.devtamuno.kmp.nfcreader.contract.NfcReadManagerState
 import com.devtamuno.kmp.nfcreader.contract.NfcReadManagerStateImpl
 import com.devtamuno.kmp.nfcreader.data.NfcConfig
@@ -27,7 +28,7 @@ fun rememberNfcReadManagerState(
     },
 ): NfcReadManagerState =
     rememberMutableNfcReadManagerState(config).also {
-        it.InitNfcManager(nfcScanningAnimationSlot)
+        (it as? InternalNfcReadManagerState)?.InitNfcManager(nfcScanningAnimationSlot)
     }
 
 /**
@@ -43,4 +44,4 @@ fun rememberNfcReadManagerState(
 @Composable
 private fun rememberMutableNfcReadManagerState(
     config: NfcConfig
-): NfcReadManagerState = remember { NfcReadManagerStateImpl(config) }
+): NfcReadManagerState = remember(config) { NfcReadManagerStateImpl(config) }
