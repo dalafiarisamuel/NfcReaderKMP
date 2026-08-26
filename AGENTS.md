@@ -35,7 +35,7 @@ The project is divided into two main modules:
 - **`NfcTagParser.kt`**: Tag parsing — `extractUid`, `getTechList`, `NFCNDEFPayload.readableText`, `NSData`/hex helpers.
 
 ### Data Layer (`com.devtamuno.kmp.nfcreader.data`)
-- **`NfcConfig`**: Configuration for scanning behaviour (timeouts and messages). Error/success messages are configurable via `nfcUnsupportedMessage`, `nfcDisabledMessage`, `nfcScanTimeoutMessage` (Android), and `nfcSuccessMessage` (iOS).
+- **`NfcConfig`**: Configuration for scanning behaviour. It uses nested `AndroidOptions` and `IosOptions` classes to separate platform-specific settings while allowing them to be configured from common code. Common properties (messages) are in the root class, while Android-specific UI/timeout settings and iOS-specific success messages are grouped in their respective option blocks.
 - **`NfcReadResult`**: Sealed class representing the lifecycle of an NFC scan (`Initial`, `Scanning`, `Success`, `Error`, `OperationCancelled`).
 - **`NfcTagData`**: Model for scanned tag information (Serial Number, Type, Payload, Tech List). `serialNumber` is available on both Android and iOS.
 - **`NfcTagType`**: Enum of supported tag types — `NDEF`, `NON_NDEF`, `MIFARE`, `ISO15693`, `ISO7816`, `FELICA`.

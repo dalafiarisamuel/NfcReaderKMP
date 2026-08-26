@@ -75,8 +75,7 @@ val nfcManager = rememberNfcReadManagerState(
     config = NfcConfig(
         titleMessage = "Ready to Scan",
         subtitleMessage = "Hold your tag near the device.",
-        buttonText = "Cancel",
-        nfcReadTimeout = 30.seconds
+        buttonText = "Cancel"
     ),
     nfcScanningAnimationSlot = {
         // Custom Compose animation here
@@ -120,28 +119,33 @@ when (val state = result) {
 
 ## Configuration Options (`NfcConfig`)
 
-| Property | Type | Default | Platform |
-| :--- | :--- | :--- | :--- |
-| `titleMessage` | `String` | Required | Android |
-| `subtitleMessage` | `String` | Required | Android & iOS |
-| `buttonText` | `String` | Required | Android |
-| `nfcReadTimeout` | `Duration` | `60.seconds` (min 5s) | Android |
-| `nfcUnsupportedMessage` | `String` | `"NFC is not supported on this device"` | Android |
-| `nfcDisabledMessage` | `String` | `"NFC is disabled on this device"` | Android |
-| `nfcScanTimeoutMessage` | `String` | `"NFC scan timed out"` | Android |
-| `nfcSuccessMessage` | `String` | `"Tag scanned successfully"` | iOS |
-| `sheetGesturesEnabled` | `Boolean` | `true` | Android |
-| `shouldDismissBottomSheetOnBackPress` | `Boolean` | `false` | Android |
-| `shouldDismissBottomSheetOnClickOutside` | `Boolean` | `false` | Android |
+`NfcConfig` uses the `expect`/`actual` pattern to provide a clean API. This ensures that platform-specific properties (like Android's BottomSheet behavior) are only visible and used on their respective platforms.
 
-### `rememberNfcReadManagerState` Parameters
+### Common Properties
+These properties are available on both Android and iOS and are typically configured in your shared `commonMain` code.
 
-| Parameter | Type | Default | Platform |
-| :--- | :--- | :--- | :--- |
-| `config` | `NfcConfig` | Required | Both |
-| `nfcScanningAnimationSlot` | `@Composable ColumnScope.() -> Unit` | Built-in Lottie animation | Android |
+| Property | Type | Default |
+| :--- | :--- | :--- |
+| `titleMessage` | `String` | Required |
+| `subtitleMessage` | `String` | Required |
+| `buttonText` | `String` | Required |
+| `nfcUnsupportedMessage` | `String` | `"NFC is not supported on this device"` |
+| `nfcDisabledMessage` | `String` | `"NFC is disabled on this device"` |
 
-> **Note:** On iOS, only `subtitleMessage` is used — it maps directly to the native system NFC scanning dialog message. All other properties are Android-specific.
+### Platform-Specific Properties
+These properties are internal to each platform's implementation to keep the common API clean. They use the following defaults:
+
+#### Android-Specific
+- `nfcReadTimeout`: `60.seconds` (minimum 5s)
+- `nfcScanTimeoutMessage`: `"NFC scan timed out"`
+- `sheetGesturesEnabled`: `true`
+- `shouldDismissBottomSheetOnBackPress`: `false`
+- `shouldDismissBottomSheetOnClickOutside`: `false`
+
+#### iOS-Specific
+- `nfcSuccessMessage`: `"Tag scanned successfully"`
+
+> **Note:** On iOS, only `subtitleMessage` is used — it maps directly to the native system NFC scanning dialog message. `titleMessage` and `buttonText` are required by the constructor but are not displayed on iOS as the system manages the dialog UI.
 
 ---
 
