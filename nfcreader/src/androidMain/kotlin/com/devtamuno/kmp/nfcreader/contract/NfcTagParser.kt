@@ -43,9 +43,9 @@ internal fun NdefRecord.toReadableText(): String {
     return try {
         val payload = this.payload
         if (payload.isEmpty()) return ""
-        when {
-            // Well-Known Text: status byte (UTF flag + lang length) + lang code + text
-            tnf == NdefRecord.TNF_WELL_KNOWN && type.contentEquals(NdefRecord.RTD_TEXT) -> {
+        when (// Well-Known Text: status byte (UTF flag + lang length) + lang code + text
+            tnf) {
+            NdefRecord.TNF_WELL_KNOWN if type.contentEquals(NdefRecord.RTD_TEXT) -> {
                 val statusByte = payload[0].toInt()
                 val isUtf16 = (statusByte and 0x80) != 0
                 val languageCodeLength = statusByte and 0x3F
@@ -55,7 +55,7 @@ internal fun NdefRecord.toReadableText(): String {
                 String(payload, textStartIndex, payload.size - textStartIndex, charset)
             }
             // Well-Known URI: identifier byte prefix + URI string
-            tnf == NdefRecord.TNF_WELL_KNOWN && type.contentEquals(NdefRecord.RTD_URI) -> {
+            NdefRecord.TNF_WELL_KNOWN if type.contentEquals(NdefRecord.RTD_URI) -> {
                 val prefix = NFC_URI_PREFIXES.getOrElse(payload[0].toInt() and 0xFF) { "" }
                 prefix + String(payload, 1, payload.size - 1, Charsets.UTF_8)
             }
