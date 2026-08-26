@@ -1,6 +1,6 @@
 # NfcReaderKMP
 
-[![Kotlin](https://img.shields.io/badge/kotlin-2.1.0-blue.svg?logo=kotlin)](http://kotlinlang.org)
+[![Kotlin](https://img.shields.io/badge/kotlin-2.2.0-blue.svg?logo=kotlin)](http://kotlinlang.org)
 [![Compose Multiplatform](https://img.shields.io/badge/Compose%20Multiplatform-1.10.1-blue?logo=jetbrains)](https://www.jetbrains.com/lp/compose-multiplatform/)
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT)
 [![Maven Central](https://img.shields.io/maven-central/v/io.github.dalafiarisamuel/nfcreader)](https://central.sonatype.com/artifact/io.github.dalafiarisamuel/nfcreader)
@@ -12,13 +12,24 @@ A powerful, easy-to-use Kotlin Multiplatform (KMP) library for reading NFC tags 
 
 ---
 
-## Work in Progress
+## 🚧 Work in Progress & Roadmap
 
-> **This library is currently under active development and has not yet been published to Maven Central.**
->
-> The core functionality is implemented and working on both Android and iOS, but we are still completing testing before the first stable release. The API may change before the official release.
->
-> Watch or star this repository to be notified when it is released.
+This library is under active development. While we are approaching a stable `v1.0.0`, the core engine is already functional and powering NFC interactions on both Android and iOS.
+
+### ✅ What's Ready
+- **Unified KMP API**: A single `NfcReadManagerState` that handles platform complexities under the hood.
+- **Android Implementation**: robust `NfcAdapter` integration with a customizable `ModalBottomSheet` and Lottie support (via [Compottie](https://github.com/AlexZhirkevich/compottie)).
+- **iOS Implementation**: Seamless `CoreNFC` integration utilizing the native system scanning dialog.
+- **Advanced Tag Parsing**: Support for NDEF, MIFARE, ISO15693, ISO7816, and FeliCa.
+- **Dokka Documentation**: Fully documented API available [here](https://dalafiarisamuel.github.io/NfcReaderKMP/).
+- **CI/CD**: Automated binary compatibility validation and publishing infrastructure.
+
+### 🛠️ What's Next
+- [ ] Increasing test coverage (Unit & Instrumentation).
+- [ ] Polishing the `:composeApp` sample for more complex use cases.
+- [ ] Official `v1.0.0` release to Maven Central.
+
+> **Note:** We are currently at version `0.0.1`. The API is stabilizing but may still undergo minor changes before the first official release. Star the repo to stay updated!
 
 ---
 
