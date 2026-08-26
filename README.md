@@ -3,6 +3,8 @@
 [![Kotlin](https://img.shields.io/badge/kotlin-2.1.0-blue.svg?logo=kotlin)](http://kotlinlang.org)
 [![Compose Multiplatform](https://img.shields.io/badge/Compose%20Multiplatform-1.10.1-blue?logo=jetbrains)](https://www.jetbrains.com/lp/compose-multiplatform/)
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT)
+[![Maven Central](https://img.shields.io/maven-central/v/io.github.dalafiarisamuel/nfcreader)](https://central.sonatype.com/artifact/io.github.dalafiarisamuel/nfcreader)
+[![Binary Compatibility](https://github.com/dalafiarisamuel/NfcReaderKMP/actions/workflows/validate-binary.yml/badge.svg?branch=main)](https://github.com/dalafiarisamuel/NfcReaderKMP/actions/workflows/validate-binary.yml)
 
 A powerful, easy-to-use Kotlin Multiplatform (KMP) library for reading NFC tags on Android and iOS using Compose Multiplatform.
 
