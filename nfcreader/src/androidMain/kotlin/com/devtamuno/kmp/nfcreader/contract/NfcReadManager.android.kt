@@ -122,9 +122,9 @@ actual constructor(private val config: NfcConfig) : NfcAdapter.ReaderCallback {
 
         timeoutJob?.cancel()
         timeoutJob = scope.launch {
-            delay(config.nfcReadTimeout)
+            delay(config.android.nfcReadTimeout)
             if (isScanning) {
-                _tagData.value = NfcReadResult.Error(config.nfcScanTimeoutMessage)
+                _tagData.value = NfcReadResult.Error(config.android.nfcScanTimeoutMessage)
                 stopScanning()
             }
         }

@@ -53,11 +53,11 @@ internal fun NfcScanBottomSheet(
             onDismissRequest = onDismiss,
             dragHandle = null,
             sheetState = sheetState,
-            sheetGesturesEnabled = config.sheetGesturesEnabled,
+            sheetGesturesEnabled = config.android.sheetGesturesEnabled,
             properties =
                 ModalBottomSheetProperties(
-                    shouldDismissOnBackPress = config.shouldDismissBottomSheetOnBackPress,
-                    shouldDismissOnClickOutside = config.shouldDismissBottomSheetOnClickOutside,
+                    shouldDismissOnBackPress = config.android.shouldDismissBottomSheetOnBackPress,
+                    shouldDismissOnClickOutside = config.android.shouldDismissBottomSheetOnClickOutside,
                 ),
         ) {
             Column(

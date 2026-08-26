@@ -33,7 +33,6 @@ fun App() {
                         titleMessage = "Ready to Scan",
                         subtitleMessage = "Bring a tag closer to your phone to read it.",
                         buttonText = "Cancel",
-                        shouldDismissBottomSheetOnBackPress = true,
                     ),
             )
 

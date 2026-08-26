@@ -252,7 +252,7 @@ actual constructor(private val config: NfcConfig) : NSObject(), NFCTagReaderSess
         when (result) {
             is NfcReadResult.Error -> session.invalidateSessionWithErrorMessage(result.message)
             is NfcReadResult.Success -> {
-                session.alertMessage = config.nfcSuccessMessage
+                session.alertMessage = config.ios.nfcSuccessMessage
                 session.invalidateSession()
             }
             else -> session.invalidateSession()
