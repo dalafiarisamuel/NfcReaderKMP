@@ -75,7 +75,11 @@ val nfcManager = rememberNfcReadManagerState(
     config = NfcConfig(
         titleMessage = "Ready to Scan",
         subtitleMessage = "Hold your tag near the device.",
-        buttonText = "Cancel"
+        buttonText = "Cancel",
+        android = NfcConfig.AndroidOptions(
+            nfcReadTimeout = 30.seconds,
+            shouldDismissBottomSheetOnBackPress = true
+        )
     ),
     nfcScanningAnimationSlot = {
         // Custom Compose animation here
@@ -119,10 +123,10 @@ when (val state = result) {
 
 ## Configuration Options (`NfcConfig`)
 
-`NfcConfig` uses the `expect`/`actual` pattern to provide a clean API. This ensures that platform-specific properties (like Android's BottomSheet behavior) are only visible and used on their respective platforms.
+`NfcConfig` groups configuration values by platform to make it clear where they are used, while still allowing them to be configured from common code using nested `AndroidOptions` and `IosOptions`.
 
-### Common Properties
-These properties are available on both Android and iOS and are typically configured in your shared `commonMain` code.
+### Core Properties
+These properties are root-level and apply to both platforms (where supported).
 
 | Property | Type | Default |
 | :--- | :--- | :--- |
@@ -131,21 +135,28 @@ These properties are available on both Android and iOS and are typically configu
 | `buttonText` | `String` | Required |
 | `nfcUnsupportedMessage` | `String` | `"NFC is not supported on this device"` |
 | `nfcDisabledMessage` | `String` | `"NFC is disabled on this device"` |
+| `android` | `AndroidOptions` | `AndroidOptions()` |
+| `ios` | `IosOptions` | `IosOptions()` |
 
-### Platform-Specific Properties
-These properties are internal to each platform's implementation to keep the common API clean. They use the following defaults:
+### Android-Specific (`AndroidOptions`)
+Accessed via `config.android`.
 
-#### Android-Specific
-- `nfcReadTimeout`: `60.seconds` (minimum 5s)
-- `nfcScanTimeoutMessage`: `"NFC scan timed out"`
-- `sheetGesturesEnabled`: `true`
-- `shouldDismissBottomSheetOnBackPress`: `false`
-- `shouldDismissBottomSheetOnClickOutside`: `false`
+| Property | Type | Default | Validation |
+| :--- | :--- | :--- | :--- |
+| `nfcReadTimeout` | `Duration` | `60.seconds` | Min 5s |
+| `nfcScanTimeoutMessage` | `String` | `"NFC scan timed out"` | Non-blank |
+| `sheetGesturesEnabled` | `Boolean` | `true` | - |
+| `shouldDismissBottomSheetOnBackPress` | `Boolean` | `false` | - |
+| `shouldDismissBottomSheetOnClickOutside` | `Boolean` | `false` | - |
 
-#### iOS-Specific
-- `nfcSuccessMessage`: `"Tag scanned successfully"`
+### iOS-Specific (`IosOptions`)
+Accessed via `config.ios`.
 
-> **Note:** On iOS, only `subtitleMessage` is used — it maps directly to the native system NFC scanning dialog message. `titleMessage` and `buttonText` are required by the constructor but are not displayed on iOS as the system manages the dialog UI.
+| Property | Type | Default | Validation |
+| :--- | :--- | :--- | :--- |
+| `nfcSuccessMessage` | `String` | `"Tag scanned successfully"` | Non-blank |
+
+> **Note:** All string properties (`titleMessage`, `subtitleMessage`, `buttonText`, etc.) are validated to be non-blank. On iOS, only `subtitleMessage` and `ios.nfcSuccessMessage` are used by the native system dialog. `titleMessage` and `buttonText` are required for the common UI but are ignored by CoreNFC.
 
 ---
 
