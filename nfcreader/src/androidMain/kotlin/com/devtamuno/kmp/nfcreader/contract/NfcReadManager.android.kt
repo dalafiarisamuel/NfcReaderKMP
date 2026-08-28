@@ -2,7 +2,6 @@ package com.devtamuno.kmp.nfcreader.contract
 
 import android.app.Activity
 import android.nfc.NdefMessage
-import android.nfc.NdefRecord
 import android.nfc.NfcAdapter
 import android.nfc.NfcManager
 import android.nfc.Tag
@@ -16,10 +15,13 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
+import com.devtamuno.kmp.nfcreader.data.NdefParser
 import com.devtamuno.kmp.nfcreader.data.NfcConfig
 import com.devtamuno.kmp.nfcreader.data.NfcReadResult
 import com.devtamuno.kmp.nfcreader.data.NfcTagData
 import com.devtamuno.kmp.nfcreader.data.NfcTagType
+import com.devtamuno.kmp.nfcreader.data.ParsedNfcPayload
+import com.devtamuno.kmp.nfcreader.ndef.NdefMessageParser
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -183,22 +185,31 @@ actual constructor(private val config: NfcConfig) : NfcAdapter.ReaderCallback {
         val tagType = getNfcTagType(tag)
         val ndef = Ndef.get(tag)
         val ndefMessage: NdefMessage? = ndef?.cachedNdefMessage
-        val records: Array<NdefRecord>? = ndefMessage?.records
 
-        val result =
-            if (records.isNullOrEmpty()) {
-                NfcReadResult.Success(NfcTagData(tagId, tagType, null, hardwareTechList))
-            } else {
-                val combinedPayload = records.joinToString(separator = "\n") { it.toReadableText() }
-                NfcReadResult.Success(
-                    NfcTagData(
-                        serialNumber = tagId,
-                        type = NfcTagType.NDEF,
-                        payload = combinedPayload,
-                        techList = hardwareTechList + "NDEF",
-                    )
-                )
+        val result = if (ndefMessage == null) {
+            NfcReadResult.Success(NfcTagData(tagId, tagType, null, hardwareTechList))
+        } else {
+            val bytes = ndefMessage.toByteArray()
+            val parsedMessage = NdefMessageParser.parse(bytes)
+            val parsedPayloads = parsedMessage?.let { NdefParser.parseMessage(it) } ?: emptyList()
+            val combinedPayload = parsedPayloads.joinToString(separator = "\n") {
+                when (it) {
+                    is ParsedNfcPayload.Text -> it.text
+                    is ParsedNfcPayload.Uri -> it.url
+                    else -> it.toString()
+                }
             }
+
+            NfcReadResult.Success(
+                NfcTagData(
+                    serialNumber = tagId,
+                    type = NfcTagType.NDEF,
+                    payload = combinedPayload,
+                    techList = hardwareTechList + "NDEF",
+                    parsedPayloads = parsedPayloads
+                )
+            )
+        }
 
         scope.launch {
             stopScanning()

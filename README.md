@@ -18,15 +18,18 @@ This library is under active development. While we are approaching a stable `v1.
 
 ### ✅ What's Ready
 - **Unified KMP API**: A single `NfcReadManagerState` that handles platform complexities under the hood.
-- **Android Implementation**: robust `NfcAdapter` integration with a customizable `ModalBottomSheet` and Lottie support (via [Compottie](https://github.com/AlexZhirkevich/compottie)).
+- **Android Implementation**: Robust `NfcAdapter` integration with a customizable `ModalBottomSheet` and Lottie support (via [Compottie](https://github.com/AlexZhirkevich/compottie)).
 - **iOS Implementation**: Seamless `CoreNFC` integration utilizing the native system scanning dialog.
 - **Advanced Tag Parsing**: Support for NDEF, MIFARE, ISO15693, ISO7816, and FeliCa.
+- **Polished Sample App**: A comprehensive `:composeApp` demonstrating real-world use cases:
+    - **Smart URIs**: Automatic detection and launching of web links.
+    - **vCard Support**: Parsing contact information for easy saving.
+    - **Wi-Fi Config**: Extracting SSID and credentials from tags.
 - **Dokka Documentation**: Fully documented API available [here](https://dalafiarisamuel.github.io/NfcReaderKMP/).
 - **CI/CD**: Automated binary compatibility validation and publishing infrastructure.
 
 ### 🛠️ What's Next
 - [ ] Increasing test coverage (Unit & Instrumentation).
-- [ ] Polishing the `:composeApp` sample for more complex use cases.
 - [ ] Official `v1.0.0` release to Maven Central.
 
 > **Note:** We are currently at version `0.0.1`. The API is stabilizing but may still undergo minor changes before the first official release. Star the repo to stay updated!
