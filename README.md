@@ -20,17 +20,19 @@ This library is under active development. While we are approaching a stable `v1.
 - **Unified KMP API**: A single `NfcReadManagerState` that handles platform complexities under the hood.
 - **Android Implementation**: Robust `NfcAdapter` integration with a customizable `ModalBottomSheet` and Lottie support (via [Compottie](https://github.com/AlexZhirkevich/compottie)).
 - **iOS Implementation**: Seamless `CoreNFC` integration utilizing the native system scanning dialog.
-- **Advanced Tag Parsing**: Support for NDEF, MIFARE, ISO15693, ISO7816, and FeliCa.
+- **Advanced Tag Parsing**: Standards-compliant NDEF message and record parsing (Text, URI, vCard, Wi-Fi, MIME, External, Smart Poster).
 - **Polished Sample App**: A comprehensive `:composeApp` demonstrating real-world use cases:
     - **Smart URIs**: Automatic detection and launching of web links.
     - **vCard Support**: Parsing contact information for easy saving.
     - **Wi-Fi Config**: Extracting SSID and credentials from tags.
+    - **Multi-Record Support**: Handles tags containing multiple NDEF records.
+- **Unit Tested**: Comprehensive test suite for all NDEF payload parsers.
 - **Dokka Documentation**: Fully documented API available [here](https://dalafiarisamuel.github.io/NfcReaderKMP/).
-- **CI/CD**: Automated binary compatibility validation and publishing infrastructure.
+- **CI/CD**: Automated unit testing, binary compatibility validation, and publishing infrastructure.
 
 ### 🛠️ What's Next
-- [ ] Increasing test coverage (Unit & Instrumentation).
 - [ ] Official `v1.0.0` release to Maven Central.
+- [ ] Instrumentation tests for Android hardware integration.
 
 > **Note:** We are currently at version `0.0.1`. The API is stabilizing but may still undergo minor changes before the first official release. Star the repo to stay updated!
 
@@ -114,9 +116,16 @@ val result by nfcManager.nfcReadResult.collectAsState()
 when (val state = result) {
     is NfcReadResult.Success -> {
         Text("Tag ID: ${state.data.serialNumber}")
-        Text("Type: ${state.data.type}")
-        Text("Payload: ${state.data.payload}")
-        Text("Technologies: ${state.data.techList.joinToString()}")
+
+        // Loop through structured payloads
+        state.data.parsedPayloads.forEach { payload ->
+            when (payload) {
+                is ParsedNfcPayload.Text -> Text("Text: ${payload.text}")
+                is ParsedNfcPayload.Uri -> Text("URL: ${payload.url}")
+                is ParsedNfcPayload.Wifi -> Text("SSID: ${payload.ssid}")
+                else -> Text("Another NDEF record type")
+            }
+        }
     }
     is NfcReadResult.Error -> {
         Text("Error: ${state.message}", color = Color.Red)
@@ -151,6 +160,8 @@ These properties are root-level and apply to both platforms (where supported).
 | `buttonText` | `String` | Required |
 | `nfcUnsupportedMessage` | `String` | `"NFC is not supported on this device"` |
 | `nfcDisabledMessage` | `String` | `"NFC is disabled on this device"` |
+| `nfcReadErrorMessage` | `String` | `"Unable to read the NFC tag"` |
+| `ndefParser` | `NdefParser` | `NdefParser.Default` |
 | `android` | `AndroidOptions` | `AndroidOptions()` |
 | `ios` | `IosOptions` | `IosOptions()` |
 
@@ -179,10 +190,11 @@ Accessed via `config.ios`.
 ## Data Models
 
 ### `NfcTagData`
-- `serialNumber`: The tag's unique ID as a hex-encoded string (available on both Android and iOS).
-- `type`: The tag type as an `NfcTagType` enum — see values below.
-- `payload`: The decoded string content of the tag. `null` if the tag is empty or non-NDEF.
-- `techList`: A list of hardware technologies detected (e.g., `"Mifare Classic"`, `"ISO 14443-3A"`).
+- `serialNumber`: The tag's unique ID as a hex-encoded string.
+- `type`: The tag type as an `NfcTagType` enum.
+- `payload`: A combined string representation of all payloads (fallback).
+- `techList`: A list of hardware technologies detected (e.g., `"Mifare Classic"`).
+- `parsedPayloads`: A `List<ParsedNfcPayload>` containing structured data (Text, URI, Wifi, etc.).
 
 ### `NfcTagType`
 
@@ -202,7 +214,7 @@ Accessed via `config.ios`.
 | `Initial` | No scan has been initiated yet |
 | `Scanning` | Actively scanning for a tag |
 | `Success(data)` | Tag was read successfully |
-| `Error(message)` | An error occurred during scanning |
+| `Error(message, error)` | Scanning failed with a configured message and typed `NfcError` |
 | `OperationCancelled` | Scanning was cancelled by the user or system |
 
 ---

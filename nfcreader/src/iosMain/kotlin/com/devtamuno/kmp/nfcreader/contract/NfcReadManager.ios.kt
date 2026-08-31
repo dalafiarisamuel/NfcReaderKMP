@@ -4,22 +4,22 @@ package com.devtamuno.kmp.nfcreader.contract
 
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.runtime.Composable
-import com.devtamuno.kmp.nfcreader.data.NdefParser
 import com.devtamuno.kmp.nfcreader.data.NfcConfig
+import com.devtamuno.kmp.nfcreader.data.NfcError
 import com.devtamuno.kmp.nfcreader.data.NfcReadResult
 import com.devtamuno.kmp.nfcreader.data.NfcTagData
 import com.devtamuno.kmp.nfcreader.data.NfcTagType
 import com.devtamuno.kmp.nfcreader.data.ParsedNfcPayload
+import com.devtamuno.kmp.nfcreader.ndef.NdefMessage
+import com.devtamuno.kmp.nfcreader.ndef.NdefRecord
+import com.devtamuno.kmp.nfcreader.ndef.Tnf
 import kotlinx.cinterop.ExperimentalForeignApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import platform.CoreNFC.NFCMiFareUnknown
-import com.devtamuno.kmp.nfcreader.ndef.NdefMessage
-import com.devtamuno.kmp.nfcreader.ndef.NdefRecord
-import com.devtamuno.kmp.nfcreader.ndef.Tnf
-import platform.CoreNFC.NFCNDEFPayload
 import platform.CoreNFC.NFCNDEFMessage
+import platform.CoreNFC.NFCNDEFPayload
 import platform.CoreNFC.NFCNDEFStatusReadOnly
 import platform.CoreNFC.NFCNDEFStatusReadWrite
 import platform.CoreNFC.NFCPollingISO14443
@@ -82,7 +82,12 @@ actual constructor(private val config: NfcConfig) : NSObject(), NFCTagReaderSess
         _nfcResult.value = NfcReadResult.Initial
 
         if (!NFCTagReaderSession.readingAvailable()) {
-            updateState(NfcReadResult.Error(config.nfcUnsupportedMessage))
+            updateState(
+                NfcReadResult.Error(
+                    error = NfcError.Unsupported,
+                    message = config.nfcUnsupportedMessage,
+                )
+            )
             return
         }
 
@@ -121,7 +126,11 @@ actual constructor(private val config: NfcConfig) : NSObject(), NFCTagReaderSess
                 ?: when (didInvalidateWithError.code) {
                     NFC_USER_CANCELLED_ERROR_CODE,
                     NFC_SESSION_TIMEOUT_ERROR_CODE -> NfcReadResult.OperationCancelled
-                    else -> NfcReadResult.Error(didInvalidateWithError.localizedDescription)
+                    else ->
+                        NfcReadResult.Error(
+                            error = NfcError.Custom(didInvalidateWithError.localizedDescription),
+                            message = didInvalidateWithError.localizedDescription,
+                        )
                 }
 
         updateState(result)
@@ -150,7 +159,13 @@ actual constructor(private val config: NfcConfig) : NSObject(), NFCTagReaderSess
 
         session.connectToTag(tag) { error ->
             if (error != null) {
-                finishSession(session, NfcReadResult.Error(error.localizedDescription))
+                finishSession(
+                    session,
+                    NfcReadResult.Error(
+                        error = NfcError.Custom(error.localizedDescription),
+                        message = error.localizedDescription,
+                    ),
+                )
                 return@connectToTag
             }
 
@@ -190,7 +205,14 @@ actual constructor(private val config: NfcConfig) : NSObject(), NFCTagReaderSess
                         NfcTagType.FELICA,
                         tag.asNFCFeliCaTag(),
                     )
-                else -> finishSession(session, NfcReadResult.Error(config.nfcUnsupportedMessage))
+                else ->
+                    finishSession(
+                        session,
+                        NfcReadResult.Error(
+                            error = NfcError.Unsupported,
+                            message = config.nfcUnsupportedMessage,
+                        ),
+                    )
             }
         }
     }
@@ -238,7 +260,7 @@ actual constructor(private val config: NfcConfig) : NSObject(), NFCTagReaderSess
                         } ?: emptyList()
                         
                         val parsedMessage = NdefMessage(records)
-                        val parsedPayloads = NdefParser.parseMessage(parsedMessage)
+                        val parsedPayloads = config.ndefParser.parseMessage(parsedMessage)
                         val combinedPayload = parsedPayloads.joinToString(separator = "\n") {
                             when (it) {
                                 is ParsedNfcPayload.Text -> it.text

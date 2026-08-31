@@ -40,7 +40,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.devtamuno.kmp.nfcreader.data.NdefParser
 import com.devtamuno.kmp.nfcreader.data.NfcConfig
 import com.devtamuno.kmp.nfcreader.data.NfcReadResult
 import com.devtamuno.kmp.nfcreader.data.NfcTagData
@@ -108,11 +107,11 @@ fun App() {
                 NfcReadResult.Initial -> {
                     StatusMessage("Ready to discover tags")
                 }
-                NfcReadResult.OperationCancelled -> {
-                    StatusMessage("Operation Cancelled")
-                }
                 NfcReadResult.Scanning -> {
                     StatusMessage("Scanning for NFC Tag....")
+                }
+                NfcReadResult.OperationCancelled -> {
+                    StatusMessage("Operation cancelled")
                 }
             }
             Spacer(Modifier.height(40.dp))
@@ -218,6 +217,7 @@ fun TagResultDetails(data: NfcTagData) {
                             payload.uri?.let { PayloadItem(Icons.Default.Info, "URI", it) }
                             payload.action?.let { PayloadItem(Icons.Default.Info, "Action", it) }
                         }
+                        else -> Text("Custom NDEF record")
                     }
                 }
             }

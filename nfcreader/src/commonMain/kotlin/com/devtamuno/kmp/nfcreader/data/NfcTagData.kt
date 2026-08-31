@@ -1,7 +1,5 @@
 package com.devtamuno.kmp.nfcreader.data
 
-import androidx.compose.runtime.Immutable
-
 /**
  * Data class representing the information extracted from an NFC tag.
  *
@@ -13,7 +11,6 @@ import androidx.compose.runtime.Immutable
  * @property techList A list of technologies supported by the tag (e.g., "ISO 14443-3A", "Mifare
  *   Classic").
  */
-@Immutable
 data class NfcTagData(
     val serialNumber: String,
     val type: NfcTagType,
