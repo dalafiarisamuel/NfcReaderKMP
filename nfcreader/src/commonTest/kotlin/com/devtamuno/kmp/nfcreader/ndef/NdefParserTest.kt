@@ -10,6 +10,8 @@ import kotlin.test.assertTrue
 
 class NdefParserTest {
 
+    private val parser = NdefParser()
+
     @Test
     fun testParseShortRecordText() {
         // TNF=1 (Well Known), SR=1, Type=T, Payload="enHello"
@@ -20,7 +22,7 @@ class NdefParserTest {
             'H'.code.toByte(), 'e'.code.toByte(), 'l'.code.toByte(), 'l'.code.toByte(), 'o'.code.toByte()
         )
 
-        val results = NdefParser.parse(bytes)
+        val results = parser.parse(bytes)
         assertEquals(1, results.size)
         val textResult = results[0] as ParsedNfcPayload.Text
         assertEquals("Hello", textResult.text)
@@ -36,7 +38,7 @@ class NdefParserTest {
             '.'.code.toByte(), 'c'.code.toByte(), 'o'.code.toByte(), 'm'.code.toByte()
         )
 
-        val results = NdefParser.parse(bytes)
+        val results = parser.parse(bytes)
         assertEquals(1, results.size)
         val uriResult = results[0] as ParsedNfcPayload.Uri
         assertEquals("https://google.com", uriResult.url)
@@ -52,7 +54,7 @@ class NdefParserTest {
             payload = wifiPayload.encodeToByteArray()
         )
 
-        val parsed = NdefParser.parseRecord(record)
+        val parsed = parser.parseRecord(record)
         assertIs<ParsedNfcPayload.Wifi>(parsed)
         assertEquals("MyNetwork", parsed.ssid)
         assertEquals("secret", parsed.password)
@@ -69,7 +71,7 @@ class NdefParserTest {
             payload = vcard.encodeToByteArray()
         )
 
-        val parsed = NdefParser.parseRecord(record)
+        val parsed = parser.parseRecord(record)
         assertIs<ParsedNfcPayload.Contact>(parsed)
         assertEquals("John Doe", parsed.name)
         assertEquals("+123456789", parsed.phone)
@@ -85,7 +87,7 @@ class NdefParserTest {
             payload = packageName.encodeToByteArray()
         )
 
-        val parsed = NdefParser.parseRecord(record)
+        val parsed = parser.parseRecord(record)
         assertIs<ParsedNfcPayload.AndroidApplication>(parsed)
         assertEquals(packageName, parsed.packageName)
     }
@@ -94,7 +96,7 @@ class NdefParserTest {
     fun testParseSmartPoster() {
         // Smart Poster containing a URI record
         val nestedUriRecord = byteArrayOf(
-            0xD1.toByte(), 0x01.toByte(), 0x0B.toByte(), 0x55.toByte(),
+            0xD1.toByte(), 0x01.toByte(), 0x0C.toByte(), 0x55.toByte(),
             0x04.toByte(),
             'e'.code.toByte(), 'x'.code.toByte(), 'a'.code.toByte(), 'm'.code.toByte(), 'p'.code.toByte(), 'l'.code.toByte(),
             'e'.code.toByte(), '.'.code.toByte(), 'c'.code.toByte(), 'o'.code.toByte(), 'm'.code.toByte()
@@ -107,8 +109,33 @@ class NdefParserTest {
             payload = nestedUriRecord
         )
 
-        val parsed = NdefParser.parseRecord(record)
+        val parsed = parser.parseRecord(record)
         assertIs<ParsedNfcPayload.SmartPoster>(parsed)
         assertEquals("https://example.com", parsed.uri)
+    }
+
+    @Test
+    fun testCustomParserTakesPrecedenceAndSupportsCustomPayloads() {
+        data class TestPayload(val value: String) : ParsedNfcPayload
+
+        val customParser =
+            object : NdefPayloadParser {
+                override fun canParse(record: NdefRecord): Boolean = true
+
+                override fun parse(record: NdefRecord): ParsedNfcPayload =
+                    TestPayload(record.payload.decodeToString())
+            }
+        val customPayloadParser = NdefParser(listOf(customParser))
+        val record =
+            NdefRecord(
+                tnf = Tnf.WELL_KNOWN,
+                type = NdefRecord.RTD_TEXT,
+                id = null,
+                payload = "custom".encodeToByteArray(),
+            )
+
+        val parsed = customPayloadParser.parseRecord(record)
+
+        assertEquals(TestPayload("custom"), parsed)
     }
 }

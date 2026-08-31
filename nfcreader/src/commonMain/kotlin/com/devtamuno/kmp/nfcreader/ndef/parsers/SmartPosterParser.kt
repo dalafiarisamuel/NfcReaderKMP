@@ -10,15 +10,10 @@ import com.devtamuno.kmp.nfcreader.ndef.Tnf
  * Parses an NFC Forum Smart Poster Record.
  * Smart Posters contain nested NDEF records.
  */
-class SmartPosterParser : NdefPayloadParser {
-
-    private var textParser: TextParser? = null
-    private var uriParser: UriParser? = null
-
-    fun setParsers(textParser: TextParser, uriParser: UriParser) {
-        this.textParser = textParser
-        this.uriParser = uriParser
-    }
+class SmartPosterParser(
+    private val textParser: TextParser,
+    private val uriParser: UriParser,
+) : NdefPayloadParser {
 
     override fun canParse(record: NdefRecord): Boolean {
         return record.tnf == Tnf.WELL_KNOWN && record.type.contentEquals(NdefRecord.RTD_SMART_POSTER)
@@ -34,12 +29,12 @@ class SmartPosterParser : NdefPayloadParser {
 
         for (nestedRecord in nestedMessage.records) {
             when {
-                textParser?.canParse(nestedRecord) == true -> {
-                    val parsed = textParser?.parse(nestedRecord) as? ParsedNfcPayload.Text
+                textParser.canParse(nestedRecord) -> {
+                    val parsed = textParser.parse(nestedRecord) as? ParsedNfcPayload.Text
                     if (title == null) title = parsed?.text
                 }
-                uriParser?.canParse(nestedRecord) == true -> {
-                    val parsed = uriParser?.parse(nestedRecord) as? ParsedNfcPayload.Uri
+                uriParser.canParse(nestedRecord) -> {
+                    val parsed = uriParser.parse(nestedRecord) as? ParsedNfcPayload.Uri
                     if (uri == null) uri = parsed?.url
                 }
                 nestedRecord.tnf == Tnf.WELL_KNOWN && nestedRecord.type.contentEquals(byteArrayOf('a'.code.toByte())) -> {

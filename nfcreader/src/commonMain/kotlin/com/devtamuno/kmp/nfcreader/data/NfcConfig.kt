@@ -17,6 +17,8 @@ import kotlin.time.Duration.Companion.seconds
  * @property nfcDisabledMessage Error message emitted when NFC is turned off on the device.
  * @property android Android-specific configuration options.
  * @property ios iOS-specific configuration options.
+ * @property nfcReadErrorMessage Error message emitted when a tag or scanning host is unavailable.
+ * @property ndefParser Immutable parser configuration used for NDEF records on both platforms.
  */
 @Immutable
 data class NfcConfig(
@@ -27,11 +29,16 @@ data class NfcConfig(
     val nfcDisabledMessage: String = "NFC is disabled on this device",
     val android: AndroidOptions = AndroidOptions(),
     val ios: IosOptions = IosOptions(),
+    val nfcReadErrorMessage: String = "Unable to read the NFC tag",
+    val ndefParser: NdefParser = NdefParser.Default,
 ) {
     init {
         require(titleMessage.isNotBlank()) { "titleMessage cannot be blank" }
         require(subtitleMessage.isNotBlank()) { "subtitleMessage cannot be blank" }
         require(buttonText.isNotBlank()) { "buttonText cannot be blank" }
+        require(nfcUnsupportedMessage.isNotBlank()) { "nfcUnsupportedMessage cannot be blank" }
+        require(nfcDisabledMessage.isNotBlank()) { "nfcDisabledMessage cannot be blank" }
+        require(nfcReadErrorMessage.isNotBlank()) { "nfcReadErrorMessage cannot be blank" }
     }
 
     @Immutable

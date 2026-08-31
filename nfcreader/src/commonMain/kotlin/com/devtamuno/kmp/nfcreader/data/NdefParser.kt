@@ -1,8 +1,9 @@
 package com.devtamuno.kmp.nfcreader.data
 
-import com.devtamuno.kmp.nfcreader.contract.NFC_URI_PREFIXES
+import androidx.compose.runtime.Immutable
 import com.devtamuno.kmp.nfcreader.ndef.NdefMessage
 import com.devtamuno.kmp.nfcreader.ndef.NdefMessageParser
+import com.devtamuno.kmp.nfcreader.ndef.NdefPayloadParser
 import com.devtamuno.kmp.nfcreader.ndef.NdefRecord
 import com.devtamuno.kmp.nfcreader.ndef.parsers.ExternalTypeParser
 import com.devtamuno.kmp.nfcreader.ndef.parsers.MimeParser
@@ -13,9 +14,10 @@ import com.devtamuno.kmp.nfcreader.ndef.parsers.VCardParser
 import com.devtamuno.kmp.nfcreader.ndef.parsers.WifiParser
 
 /**
- * A sealed interface representing different types of parsed NFC payloads.
+ * Represents structured NFC payload data. Applications may implement this interface for custom
+ * record types returned by a custom [NdefPayloadParser].
  */
-sealed interface ParsedNfcPayload {
+interface ParsedNfcPayload {
     /**
      * Represents a URI payload (e.g., website URL, mailto, tel).
      * @property url The full URI string.
@@ -122,9 +124,16 @@ sealed interface ParsedNfcPayload {
 }
 
 /**
- * A robust parser to extract structured data from NDEF records.
+ * A parser that extracts structured data from NDEF records.
+ *
+ * Instances are immutable and can safely be shared between platform NFC callback threads. Custom
+ * parsers are evaluated in list order before the built-in parsers and must themselves be
+ * thread-safe.
+ *
+ * @param customParsers Application-defined parsers to run before the built-in parsers.
  */
-object NdefParser {
+@Immutable
+class NdefParser(customParsers: List<NdefPayloadParser> = emptyList()) {
 
     private val textParser = TextParser()
     private val uriParser = UriParser()
@@ -132,19 +141,20 @@ object NdefParser {
     private val wifiParser = WifiParser()
     private val mimeParser = MimeParser(vCardParser)
     private val externalTypeParser = ExternalTypeParser()
-    private val smartPosterParser = SmartPosterParser().apply {
-        setParsers(textParser, uriParser)
-    }
+    private val smartPosterParser = SmartPosterParser(textParser, uriParser)
 
-    private val payloadParsers = listOf(
-        textParser,
-        uriParser,
-        smartPosterParser,
-        vCardParser,
-        wifiParser,
-        mimeParser,
-        externalTypeParser
-    )
+    private val customParsers = customParsers.toList()
+    private val payloadParsers =
+        this.customParsers +
+            listOf(
+                textParser,
+                uriParser,
+                smartPosterParser,
+                vCardParser,
+                wifiParser,
+                mimeParser,
+                externalTypeParser,
+            )
 
     /**
      * Parses an NDEF record into a structured [ParsedNfcPayload].
@@ -173,62 +183,8 @@ object NdefParser {
         return parseMessage(message)
     }
 
-}
-
-/**
- * Internal legacy parser for compatibility with existing String-based usage.
- */
-private object LegacyNdefParser {
-    private const val VCARD_MARKER = "BEGIN:VCARD"
-    private const val WIFI_MARKER = "WIFI:"
-
-    private val VCARD_NAME_REGEX = Regex("(?i)FN:(.*)")
-    private val VCARD_ALT_NAME_REGEX = Regex("(?i)N:(.*)")
-    private val VCARD_PHONE_REGEX = Regex("(?i)TEL.*:(.*)")
-    private val VCARD_EMAIL_REGEX = Regex("(?i)EMAIL.*:(.*)")
-
-    private val WIFI_SSID_REGEX = Regex("(?i)S:(.*?);")
-    private val WIFI_PASS_REGEX = Regex("(?i)P:(.*?);")
-    private val WIFI_TYPE_REGEX = Regex("(?i)T:(.*?);")
-
-    fun parse(payload: String?): ParsedNfcPayload {
-        val cleanPayload = payload?.trim()
-        if (cleanPayload.isNullOrBlank()) return ParsedNfcPayload.Text("")
-
-        return when {
-            isUri(cleanPayload) -> ParsedNfcPayload.Uri(cleanPayload)
-            cleanPayload.contains(VCARD_MARKER, ignoreCase = true) -> parseVCard(cleanPayload)
-            cleanPayload.startsWith(WIFI_MARKER, ignoreCase = true) -> parseWifi(cleanPayload)
-            else -> ParsedNfcPayload.Text(cleanPayload)
-        }
-    }
-
-    private fun isUri(payload: String): Boolean {
-        return NFC_URI_PREFIXES.any { it.isNotEmpty() && payload.startsWith(it, ignoreCase = true) }
-    }
-
-    private fun parseVCard(payload: String): ParsedNfcPayload {
-        val name = VCARD_NAME_REGEX.findValue(payload)
-            ?: VCARD_ALT_NAME_REGEX.findValue(payload)
-                ?.replace(";", " ")
-                ?.trim()
-            ?: "Unknown Contact"
-
-        val phone = VCARD_PHONE_REGEX.findValue(payload)
-        val email = VCARD_EMAIL_REGEX.findValue(payload)
-
-        return ParsedNfcPayload.Contact(name, phone, email)
-    }
-
-    private fun parseWifi(payload: String): ParsedNfcPayload {
-        val ssid = WIFI_SSID_REGEX.findValue(payload) ?: "Unknown SSID"
-        val password = WIFI_PASS_REGEX.findValue(payload)
-        val encryption = WIFI_TYPE_REGEX.findValue(payload)
-
-        return ParsedNfcPayload.Wifi(ssid, password, encryption)
-    }
-
-    private fun Regex.findValue(input: CharSequence): String? {
-        return find(input)?.groupValues?.get(1)?.trim()?.takeIf { it.isNotEmpty() }
+    companion object {
+        /** Shared parser containing only the built-in payload parsers. */
+        val Default = NdefParser()
     }
 }

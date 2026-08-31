@@ -12,9 +12,7 @@ class SmartPosterParserTest {
 
     private val textParser = TextParser()
     private val uriParser = UriParser()
-    private val smartPosterParser = SmartPosterParser().apply {
-        setParsers(textParser, uriParser)
-    }
+    private val smartPosterParser = SmartPosterParser(textParser, uriParser)
 
     @Test
     fun testCanParse() {

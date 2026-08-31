@@ -1,7 +1,6 @@
 package com.devtamuno.kmp.nfcreader.contract
 
 import android.app.Activity
-import android.nfc.NdefMessage
 import android.nfc.NfcAdapter
 import android.nfc.NfcManager
 import android.nfc.Tag
@@ -15,13 +14,15 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
-import com.devtamuno.kmp.nfcreader.data.NdefParser
 import com.devtamuno.kmp.nfcreader.data.NfcConfig
+import com.devtamuno.kmp.nfcreader.data.NfcError
 import com.devtamuno.kmp.nfcreader.data.NfcReadResult
 import com.devtamuno.kmp.nfcreader.data.NfcTagData
 import com.devtamuno.kmp.nfcreader.data.NfcTagType
 import com.devtamuno.kmp.nfcreader.data.ParsedNfcPayload
-import com.devtamuno.kmp.nfcreader.ndef.NdefMessageParser
+import com.devtamuno.kmp.nfcreader.ndef.NdefMessage
+import com.devtamuno.kmp.nfcreader.ndef.NdefRecord
+import com.devtamuno.kmp.nfcreader.ndef.Tnf
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -32,6 +33,9 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+
+// Typealias to avoid ambiguity with android.nfc.NdefMessage
+private typealias AndroidNdefMessage = android.nfc.NdefMessage
 
 /**
  * Android implementation of [NfcReadManager]. Handles NFC tag scanning using the Android NFC
@@ -105,17 +109,27 @@ actual constructor(private val config: NfcConfig) : NfcAdapter.ReaderCallback {
         val adapter = nfcAdapter
 
         if (adapter == null) {
-            _tagData.value = NfcReadResult.Error(config.nfcUnsupportedMessage)
+            _tagData.value =
+                NfcReadResult.Error(
+                    error = NfcError.Unsupported,
+                    message = config.nfcUnsupportedMessage,
+                )
             return
         }
 
         if (currentActivity == null) {
-            _tagData.value = NfcReadResult.Error(config.nfcUnsupportedMessage)
+            val message = config.nfcReadErrorMessage
+            _tagData.value =
+                NfcReadResult.Error(message = message, error = NfcError.Custom(message))
             return
         }
 
         if (!adapter.isEnabled) {
-            _tagData.value = NfcReadResult.Error(config.nfcDisabledMessage)
+            _tagData.value =
+                NfcReadResult.Error(
+                    error = NfcError.Disabled,
+                    message = config.nfcDisabledMessage,
+                )
             return
         }
 
@@ -126,7 +140,11 @@ actual constructor(private val config: NfcConfig) : NfcAdapter.ReaderCallback {
         timeoutJob = scope.launch {
             delay(config.android.nfcReadTimeout)
             if (isScanning) {
-                _tagData.value = NfcReadResult.Error(config.android.nfcScanTimeoutMessage)
+                _tagData.value =
+                    NfcReadResult.Error(
+                        error = NfcError.Timeout,
+                        message = config.android.nfcScanTimeoutMessage,
+                    )
                 stopScanning()
             }
         }
@@ -166,7 +184,9 @@ actual constructor(private val config: NfcConfig) : NfcAdapter.ReaderCallback {
         if (tag == null) {
             scope.launch {
                 stopScanning()
-                _tagData.value = NfcReadResult.Error(config.nfcUnsupportedMessage)
+                val message = config.nfcReadErrorMessage
+                _tagData.value =
+                    NfcReadResult.Error(message = message, error = NfcError.Custom(message))
             }
             return
         }
@@ -184,14 +204,21 @@ actual constructor(private val config: NfcConfig) : NfcAdapter.ReaderCallback {
 
         val tagType = getNfcTagType(tag)
         val ndef = Ndef.get(tag)
-        val ndefMessage: NdefMessage? = ndef?.cachedNdefMessage
+        val ndefMessage: AndroidNdefMessage? = ndef?.cachedNdefMessage
 
         val result = if (ndefMessage == null) {
             NfcReadResult.Success(NfcTagData(tagId, tagType, null, hardwareTechList))
         } else {
-            val bytes = ndefMessage.toByteArray()
-            val parsedMessage = NdefMessageParser.parse(bytes)
-            val parsedPayloads = parsedMessage?.let { NdefParser.parseMessage(it) } ?: emptyList()
+            val commonRecords = ndefMessage.records.map {
+                NdefRecord(
+                    tnf = Tnf.fromValue(it.tnf),
+                    type = it.type,
+                    id = it.id,
+                    payload = it.payload
+                )
+            }
+            val parsedMessage = NdefMessage(commonRecords)
+            val parsedPayloads = config.ndefParser.parseMessage(parsedMessage)
             val combinedPayload = parsedPayloads.joinToString(separator = "\n") {
                 when (it) {
                     is ParsedNfcPayload.Text -> it.text
