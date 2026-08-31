@@ -58,6 +58,7 @@ Add the dependency to your `commonMain` source set in `build.gradle.kts`:
 sourceSets {
     commonMain.dependencies {
         implementation("com.devtamuno.kmp:nfcreader:<version>")
+        implementation("org.jetbrains.androidx.lifecycle:lifecycle-runtime-compose:<lifecycle-version>")
     }
 }
 ```
@@ -84,65 +85,73 @@ sourceSets {
 
 ## Usage
 
-### 1. Initialize the State Manager
+### 1. Create a stateful NFC route
 
-Create an `NfcConfig` and pass it to `rememberNfcReadManagerState`. You can optionally provide a custom animation slot:
+Keep NFC manager creation and lifecycle-aware state collection at the route level. Remember the configuration so it is not recreated during recomposition:
 
 ```kotlin
-val nfcManager = rememberNfcReadManagerState(
-    config = NfcConfig(
-        titleMessage = "Ready to Scan",
-        subtitleMessage = "Hold your tag near the device.",
-        buttonText = "Cancel",
-        android = NfcConfig.AndroidOptions(
-            nfcReadTimeout = 30.seconds,
-            shouldDismissBottomSheetOnBackPress = true
+@Composable
+fun NfcReaderRoute() {
+    val config = remember {
+        NfcConfig(
+            titleMessage = "Ready to Scan",
+            subtitleMessage = "Hold your tag near the device.",
+            buttonText = "Cancel",
+            android = NfcConfig.AndroidOptions(
+                nfcReadTimeout = 30.seconds,
+                shouldDismissBottomSheetOnBackPress = true,
+            ),
         )
-    ),
-    nfcScanningAnimationSlot = {
-        // Custom Compose animation here
-        Text("Scanning...")
     }
-)
+
+    val nfcManager = rememberNfcReadManagerState(config)
+    val result by nfcManager.nfcReadResult.collectAsStateWithLifecycle()
+
+    NfcReaderScreen(
+        result = result,
+        onStartScanning = nfcManager::startScanning,
+    )
+}
 ```
 
-### 2. Observe Results
+This example uses `collectAsStateWithLifecycle` from `lifecycle-runtime-compose`. You can also pass `nfcScanningAnimationSlot` to `rememberNfcReadManagerState` to replace the default Android scanning animation.
 
-Collect the `nfcReadResult` and react to different scanning states:
+### 2. Render a stateless screen
+
+Pass the result and user actions into a stateless composable. This keeps previews and UI tests independent from NFC hardware:
 
 ```kotlin
-val result by nfcManager.nfcReadResult.collectAsState()
-
-when (val state = result) {
-    is NfcReadResult.Success -> {
-        Text("Tag ID: ${state.data.serialNumber}")
-
-        // Loop through structured payloads
-        state.data.parsedPayloads.forEach { payload ->
-            when (payload) {
-                is ParsedNfcPayload.Text -> Text("Text: ${payload.text}")
-                is ParsedNfcPayload.Uri -> Text("URL: ${payload.url}")
-                is ParsedNfcPayload.Wifi -> Text("SSID: ${payload.ssid}")
-                else -> Text("Another NDEF record type")
-            }
+@Composable
+fun NfcReaderScreen(
+    result: NfcReadResult,
+    onStartScanning: () -> Unit,
+) {
+    Column {
+        Button(
+            onClick = onStartScanning,
+            enabled = result != NfcReadResult.Scanning,
+        ) {
+            Text("Start scanning")
         }
-    }
-    is NfcReadResult.Error -> {
-        Text("Error: ${state.message}", color = Color.Red)
-    }
-    NfcReadResult.Scanning -> {
-        Text("Scanning for NFC tag...")
-    }
-    NfcReadResult.OperationCancelled -> {
-        Text("Scanning cancelled")
-    }
-    NfcReadResult.Initial -> {
-        Button(onClick = { nfcManager.startScanning() }) {
-            Text("Start Scanning")
+
+        when (result) {
+            is NfcReadResult.Success -> {
+                Text("Tag ID: ${result.data.serialNumber}")
+                Text("NDEF records: ${result.data.parsedPayloads.size}")
+            }
+            is NfcReadResult.Error -> {
+                Text("Error: ${result.message}", color = Color.Red)
+                // Use result.error for typed recovery logic when needed.
+            }
+            NfcReadResult.Initial -> Text("Ready to scan")
+            NfcReadResult.Scanning -> Text("Scanning for an NFC tag…")
+            NfcReadResult.OperationCancelled -> Text("Scanning cancelled")
         }
     }
 }
 ```
+
+See the [`composeApp` sample](composeApp/src/commonMain/kotlin/com/devtamuno/nfcreader/) for complete tag metadata, structured payload cards, URI handling, custom payload fallbacks, and masked Wi-Fi credentials.
 
 ---
 
